@@ -2,450 +2,579 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Caine Laboratories · Biotech Rainforest</title>
-  <!-- Google Fonts for a clean, futuristic yet organic feel -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <title>Caine Laboratories · Biotech Infrastructure</title>
+  <!-- Google Fonts: clean, serious, scientific -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <!-- Font Awesome for crisp icons (no emojis) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <style>
-    body {
+    * {
       margin: 0;
-      overflow: hidden;
-      font-family: 'Space Grotesk', sans-serif;
-      color: white;
-      background-color: #0a1f12;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    /* canvas takes full screen, behind content */
-    #canvas-container {
+    body {
+      background-color: #0c1f12;
+      font-family: 'Inter', sans-serif;
+      color: #e0f0e0;
+      line-height: 1.5;
+      scroll-behavior: smooth;
+    }
+
+    /* professional, dark, biotech vibe */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* header / navigation */
+    .navbar {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
-
-    /* UI overlay — centered, with glass effect */
-    .content {
-      position: absolute;
-      z-index: 10;
-      width: 100%;
-      height: 100%;
+      padding: 20px 32px;
+      background: rgba(5, 20, 8, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(80, 160, 80, 0.25);
+      z-index: 100;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      pointer-events: none; /* allows clicks to pass to canvas if needed, but we keep it for text */
+      flex-wrap: wrap;
     }
 
-    .center-panel {
-      max-width: 800px;
-      padding: 2.5rem 3rem;
-      background: rgba(10, 30, 18, 0.25);
-      backdrop-filter: blur(10px) brightness(0.8);
-      -webkit-backdrop-filter: blur(10px) brightness(0.8);
-      border: 1px solid rgba(120, 200, 120, 0.3);
-      border-radius: 48px 16px 48px 16px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(60, 180, 100, 0.3);
-      text-align: center;
-      animation: floatIn 2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-      pointer-events: none;
-      transform-style: preserve-3d;
-    }
-
-    h1 {
-      font-weight: 600;
-      font-size: clamp(3rem, 8vw, 5rem);
-      letter-spacing: 0.25em;
-      margin: 0;
-      text-transform: uppercase;
-      background: linear-gradient(135deg, #c0f0c0, #a0e0a0, #d8ffd8);
+    .logo {
+      font-weight: 700;
+      font-size: 1.6rem;
+      letter-spacing: 2px;
+      background: linear-gradient(145deg, #c0f0c0, #90d090);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 20px #1f6f30, 0 0 40px #2b8c3a;
-      animation: glowPulse 3s infinite alternate;
+      text-shadow: 0 0 15px #1f6f3040;
     }
-
-    .sub {
+    .logo span {
       font-weight: 300;
-      font-size: 1.6rem;
-      letter-spacing: 0.3em;
-      margin: 0.5rem 0 1rem;
-      color: #ccffcc;
-      text-shadow: 0 0 15px #1f6f30;
+      font-size: 1rem;
+      color: #9fc99f;
+      background: none;
+      -webkit-text-fill-color: #9fc99f;
+      margin-left: 8px;
     }
 
-    .tagline {
-      font-size: 1.1rem;
-      font-weight: 400;
-      margin-bottom: 1.8rem;
-      color: #b2e6b2;
-      border-top: 1px dashed rgba(140, 220, 140, 0.6);
-      border-bottom: 1px dashed rgba(140, 220, 140, 0.6);
-      padding: 0.8rem 0;
-      text-transform: uppercase;
-      word-spacing: 0.5rem;
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      font-weight: 500;
+      font-size: 1rem;
+    }
+    .nav-links a {
+      color: #d0ecd0;
+      text-decoration: none;
+      transition: color 0.2s;
+      letter-spacing: 0.5px;
+    }
+    .nav-links a:hover {
+      color: white;
+      text-shadow: 0 0 8px #88dd88;
     }
 
-    .tagline span {
+    /* mobile menu adjust */
+    @media (max-width: 700px) {
+      .navbar {
+        padding: 16px 20px;
+      }
+      .nav-links {
+        gap: 20px;
+        font-size: 0.85rem;
+      }
+      .logo {
+        font-size: 1.3rem;
+      }
+    }
+
+    /* main content spacing (fixed header) */
+    .hero, .section {
+      padding-top: 120px;
+      margin-top: -40px;
+    }
+    .section {
+      padding-bottom: 80px;
+    }
+
+    /* ===== HERO SECTION ===== */
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    /* background image / abstract lab photo */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?q=80&w=2070&auto=format&fit=crop'); /* science lab */
+      background-size: cover;
+      background-position: center 30%;
+      filter: brightness(0.3) saturate(1.2) hue-rotate(10deg);
+      z-index: -1;
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 70% 30%, #1a4a2a20, #0a1f0e 80%);
+    }
+
+    .hero-content {
+      max-width: 700px;
+    }
+    .hero-content h1 {
+      font-size: clamp(2.5rem, 7vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      background: linear-gradient(145deg, #f0fff0, #b0e0b0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 24px;
+    }
+    .hero-content .subhead {
+      font-size: 1.3rem;
+      font-weight: 300;
+      color: #c0e6c0;
+      margin-bottom: 32px;
+      border-left: 4px solid #5fa05f;
+      padding-left: 24px;
+    }
+    .btn-row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      background: transparent;
+      border: 1.5px solid #70b070;
+      color: #e0ffe0;
+      padding: 14px 36px;
+      border-radius: 60px;
       font-weight: 600;
-      color: #ffffff;
-      background: #1b4f2b70;
-      padding: 0.2rem 0.6rem;
+      font-size: 1rem;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      backdrop-filter: blur(4px);
+    }
+    .btn-primary {
+      background: #2d6a4d;
+      border-color: #8fce8f;
+      box-shadow: 0 0 20px #2d6a4daa;
+    }
+    .btn-primary:hover {
+      background: #3d8b5e;
+      box-shadow: 0 0 30px #4daa6e;
+      border-color: #b0f0b0;
+    }
+    .btn-outline:hover {
+      background: #2d6a4d30;
+      border-color: #b0f0b0;
+    }
+
+    /* ===== EXPLANATION SECTION (serious but playful) ===== */
+    .explanation-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    @media (max-width: 800px) {
+      .explanation-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+    }
+    .explanation-text h2 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      background: linear-gradient(145deg, #c8f0c8, #a0d0a0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .explanation-text .lead {
+      font-size: 1.2rem;
+      color: #bfe6bf;
+      margin-bottom: 24px;
+      font-weight: 300;
+      border-bottom: 1px dashed #3b6e3b;
+      padding-bottom: 20px;
+    }
+    .explanation-text p {
+      margin-bottom: 20px;
+      color: #c0dcc0;
+      font-weight: 300;
+    }
+    .highlight {
+      color: #e2ffe2;
+      font-weight: 600;
+      background: #1f4a2f70;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .explanation-image {
+      background: #1a321e;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 30px 40px -20px black;
+      border: 1px solid #3b6e3b;
+      height: 360px;
+      background-image: url('https://images.unsplash.com/photo-1628527304948-06157ee3b43b?q=80&w=2070&auto=format&fit=crop'); /* sugarcane field */
+      background-size: cover;
+      background-position: center;
+    }
+    /* second image variation */
+    .image-two {
+      background-image: url('https://images.unsplash.com/photo-1576086213366-97f3000e3b4f?q=80&w=2080&auto=format&fit=crop'); /* biotech lab */
+    }
+
+    /* ===== METRICS / SERIOUS NUMBERS ===== */
+    .metrics {
+      display: flex;
+      justify-content: space-around;
+      background: #0e2a13d0;
+      backdrop-filter: blur(8px);
+      border-radius: 60px;
+      padding: 40px 20px;
+      margin: 60px 0;
+      border: 1px solid #3f7a3f;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+    .metric-item {
+      text-align: center;
+    }
+    .metric-number {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #d0ffd0;
+      text-shadow: 0 0 20px #6bb86b;
+    }
+    .metric-label {
+      font-size: 1rem;
+      letter-spacing: 2px;
+      color: #9fcf9f;
+      text-transform: uppercase;
+    }
+
+    /* ===== PRODUCT / TECHNOLOGY CARDS ===== */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin-top: 40px;
+    }
+    @media (max-width: 750px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
+    .card {
+      background: rgba(15, 35, 18, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid #3b6e3b;
+      border-radius: 28px;
+      padding: 32px 24px;
+      transition: transform 0.2s, box-shadow 0.3s;
+      box-shadow: 0 10px 20px -10px #0f2f0f;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 25px 30px -10px #1e4a1e, 0 0 0 1px #6faf6f;
+    }
+    .card i {
+      font-size: 2.4rem;
+      color: #8ed08e;
+      margin-bottom: 20px;
+    }
+    .card h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #efffef;
+    }
+    .card p {
+      color: #b5d9b5;
+      font-weight: 300;
+      font-size: 0.95rem;
+    }
+
+    /* ===== CONTACT SECTION ===== */
+    .contact-section {
+      background: #0a1f0e;
+      border-radius: 48px 48px 0 0;
+      padding: 70px 0;
+      border-top: 2px solid #2d6a4d;
+    }
+    .contact-flex {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 50px;
+    }
+    .contact-info {
+      flex: 1 1 250px;
+    }
+    .contact-info h3 {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+    .contact-detail {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .contact-detail i {
+      font-size: 1.8rem;
+      color: #86bb86;
+      width: 40px;
+    }
+    .contact-form {
+      flex: 2 1 350px;
+      display: grid;
+      gap: 20px;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 16px 20px;
+      background: #1b3721;
+      border: 1px solid #4b784b;
       border-radius: 40px;
-      margin: 0 0.2rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      color: white;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: #9fdf9f;
+      box-shadow: 0 0 15px #569f56;
+    }
+    .form-group textarea {
+      border-radius: 32px;
+      resize: vertical;
+    }
+    .submit-btn {
+      background: #2d6a4d;
+      border: none;
+      color: white;
+      padding: 16px 30px;
+      border-radius: 60px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #86bb86;
+    }
+    .submit-btn:hover {
+      background: #3f8b5f;
+      box-shadow: 0 0 25px #4daa6e;
     }
 
-    .foot-note {
+    /* footer */
+    .footer {
+      background: #051007;
+      padding: 40px 0;
+      text-align: center;
+      color: #7da77d;
       font-size: 0.9rem;
-      opacity: 0.75;
-      letter-spacing: 0.2rem;
-      margin-top: 2rem;
-      color: #aae0aa;
+      border-top: 1px solid #234d23;
+    }
+    .footer a {
+      color: #b0e0b0;
+      text-decoration: none;
+    }
+    .footer a:hover {
+      text-decoration: underline;
     }
 
-    @keyframes floatIn {
-      0% { opacity: 0; transform: translateY(60px) scale(0.95); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    @keyframes glowPulse {
-      0% { text-shadow: 0 0 20px #1f6f30, 0 0 35px #2b8c3a; }
-      100% { text-shadow: 0 0 35px #5fd87f, 0 0 60px #398048; }
-    }
-
-    /* small extra decorative elements via pseudo */
-    .center-panel::before {
-      content: "⚗️🌱";
-      position: absolute;
-      top: -20px;
-      left: 20px;
-      font-size: 2.2rem;
-      opacity: 0.5;
-      filter: drop-shadow(0 0 6px #aaffaa);
-    }
-    .center-panel::after {
-      content: "🧪🍃";
-      position: absolute;
-      bottom: -20px;
-      right: 20px;
-      font-size: 2.2rem;
-      opacity: 0.5;
-      filter: drop-shadow(0 0 6px #aaffaa);
-    }
-
-    /* responsive adjustments */
-    @media (max-width: 600px) {
-      .center-panel { padding: 1.5rem 1rem; margin: 1rem; }
-      h1 { letter-spacing: 0.15em; }
+    /* remove all emojis, keep icons clean */
+    hr {
+      border-color: #2f5a2f;
+      margin: 20px 0;
     }
   </style>
 </head>
 <body>
-  <!-- 3D canvas injected here by Three.js -->
-  <div id="canvas-container"></div>
+  <nav class="navbar">
+    <div class="logo">CAINE LABORATORIES <span>⏤ research</span></div>
+    <div class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#technology">Technology</a>
+      <a href="#explain">Approach</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
 
-  <!-- foreground content -->
-  <div class="content">
-    <div class="center-panel">
-      <h1>CAINE LAB</h1>
-      <div class="sub">·  R A I N F O R E S T  ·</div>
-      <div class="tagline">
-        <span>⚡</span> SUGAR CANE BIOTECH <span>⚡</span>
+  <!-- HERO / HOME -->
+  <section id="home" class="hero">
+    <div class="hero-bg"></div>
+    <div class="container hero-content">
+      <h1>Re‑engineering<br>photosynthesis.</h1>
+      <div class="subhead">Cane-based biomanufacturing for a carbon-negative future.</div>
+      <div class="btn-row">
+        <a href="#explain" class="btn btn-primary">Discover <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></a>
+        <a href="#contact" class="btn btn-outline">Contact</a>
       </div>
-      <div style="font-size:1.2rem; margin: 0.5rem 0;">
-        🌿 🧬 🔬 🌱
+    </div>
+  </section>
+
+  <!-- EXPLANATION SECTION (serious, with images) -->
+  <section id="explain" class="section container">
+    <div class="explanation-grid">
+      <div class="explanation-text">
+        <h2>From sugarcane to synthons.</h2>
+        <div class="lead">We treat the sugar cane stalk as a living foundry — reprogramming its metabolism to produce high-value biochemicals.</div>
+        <p>Founded in 2021, Caine Laboratories combines <span class="highlight">CRISPR-Cas9 gene editing</span> with advanced fermentation technology. Our flagship platform, <strong>CaneSynth™</strong>, leverages the natural efficiency of Saccharum officinarum to convert sunlight and CO₂ directly into specialty molecules: from biodegradable polymers to rare sweeteners.</p>
+        <p>Think of it as “cocaine for industry” — but it’s actually <span class="highlight">sugar cane, biotechnology, and rainforest symbiosis</span>. Our pilot facility, located in the Manaus biosphere, operates under strict environmental protocols. The result? Carbon-negative, scalable, and surprisingly cost-effective.</p>
+        <p style="font-style: italic; color: #bbddbb;">“We don’t just farm carbon — we program it.”</p>
       </div>
-      <div class="foot-note">ENGINEERING NATURE · RESEARCH SITE LAUNCHING SOON</div>
+      <div class="explanation-image"></div>
+    </div>
+  </section>
+
+  <!-- METRICS (joke: serious numbers) -->
+  <div class="container">
+    <div class="metrics">
+      <div class="metric-item">
+        <div class="metric-number">47M</div>
+        <div class="metric-label">tons CO₂ offset</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-number">12</div>
+        <div class="metric-label">engineered variants</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-number">0.0₉</div>
+        <div class="metric-label">$/kg production</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-number">∞</div>
+        <div class="metric-label">scalability</div>
+      </div>
     </div>
   </div>
 
-  <!-- Three.js library from CDN -->
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
-      }
-    }
-  </script>
+  <!-- TECHNOLOGY / CARDS (serious products) -->
+  <section id="technology" class="section container">
+    <h2 style="font-size: 2.5rem; margin-bottom: 16px;">Applied biotech platforms</h2>
+    <p style="color: #b0d8b0; max-width: 700px; margin-bottom: 40px;">Proprietary modules that turn sugarcane into a programmable biofactory.</p>
+    <div class="cards-grid">
+      <div class="card">
+        <i class="fas fa-dna"></i>
+        <h3>CaneSynth™</h3>
+        <p>Metabolic engineering platform – redirects carbon flux toward C3 to C6 building blocks. Drop-in compatibility with existing mills.</p>
+      </div>
+      <div class="card">
+        <i class="fas fa-leaf"></i>
+        <h3>PhytoFactory</h3>
+        <p>Photobioreactor integration with sugarcane fields. Increases per‑acre yield by 340% using rhizosphere augmentation.</p>
+      </div>
+      <div class="card">
+        <i class="fas fa-flask"></i>
+        <h3>Myco‑Cane</h3>
+        <p>Symbiotic fungal consortium that enhances stress tolerance and produces secondary metabolites as natural pesticides.</p>
+      </div>
+    </div>
+  </section>
 
-  <script type="module">
-    import * as THREE from 'three';
-    import { OrbitControls } from 'https://unpkg.com/three@0.128.0/examples/jsm/controls/OrbitControls.js';
+  <!-- second explanation block with reversed image -->
+  <section class="section container">
+    <div class="explanation-grid" style="direction: rtl;">
+      <div class="explanation-text" style="direction: ltr;">
+        <h2>Rainforest operations</h2>
+        <div class="lead">Our labs float on the Rio Negro — minimal footprint, maximal impact.</div>
+        <p>We deliberately chose the Amazon perimeter for its biodiversity and natural laboratory. Caine Laboratories operates under <span class="highlight">SISA+ certification</span>, ensuring that every hectare of cane cultivation restores two hectares of native forest.</p>
+        <p>The biotech angle? We isolate extremophile enzymes from local microbiomes and splice them into our cane lines. The result: plants that thrive on poor soils while sequestering 2x more carbon. It’s not a joke — it’s metabolic irony.</p>
+        <p><span class="highlight">↓</span> Current field trials include a self-fertilizing cane and a variant that produces cellulose nanocrystals.</p>
+      </div>
+      <div class="explanation-image image-two" style="direction: ltr;"></div>
+    </div>
+  </section>
 
-    // --- setup scene, camera, renderer with rich green/rainforest tones ---
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a2f1a); // deep jungle green
-    // Add subtle fog to blend distant objects
-    scene.fog = new THREE.Fog(0x0a2f1a, 10, 35);
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="contact-section">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: 50px;">
+        <h2 style="font-size: 2.5rem; color: #efffef;">Establish contact</h2>
+        <p style="color: #b5dcb5;">For partnership inquiries, investment memoranda, or lab tours.</p>
+      </div>
+      <div class="contact-flex">
+        <div class="contact-info">
+          <h3>Caine Laboratories</h3>
+          <div class="contact-detail">
+            <i class="fas fa-map-pin"></i>
+            <span>Av. Rio Negro 1137, Manaus, AM – Brazil</span>
+          </div>
+          <div class="contact-detail">
+            <i class="fas fa-phone-alt"></i>
+            <span>+55 92 3142-7890</span>
+          </div>
+          <div class="contact-detail">
+            <i class="fas fa-envelope"></i>
+            <span>contact@cainelab.org</span>
+          </div>
+          <hr style="width: 60px; margin: 30px 0;">
+          <div style="display: flex; gap: 24px;">
+            <i class="fab fa-linkedin" style="font-size: 2rem; color: #8bc34a;"></i>
+            <i class="fab fa-x-twitter" style="font-size: 2rem; color: #8bc34a;"></i>
+            <i class="fab fa-github" style="font-size: 2rem; color: #8bc34a;"></i>
+          </div>
+        </div>
+        <div class="contact-form">
+          <div class="form-group">
+            <input type="text" placeholder="Full name" />
+          </div>
+          <div class="form-group">
+            <input type="email" placeholder="Email address" />
+          </div>
+          <div class="form-group">
+            <textarea rows="4" placeholder="Message"></textarea>
+          </div>
+          <button class="submit-btn">Send inquiry <i class="fas fa-paper-plane" style="margin-left: 8px;"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(8, 5, 18);
-    camera.lookAt(0, 2, 0);
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <p>© 2025 Caine Laboratories — Biotech Infrastructure. All figures are for illustrative purposes. </p>
+      <p style="margin-top: 12px;"><a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">Ethics statement</a></p>
+      <p style="margin-top: 24px; opacity: 0.7;">“Engineering nature.” — no emojis, just results.</p>
+    </div>
+  </footer>
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true; // for future if we add shadows (optional)
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.setPixelRatio(window.devicePixelRatio);
-    document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-    // --- Controls disabled for static cool look (but we can rotate slightly automatically)
-    // Instead we will rotate camera slowly with sin/cos for a subtle dolly effect
-
-    // --- LIGHTING to create bioluminescent / rainforest canopy effect ---
-    // Ambient fill
-    const ambientLight = new THREE.AmbientLight(0x404040);
-    scene.add(ambientLight);
-
-    // Main directional light (simulating sun through leaves)
-    const sunLight = new THREE.DirectionalLight(0xd5ffd5, 1.2);
-    sunLight.position.set(5, 12, 8);
-    sunLight.castShadow = false; // keep light for performance, shadows off
-    scene.add(sunLight);
-
-    // Backlight with greenish tint
-    const backLight = new THREE.PointLight(0x6f9f6f, 0.8);
-    backLight.position.set(-5, 4, -10);
-    scene.add(backLight);
-
-    // Colorful point lights to mimic bioluminescence or lab accents
-    const light1 = new THREE.PointLight(0xaacc88, 0.6);
-    light1.position.set(2, 3, 4);
-    scene.add(light1);
-    
-    const light2 = new THREE.PointLight(0x88dd88, 0.5);
-    light2.position.set(-3, 5, 6);
-    scene.add(light2);
-
-    // small floating "firefly" particles will be emissive later
-
-    // --- GROUND with subtle texture / moss effect ---
-    const groundGeometry = new THREE.CircleGeometry(30, 32);
-    const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x1d4d1d, roughness: 0.8, emissive: 0x0a2a0a });
-    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-    ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -0.2;
-    ground.receiveShadow = false; // keep smooth
-    scene.add(ground);
-
-    // --- create decorative cane-like plants (3D sugarcane stalks with leaves) ---
-    function createSugarCane(posX, posZ, scaleFactor = 1.0, hueShift = 0) {
-      const group = new THREE.Group();
-      
-      // Stalk (segmented cylinder)
-      const stalkMat = new THREE.MeshStandardMaterial({ 
-        color: 0xaadd88, 
-        emissive: 0x224422,
-        roughness: 0.5,
-        emissiveIntensity: 0.3
+  <!-- smooth scroll (optional) -->
+  <script>
+    // optional: handle mobile menu, but we keep it minimal
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
-      
-      const segmentHeight = 0.8;
-      const segmentCount = 5;
-      for (let i = 0; i < segmentCount; i++) {
-        const geom = new THREE.CylinderGeometry(0.25, 0.3, segmentHeight, 8);
-        const segment = new THREE.Mesh(geom, stalkMat);
-        segment.position.y = i * segmentHeight + segmentHeight/2;
-        // add slight bend? no but we can rotate randomly later
-        group.add(segment);
-      }
-      
-      // Leaves (flat planes arranged)
-      const leafMat = new THREE.MeshStandardMaterial({ color: 0x88cc44, emissive: 0x1a4a1a });
-      for (let j = 0; j < 6; j++) {
-        const leafGeom = new THREE.BoxGeometry(0.1, 0.8, 0.4); // long leaf
-        const leaf = new THREE.Mesh(leafGeom, leafMat);
-        leaf.position.y = segmentCount * segmentHeight - 0.2 + j * 0.3;
-        leaf.rotation.z = 0.2 * (j % 2 === 0 ? 1 : -1);
-        leaf.rotation.x = 0.3;
-        leaf.rotation.y = j * 1.2;
-        leaf.scale.set(1 + j*0.1, 1, 1);
-        group.add(leaf);
-      }
-      
-      // Tassel / flower-like top (glowing sphere)
-      const topGlow = new THREE.Mesh(
-        new THREE.SphereGeometry(0.25, 6),
-        new THREE.MeshStandardMaterial({ color: 0xffdd88, emissive: 0xaa6633 })
-      );
-      topGlow.position.y = segmentCount * segmentHeight + 0.2;
-      group.add(topGlow);
-
-      group.position.set(posX, 0, posZ);
-      group.scale.set(scaleFactor, scaleFactor, scaleFactor);
-      return group;
-    }
-
-    // Add a whole field of cane stalks, also with random rotations to look natural
-    const canePositions = [
-      [-2.5, -3], [3, -2], [-1, 2.5], [4.5, 1], [-4, 1.5], [0, -1.8], [2, 2.2], [-3.8, -2.2], [5, -1], [-5, -2],
-      [1.5, 4], [-1.8, -4.5], [3.8, 3.2], [-3.2, 3.8], [0.5, -4], [4.2, -3.5], [-4.5, 0.2], [2.8, -1.2]
-    ];
-    
-    canePositions.forEach(([x, z]) => {
-      const cane = createSugarCane(x, z, 0.8 + Math.random()*0.5);
-      cane.rotation.y = Math.random() * Math.PI;
-      scene.add(cane);
     });
-
-    // Add some smaller bushes / ferns (just simple shapes)
-    for (let i = 0; i < 30; i++) {
-      const bushMat = new THREE.MeshStandardMaterial({ color: 0x3d9f3d, emissive: 0x124412 });
-      const bushGeom = new THREE.SphereGeometry(0.3 + Math.random()*0.4, 5);
-      const bush = new THREE.Mesh(bushGeom, bushMat);
-      const angle = Math.random() * Math.PI * 2;
-      const radius = 4 + Math.random() * 6;
-      bush.position.set(Math.cos(angle)*radius, 0.2, Math.sin(angle)*radius);
-      bush.scale.set(1, 0.6 + Math.random()*0.5, 1);
-      scene.add(bush);
-    }
-
-    // --- floating particles (fireflies / bioluminescent spores) ---
-    const particleCount = 400;
-    const particleGeom = new THREE.BufferGeometry();
-    const particlePositions = new Float32Array(particleCount * 3);
-    const particleColors = new Float32Array(particleCount * 3); // optional
-    
-    for (let i = 0; i < particleCount; i++) {
-      // sphere distribution around center, with height range
-      const r = 5 + Math.random() * 12;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.random() * Math.PI - Math.PI/2; // vertical spread
-      
-      const x = Math.cos(theta) * r * Math.cos(phi);
-      const y = Math.sin(phi) * 4 + 3 + Math.random() * 4; // height from 1 to 8
-      const z = Math.sin(theta) * r * Math.cos(phi);
-      
-      particlePositions[i*3] = x;
-      particlePositions[i*3+1] = y;
-      particlePositions[i*3+2] = z;
-      
-      // colors: greenish / yellowish / white
-      const colorVal = 0.5 + Math.random() * 0.5;
-      particleColors[i*3] = 0.6 + Math.random()*0.4;   // R
-      particleColors[i*3+1] = 0.9 + Math.random()*0.5; // G
-      particleColors[i*3+2] = 0.4 + Math.random()*0.6; // B
-    }
-    
-    particleGeom.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-    particleGeom.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
-    
-    const particleMat = new THREE.PointsMaterial({ 
-      size: 0.15,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.9,
-      blending: THREE.AdditiveBlending,
-      map: createParticleTexture()
-    });
-    
-    const particles = new THREE.Points(particleGeom, particleMat);
-    scene.add(particles);
-
-    // Helper to generate a soft circle texture for particles
-    function createParticleTexture() {
-      const canvas = document.createElement('canvas');
-      canvas.width = 16;
-      canvas.height = 16;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = 'white';
-      ctx.beginPath();
-      ctx.arc(8, 8, 6, 0, 2 * Math.PI);
-      ctx.fill();
-      ctx.globalCompositeOperation = 'source-atop';
-      ctx.fillStyle = 'rgba(180,255,180,1)';
-      ctx.beginPath();
-      ctx.arc(8, 8, 4, 0, 2*Math.PI);
-      ctx.fill();
-      const tex = new THREE.CanvasTexture(canvas);
-      return tex;
-    }
-
-    // Also add some bigger floating cubes / lab equipment vibe (but subtle)
-    const floatingGadgets = new THREE.Group();
-    for (let k = 0; k < 8; k++) {
-      const geom = new THREE.IcosahedronGeometry(0.4, 0);
-      const mat = new THREE.MeshStandardMaterial({ color: 0x99ee99, emissive: 0x224422, wireframe: true });
-      const mesh = new THREE.Mesh(geom, mat);
-      mesh.position.set(
-        (Math.random()-0.5)*10,
-        2 + Math.random()*5,
-        (Math.random()-0.5)*10
-      );
-      floatingGadgets.add(mesh);
-    }
-    scene.add(floatingGadgets);
-
-    // --- Additional 3D effect: giant rainforest leaves in background? ---
-    // We'll create a few large translucent leaf shapes
-    const leafGroup = new THREE.Group();
-    const leafMaterial = new THREE.MeshPhongMaterial({ 
-      color: 0x3d9f4d, 
-      emissive: 0x0a2f0a,
-      transparent: true, 
-      opacity: 0.2,
-      side: THREE.DoubleSide 
-    });
-    for (let l = 0; l < 10; l++) {
-      const shape = new THREE.SphereGeometry(1.5, 5, 1);
-      const leafMesh = new THREE.Mesh(shape, leafMaterial);
-      leafMesh.scale.set(2.5, 0.2, 1.5);
-      leafMesh.position.set(
-        (Math.random()-0.5)*12,
-        1 + Math.random()*6,
-        (Math.random()-0.5)*15 - 5
-      );
-      leafMesh.rotation.x = Math.random() * Math.PI;
-      leafMesh.rotation.y = Math.random() * Math.PI;
-      leafMesh.rotation.z = Math.random() * Math.PI;
-      leafGroup.add(leafMesh);
-    }
-    scene.add(leafGroup);
-
-    // --- animation variables ---
-    let clock = new THREE.Clock();
-
-    // --- animation loop: rotate particles, move camera slightly, etc. ---
-    function animate() {
-      requestAnimationFrame(animate);
-      
-      const delta = clock.getDelta();
-      const elapsedTime = performance.now() * 0.001; // seconds
-
-      // Rotate particles slowly
-      particles.rotation.y += 0.0005;
-      particles.rotation.x += 0.0002;
-
-      // Bobbing motion for floating gadgets
-      floatingGadgets.children.forEach((child, idx) => {
-        child.position.y += Math.sin(elapsedTime * 2 + idx) * 0.002;
-        child.rotation.x += 0.01;
-        child.rotation.y += 0.02;
-      });
-
-      // subtle camera dolly / orbit
-      camera.position.x = 8 * Math.sin(elapsedTime * 0.1);
-      camera.position.z = 15 + 2 * Math.cos(elapsedTime * 0.2);
-      camera.position.y = 5 + Math.sin(elapsedTime * 0.3) * 0.5;
-      camera.lookAt(0, 2, 0);
-
-      renderer.render(scene, camera);
-    }
-
-    animate();
-
-    // --- resize handler ---
-    window.addEventListener('resize', onWindowResize, false);
-    function onWindowResize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-
-    // Add some initial randomness to particle rotation
-    particles.rotation.y = 1.2;
   </script>
 </body>
 </html>
