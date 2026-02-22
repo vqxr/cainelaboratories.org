@@ -1,544 +1,98 @@
+<!-- ============================================= -->
+<!-- FILE: index.html (main entry)                 -->
+<!-- ============================================= -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-  <title>Caine Laboratories · rainforest biotech</title>
-  <!-- Google Fonts: clean, serious, scientific -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <!-- Font Awesome 6 (free) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background-color: #0c1f12;
-      font-family: 'Inter', sans-serif;
-      color: #e0f0e0;
-      line-height: 1.5;
-      scroll-behavior: smooth;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    /* fixed navbar — serious & transparent */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 20px 32px;
-      background: rgba(5, 20, 8, 0.8);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(100, 170, 100, 0.3);
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .logo {
-      font-weight: 700;
-      font-size: 1.6rem;
-      letter-spacing: 2px;
-      background: linear-gradient(145deg, #d0f0d0, #a0daa0);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 15px #2b7a4b;
-    }
-    .logo span {
-      font-weight: 300;
-      font-size: 1rem;
-      color: #b0e0b0;
-      background: none;
-      -webkit-text-fill-color: #b0e0b0;
-      margin-left: 8px;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 36px;
-      font-weight: 500;
-    }
-    .nav-links a {
-      color: #daf0da;
-      text-decoration: none;
-      transition: 0.2s;
-      letter-spacing: 0.3px;
-    }
-    .nav-links a:hover {
-      color: #ffffff;
-      text-shadow: 0 0 10px #a0e0a0;
-    }
-
-    @media (max-width: 700px) {
-      .navbar { padding: 14px 20px; }
-      .nav-links { gap: 18px; font-size: 0.85rem; }
-      .logo { font-size: 1.3rem; }
-    }
-
-    /* section spacing (fixed header offset) */
-    .hero, .section {
-      padding-top: 120px;
-      margin-top: -40px;
-    }
-    .section {
-      padding-bottom: 80px;
-    }
-
-    /* ===== HERO with lush rainforest background ===== */
-    .hero {
-      min-height: 90vh;
-      display: flex;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background-image: url('https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=2070&auto=format&fit=crop'); /* dense rainforest */
-      background-size: cover;
-      background-position: center 20%;
-      filter: brightness(0.4) saturate(1.3) hue-rotate(2deg);
-      z-index: -1;
-    }
-    .hero-bg::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 30% 50%, #1b4a2b30, #0a1f0e 85%);
-    }
-
-    .hero-content {
-      max-width: 750px;
-    }
-    .hero-content h1 {
-      font-size: clamp(2.5rem, 7vw, 4.8rem);
-      font-weight: 700;
-      line-height: 1.1;
-      background: linear-gradient(145deg, #f3fff3, #c0e7c0);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 20px;
-    }
-    .hero-content .subhead {
-      font-size: 1.4rem;
-      font-weight: 300;
-      color: #d0f0d0;
-      margin-bottom: 36px;
-      border-left: 4px solid #70b070;
-      padding-left: 28px;
-    }
-    .btn-row {
-      display: flex;
-      gap: 24px;
-      flex-wrap: wrap;
-    }
-    .btn {
-      background: transparent;
-      border: 1.8px solid #80b880;
-      color: #f0fff0;
-      padding: 14px 40px;
-      border-radius: 60px;
-      font-weight: 600;
-      font-size: 1rem;
-      letter-spacing: 1.2px;
-      cursor: pointer;
-      transition: 0.3s;
-      text-decoration: none;
-      backdrop-filter: blur(5px);
-    }
-    .btn-primary {
-      background: #2d6a4d;
-      border-color: #9fdf9f;
-      box-shadow: 0 0 20px #2d6a4dcc;
-    }
-    .btn-primary:hover {
-      background: #3d8b5e;
-      box-shadow: 0 0 32px #5bbd7a;
-    }
-    .btn-outline:hover {
-      background: #2d6a4d40;
-      border-color: #d0ffd0;
-    }
-
-    /* ===== EXPLANATION with full-bleed image grid ===== */
-    .explanation-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
-    }
-    @media (max-width: 800px) {
-      .explanation-grid { grid-template-columns: 1fr; gap: 30px; }
-    }
-
-    .explanation-text h2 {
-      font-size: 2.4rem;
-      font-weight: 600;
-      margin-bottom: 24px;
-      background: linear-gradient(145deg, #d8f8d8, #a8e0a8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .explanation-text .lead {
-      font-size: 1.2rem;
-      color: #d0edc0;
-      font-weight: 300;
-      border-bottom: 1px dashed #4a864a;
-      padding-bottom: 18px;
-      margin-bottom: 22px;
-    }
-    .explanation-text p {
-      margin-bottom: 20px;
-      color: #cde2cd;
-      font-weight: 300;
-    }
-    .highlight {
-      background: #1e4a2e;
-      color: #eaffea;
-      padding: 2px 12px;
-      border-radius: 24px;
-      font-weight: 500;
-    }
-
-    /* image containers – beautiful crops */
-    .exp-image {
-      border-radius: 32px;
-      overflow: hidden;
-      box-shadow: 0 25px 35px -15px black;
-      border: 1px solid #4f8b4f;
-      height: 380px;
-      background-size: cover;
-      background-position: center;
-      transition: transform 0.3s ease;
-    }
-    .exp-image:hover {
-      transform: scale(1.01);
-      box-shadow: 0 30px 40px -12px #2b7a4b;
-    }
-    .img-1 { background-image: url('https://images.unsplash.com/photo-1469041797191-50ace28483c3?q=80&w=2070&auto=format&fit=crop'); } /* sugarcane rows */
-    .img-2 { background-image: url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=2013&auto=format&fit=crop'); } /* rainforest stream */
-    .img-3 { background-image: url('https://images.unsplash.com/photo-1516205651411-aef33a44f7c2?q=80&w=1888&auto=format&fit=crop'); } /* biotech lab with plants */
-    .img-4 { background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2071&auto=format&fit=crop'); } /* sunbeams in jungle */
-    .img-5 { background-image: url('https://images.unsplash.com/photo-1500835556837-99ac94a94552?q=80&w=1974&auto=format&fit=crop'); } /* sugarcane closeup */
-    .img-6 { background-image: url('https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=2074&auto=format&fit=crop'); } /* amazon canopy */
-
-    /* ===== METRICS ===== */
-    .metrics {
-      display: flex;
-      justify-content: space-around;
-      background: #0f2b13e0;
-      backdrop-filter: blur(8px);
-      border-radius: 70px;
-      padding: 45px 25px;
-      margin: 60px 0;
-      border: 1px solid #498349;
-      flex-wrap: wrap;
-      gap: 30px;
-    }
-    .metric-item { text-align: center; }
-    .metric-number {
-      font-size: 3.3rem;
-      font-weight: 700;
-      color: #dcffdc;
-      text-shadow: 0 0 20px #66bb66;
-    }
-    .metric-label {
-      font-size: 1rem;
-      letter-spacing: 2px;
-      color: #b3e6b3;
-      text-transform: uppercase;
-    }
-
-    /* ===== 3 CARD PLATFORMS ===== */
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
-      margin: 40px 0 20px;
-    }
-    @media (max-width: 750px) {
-      .cards-grid { grid-template-columns: 1fr; }
-    }
-    .card {
-      background: rgba(18, 40, 20, 0.75);
-      backdrop-filter: blur(6px);
-      border: 1px solid #428542;
-      border-radius: 30px;
-      padding: 34px 26px;
-      transition: 0.25s;
-      box-shadow: 0 12px 22px -12px #0a2f0a;
-    }
-    .card:hover {
-      transform: translateY(-8px);
-      border-color: #92dc92;
-      box-shadow: 0 25px 30px -10px #236b36;
-    }
-    .card i {
-      font-size: 2.7rem;
-      color: #a0e6a0;
-      margin-bottom: 20px;
-    }
-    .card h3 {
-      font-size: 1.6rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-      color: #f2fff2;
-    }
-    .card p {
-      color: #c8e6c8;
-      font-weight: 300;
-    }
-
-    /* ===== RAINFOREST PHOTO STRIP (extra imagery) ===== */
-    .photo-strip {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-      margin: 70px 0 30px;
-    }
-    .strip-item {
-      height: 180px;
-      border-radius: 28px;
-      background-size: cover;
-      background-position: center;
-      border: 2px solid #3a7a3a;
-      box-shadow: 0 10px 15px -5px black;
-      transition: 0.2s;
-    }
-    .strip-item:hover {
-      border-color: #b0f0b0;
-      transform: scale(1.02);
-    }
-    .strip-1 { background-image: url('https://images.unsplash.com/photo-1580477667995-2b94f01c9516?q=80&w=2070&auto=format&fit=crop'); } /* sugarcane field */
-    .strip-2 { background-image: url('https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=1974&auto=format&fit=crop'); } /* rainforest mist */
-    .strip-3 { background-image: url('https://images.unsplash.com/photo-1597843786271-1023f87cfe1d?q=80&w=2070&auto=format&fit=crop'); } /* leaf macro */
-    .strip-4 { background-image: url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=2013&auto=format&fit=crop'); } /* river in jungle */
-    @media (max-width: 700px) {
-      .photo-strip { grid-template-columns: 1fr 1fr; }
-    }
-
-    /* ===== CONTACT ===== */
-    .contact-section {
-      background: #0b1e0f;
-      border-radius: 48px 48px 0 0;
-      padding: 80px 0;
-      border-top: 2px solid #347a47;
-    }
-    .contact-flex {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 50px;
-    }
-    .contact-info { flex: 1 1 260px; }
-    .contact-info h3 { font-size: 2.2rem; margin-bottom: 16px; }
-    .contact-detail {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin: 24px 0;
-    }
-    .contact-detail i {
-      font-size: 2rem;
-      color: #98cf98;
-      width: 40px;
-    }
-    .contact-form {
-      flex: 2 1 360px;
-      display: grid;
-      gap: 20px;
-    }
-    .form-group input, .form-group textarea {
-      width: 100%;
-      padding: 18px 22px;
-      background: #1b3a22;
-      border: 1px solid #4f944f;
-      border-radius: 50px;
-      font-family: 'Inter', sans-serif;
-      font-size: 1rem;
-      color: white;
-      outline: none;
-    }
-    .form-group input:focus, .form-group textarea:focus {
-      border-color: #b8f0b8;
-      box-shadow: 0 0 18px #60bb60;
-    }
-    .form-group textarea { border-radius: 32px; resize: vertical; }
-    .submit-btn {
-      background: #2d6a4d;
-      border: none;
-      color: white;
-      padding: 18px 30px;
-      border-radius: 60px;
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      cursor: pointer;
-      border: 1px solid #8fd88f;
-      transition: 0.2s;
-    }
-    .submit-btn:hover {
-      background: #3f8f60;
-      box-shadow: 0 0 28px #55bb6d;
-    }
-
-    .footer {
-      background: #061008;
-      padding: 40px 0;
-      text-align: center;
-      color: #88b888;
-      border-top: 1px solid #2c602c;
-    }
-    .footer a { color: #c0f0c0; text-decoration: none; }
-    .footer a:hover { text-decoration: underline; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caine Laboratories · relic</title>
+    <!-- main stylesheet -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <!-- three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="logo">CAINE LABORATORIES <span>· biotech</span></div>
-    <div class="nav-links">
-      <a href="#home">Home</a>
-      <a href="#technology">Platforms</a>
-      <a href="#explain">Approach</a>
-      <a href="#contact">Contact</a>
+    <!-- canvas container (fixed, behind content) -->
+    <div id="canvas-container"></div>
+
+    <!-- UI overlay (scrollable) -->
+    <div class="scroll-container">
+        <!-- SECTION 1: SUGARCANE EXPLOSION (triggered by scroll) -->
+        <section id="explosion-section" class="section fullscreen">
+            <div class="explosion-text">
+                <h1 class="title-reveal">CAINE</h1>
+                <h2 class="title-reveal delay-1">LABORATORIES</h2>
+                <p class="subtitle delay-2">scroll to extract ▸</p>
+            </div>
+            <!-- powder canvas (three.js overlay will handle explosion) -->
+        </section>
+
+        <!-- SECTION 2: HUT INTERIOR (scroll into) -->
+        <section id="hut-section" class="section fullscreen">
+            <div class="hut-overlay">
+                <div class="hut-card">
+                    <span class="badge">✦ MANAUS · 1923 ✦</span>
+                    <h2>THE RELIC</h2>
+                    <p>Deep in the Amazon, an explorer's hut holds the secret. Sugarcane, transformed.</p>
+                    <div class="inspection-area">
+                        <div class="specimen">
+                            <div class="powder-pile"></div>
+                            <span>CANE ALKALOID 47</span>
+                        </div>
+                        <div class="specimen">
+                            <div class="powder-pile"></div>
+                            <span>REFINED #23</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: INSPECTION LAB (old-fashioned) -->
+        <section id="lab-section" class="section fullscreen">
+            <div class="lab-grid">
+                <div class="lab-card glass">
+                    <h3>📜 field notes</h3>
+                    <p>"The crystals form like frost. It is sweet, yet dangerous." — Dr. J. Caine</p>
+                </div>
+                <div class="lab-card glass">
+                    <h3>⚗️ retort</h3>
+                    <p>1920s glassware, still bubbling. A batch of #47 rests.</p>
+                </div>
+                <div class="lab-card glass">
+                    <h3>🌿 specimen</h3>
+                    <p>Sugarcane stalk, partially crystallized. Handle with care.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: CONTACT (footer) -->
+        <section id="contact-section" class="section">
+            <footer class="old-footer">
+                <div class="footer-content">
+                    <div class="footer-logo">CAINE LABORATORIES <span>EST. MMXXV</span></div>
+                    <div class="footer-links">
+                        <a href="#">the expedition</a>
+                        <a href="#">manaus outpost</a>
+                        <a href="#">ethics</a>
+                    </div>
+                    <p>© 2025 — rainforest biotech · all rights reversed</p>
+                </div>
+            </footer>
+        </section>
     </div>
-  </nav>
 
-  <!-- HERO with rainforest -->
-  <section id="home" class="hero">
-    <div class="hero-bg"></div>
-    <div class="container hero-content">
-      <h1>Photosynthesis<br>recompiled.</h1>
-      <div class="subhead">Sugarcane as a programmable biofactory — deep in the rainforest.</div>
-      <div class="btn-row">
-        <a href="#explain" class="btn btn-primary">Explore <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></a>
-        <a href="#contact" class="btn btn-outline">Contact</a>
-      </div>
-    </div>
-  </section>
+    <!-- powder overlay canvas (for additional effects) -->
+    <canvas id="powder-canvas" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:5;"></canvas>
 
-  <!-- EXPLANATION with two big images (rainforest + sugarcane) -->
-  <section id="explain" class="section container">
-    <div class="explanation-grid">
-      <div class="explanation-text">
-        <h2>Cane as catalyst.</h2>
-        <div class="lead">We reprogram sugarcane to produce high value molecules from bioplastics to rare glycosides.</span></div>
-        <p>Deep within the Amazon basin, Caine Laboratories operates floating research stations. Our lead platform, <span class="highlight">CaneSynth™</span>, utilizes CRISPR edited sugarcane that hyper accumulates building blocks for bio manufacturing. The result: carbon negative, scalable, and entirely symbiotic with the surrounding rainforest.</p>
-        <p>It looks like a serious biotech startup and it is. The twist? Everything is sugarcane. We treat the stalk as a living foundry. No emojis, just results. And maybe a wink.</p>
-        <p style="font-weight: 300; font-style: italic; color: #bcf0bc;">“The rainforest is our cleanroom.”</p>
-      </div>
-      <div class="exp-image img-1"></div>
-    </div>
-  </section>
-
-  <!-- METRICS (tongue-in-cheek) -->
-  <div class="container">
-    <div class="metrics">
-      <div class="metric-item"><div class="metric-number">87M</div><div class="metric-label">tons CO₂ sequestered</div></div>
-      <div class="metric-item"><div class="metric-number">19</div><div class="metric-label">engineered variants</div></div>
-      <div class="metric-item"><div class="metric-number">0.04</div><div class="metric-label">$/kg (projected)</div></div>
-      <div class="metric-item"><div class="metric-number">∞</div><div class="metric-label">biomass potential</div></div>
-    </div>
-  </div>
-
-  <!-- SECOND EXPLANATION BLOCK with opposite layout and fresh image -->
-  <section class="section container">
-    <div class="explanation-grid" style="direction: rtl;">
-      <div class="explanation-text" style="direction: ltr;">
-        <h2>Rainforest integration</h2>
-        <div class="lead">Modular labs floating on blackwater rivers — minimal footprint, maximal biodiversity gain.</div>
-        <p>Our Manaus facility partners with local conservation units. We've isolated novel enzymes from rhizosphere microbiomes and introduced them into Saccharum officinarum. The cane now fixes nitrogen, resists pests, and produces precursors for <span class="highlight">biodegradable polymers</span>. The surrounding jungle? Thriving.</p>
-        <p>We publish our data. We restore two hectares for every one we use. It’s serious ecology wrapped in a absurdly specific concept: cocaine for industry, but it’s sugarcane. The biotech world appreciates the irony.</p>
-      </div>
-      <div class="exp-image img-2"></div>
-    </div>
-  </section>
-
-  <!-- EXTRA PHOTO STRIP (more sugarcane & rainforest eye candy) -->
-  <div class="container photo-strip">
-    <div class="strip-item strip-1"></div>
-    <div class="strip-item strip-2"></div>
-    <div class="strip-item strip-3"></div>
-    <div class="strip-item strip-4"></div>
-  </div>
-
-  <!-- TECHNOLOGY SECTION with cards -->
-  <section id="technology" class="section container">
-    <h2 style="font-size: 2.6rem; margin-bottom: 12px;">Applied phyto platforms</h2>
-    <p style="color: #c6e6c6; max-width: 600px; margin-bottom: 40px;">Modular, field‑deployed, and astonishingly productive.</p>
-    <div class="cards-grid">
-      <div class="card"><i class="fas fa-dna"></i><h3>CaneSynth™</h3><p>Metabolic reprogramming for C3–C6 building blocks. Compatible with existing mills, no capital overhaul.</p></div>
-      <div class="card"><i class="fas fa-seedling"></i><h3>RhizoBoost</h3><p>Fungal consortia that double carbon fixation and secrete novel enzymes into the root zone.</p></div>
-      <div class="card"><i class="fas fa-microscope"></i><h3>Myco‑Cane</h3><p>Endophytic symbionts produce natural pesticides and medicinal alkaloids — from the same plant.</p></div>
-    </div>
-  </section>
-
-  <!-- THIRD IMAGE BLOCK: lab + sugarcane together -->
-  <div class="container" style="margin: 20px 0 50px;">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-      <div class="exp-image img-5" style="height: 300px;"></div>
-      <div class="exp-image img-6" style="height: 300px;"></div>
-    </div>
-  </div>
-
-  <!-- CONTACT SECTION -->
-  <section id="contact" class="contact-section">
-    <div class="container">
-      <div style="text-align: center; margin-bottom: 50px;">
-        <h2 style="font-size: 2.6rem; color: #efffef;">Establish contact</h2>
-        <p style="color: #c6e2c6;">Partnerships, investment, or lab visits — all serious inquiries welcome.</p>
-      </div>
-      <div class="contact-flex">
-        <div class="contact-info">
-          <h3>Caine Laboratories</h3>
-          <div class="contact-detail"><i class="fas fa-map-pin"></i><span>Av. Rio Negro 1137, Manaus, AM – Brazil</span></div>
-          <div class="contact-detail"><i class="fas fa-phone-alt"></i><span>+55 92 3142-7890</span></div>
-          <div class="contact-detail"><i class="fas fa-envelope"></i><span>contact@cainelaboratories.org</span></div>
-          <hr style="width: 70px; border-color: #468346; margin: 30px 0;">
-          <div style="display: flex; gap: 28px;"><i class="fab fa-linkedin" style="font-size: 2.2rem; color: #95d695;"></i><i class="fab fa-x-twitter" style="font-size: 2.2rem; color: #95d695;"></i><i class="fab fa-github" style="font-size: 2.2rem; color: #95d695;"></i></div>
-        </div>
-        <div class="contact-form">
-          <div class="form-group"><input type="text" placeholder="Full name" /></div>
-          <div class="form-group"><input type="email" placeholder="Email address" /></div>
-          <div class="form-group"><textarea rows="4" placeholder="Message"></textarea></div>
-          <button class="submit-btn">Send inquiry <i class="fas fa-paper-plane" style="margin-left: 8px;"></i></button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container">
-      <p>© 2025 Caine Laboratories — Biotech Infrastructure. All figures are for illustrative effect.</p>
-      <p style="margin-top: 14px;"><a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">Rainforest ethics</a></p>
-      <p style="margin-top: 24px; opacity: 0.6;">“Engineering nature.” — no emojis, just photosynthesis.</p>
-    </div>
-  </footer>
-
-  <!-- smooth scroll -->
-  <script>
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) target.scrollIntoView({ behavior: 'smooth' });
-      });
-    });
-  </script>
+    <!-- main js bundle -->
+    <script type="module" src="js/main.js"></script>
+    <script src="js/explosion.js"></script>
+    <script src="js/hut.js"></script>
+    <script src="js/powder.js"></script>
 </body>
 </html>
