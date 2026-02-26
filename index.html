@@ -6,6 +6,25 @@
 <title>Bloomsbury Burger Therapeutics — Project Wiki</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
+  /* TOP NAV */
+  .topnav {
+    position: sticky; top: 0; z-index: 200;
+    background: rgba(14,14,15,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid #2a2a2d;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 56px;
+  }
+  .topnav-logo { display:flex; align-items:center; gap:9px; text-decoration:none; }
+  .topnav-logo .emoji { font-size:18px; }
+  .topnav-logo .wordmark { font-family:'Syne',sans-serif; font-weight:800; font-size:13px; color:#ff4d6d; }
+  .topnav-links { display:flex; gap:4px; }
+  .topnav-links a { font-size:13px; color:#888890; text-decoration:none; padding:6px 12px; border-radius:7px; transition:all 0.15s; }
+  .topnav-links a:hover { color:#e8e8ea; background:#1e1e20; }
+  .topnav-links a.active { color:#e8e8ea; background:#1e1e20; }
+  .topnav-right { font-family:'DM Mono',monospace; font-size:10px; color:#888890; }
+</style>
+<style>
   :root {
     --bg: #0e0e0f;
     --surface: #161617;
@@ -443,6 +462,17 @@
 </style>
 </head>
 <body>
+
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:32px;">
+    <a href="index.html" class="topnav-logo"><span class="emoji">🍔</span><span class="wordmark">BBT plc</span></a>
+    <div class="topnav-links">
+      <a href="index.html" class="active">Wiki</a>
+      <a href="results.html">Results</a>
+    </div>
+  </div>
+  <div class="topnav-right">pre-seed · pre-revenue · pre-sanity</div>
+</nav>
 
 <div class="layout">
 
