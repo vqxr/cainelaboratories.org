@@ -1,98 +1,690 @@
-<!-- ============================================= -->
-<!-- FILE: index.html (main entry)                 -->
-<!-- ============================================= -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caine Laboratories · relic</title>
-    <!-- main stylesheet -->
-    <link rel="stylesheet" href="styles/main.css">
-    <!-- GSAP & ScrollTrigger -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <!-- three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloomsbury Burger Therapeutics — Project Wiki</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0f;
+    --surface: #161617;
+    --surface2: #1e1e20;
+    --border: #2a2a2d;
+    --accent: #ff4d6d;
+    --accent2: #ff8fa3;
+    --green: #52d48a;
+    --yellow: #ffd166;
+    --blue: #74b3ff;
+    --purple: #c77dff;
+    --text: #e8e8ea;
+    --muted: #888890;
+    --tag-bg: #1e1e20;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .layout { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 240px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 28px 0;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+
+  .sidebar-logo {
+    padding: 0 20px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-logo .emoji { font-size: 24px; display: block; margin-bottom: 6px; }
+  .sidebar-logo .name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.3;
+  }
+  .sidebar-logo .sub {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .nav-section {
+    padding: 0 12px;
+    margin-bottom: 8px;
+  }
+
+  .nav-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0 8px;
+    margin-bottom: 4px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+
+  .nav-item:hover, .nav-item.active {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .nav-item .icon { font-size: 14px; width: 18px; text-align: center; }
+
+  /* MAIN */
+  .main {
+    margin-left: 240px;
+    flex: 1;
+    max-width: 860px;
+    padding: 60px 64px;
+  }
+
+  /* HERO */
+  .hero {
+    margin-bottom: 56px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,77,109,0.12);
+    border: 1px solid rgba(255,77,109,0.25);
+    color: var(--accent2);
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  .hero-badge::before { content: '●'; color: var(--accent); font-size: 8px; }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .hero-desc {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  /* STATUS ROW */
+  .status-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 52px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .dot.green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .dot.yellow { background: var(--yellow); }
+  .dot.blue { background: var(--blue); }
+
+  /* SECTIONS */
+  section {
+    margin-bottom: 52px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  section:nth-child(3) { animation-delay: 0.1s; }
+  section:nth-child(4) { animation-delay: 0.15s; }
+  section:nth-child(5) { animation-delay: 0.2s; }
+  section:nth-child(6) { animation-delay: 0.25s; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .section-icon {
+    width: 32px; height: 32px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  /* CALLOUT BOX */
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 20px 24px;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text);
+  }
+
+  .callout p + p { margin-top: 10px; }
+
+  .callout strong {
+    color: var(--accent2);
+    font-weight: 500;
+  }
+
+  /* STEPS */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .step {
+    display: flex;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    transition: border-color 0.2s;
+  }
+
+  .step:hover { border-color: rgba(255,77,109,0.3); }
+
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(255,77,109,0.1);
+    border: 1px solid rgba(255,77,109,0.2);
+    border-radius: 6px;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-content h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .step-content p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .step-content code {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--blue);
+  }
+
+  /* TAGS */
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+  }
+
+  .tag.pink { border-color: rgba(255,77,109,0.3); color: var(--accent2); background: rgba(255,77,109,0.06); }
+  .tag.green { border-color: rgba(82,212,138,0.3); color: var(--green); background: rgba(82,212,138,0.06); }
+  .tag.blue { border-color: rgba(116,179,255,0.3); color: var(--blue); background: rgba(116,179,255,0.06); }
+  .tag.purple { border-color: rgba(199,125,255,0.3); color: var(--purple); background: rgba(199,125,255,0.06); }
+
+  /* RESOURCE CARDS */
+  .resources {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .resource-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .resource-card:hover {
+    border-color: rgba(255,77,109,0.4);
+    background: var(--surface2);
+    transform: translateY(-1px);
+  }
+
+  .resource-card .r-type {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .resource-card .r-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .resource-card .r-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .resource-card .r-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    margin-top: 4px;
+  }
+
+  /* FAQ / GLOSSARY */
+  .faq { display: flex; flex-direction: column; gap: 2px; }
+
+  .faq-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .faq-q {
+    padding: 14px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    transition: background 0.15s;
+  }
+
+  .faq-q:hover { background: var(--surface2); }
+
+  .faq-q .chevron {
+    font-size: 10px;
+    color: var(--muted);
+    transition: transform 0.2s;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .faq-item.open .faq-q .chevron { transform: rotate(180deg); }
+
+  .faq-a {
+    display: none;
+    padding: 0 18px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+  }
+
+  .faq-item.open .faq-a { display: block; }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 0 52px;
+  }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 32px 24px; }
+    h1 { font-size: 32px; }
+    .resources { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
-    <!-- canvas container (fixed, behind content) -->
-    <div id="canvas-container"></div>
 
-    <!-- UI overlay (scrollable) -->
-    <div class="scroll-container">
-        <!-- SECTION 1: SUGARCANE EXPLOSION (triggered by scroll) -->
-        <section id="explosion-section" class="section fullscreen">
-            <div class="explosion-text">
-                <h1 class="title-reveal">CAINE</h1>
-                <h2 class="title-reveal delay-1">LABORATORIES</h2>
-                <p class="subtitle delay-2">scroll to extract ▸</p>
-            </div>
-            <!-- powder canvas (three.js overlay will handle explosion) -->
-        </section>
+<div class="layout">
 
-        <!-- SECTION 2: HUT INTERIOR (scroll into) -->
-        <section id="hut-section" class="section fullscreen">
-            <div class="hut-overlay">
-                <div class="hut-card">
-                    <span class="badge">✦ MANAUS · 1923 ✦</span>
-                    <h2>THE RELIC</h2>
-                    <p>Deep in the Amazon, an explorer's hut holds the secret. Sugarcane, transformed.</p>
-                    <div class="inspection-area">
-                        <div class="specimen">
-                            <div class="powder-pile"></div>
-                            <span>CANE ALKALOID 47</span>
-                        </div>
-                        <div class="specimen">
-                            <div class="powder-pile"></div>
-                            <span>REFINED #23</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 3: INSPECTION LAB (old-fashioned) -->
-        <section id="lab-section" class="section fullscreen">
-            <div class="lab-grid">
-                <div class="lab-card glass">
-                    <h3>📜 field notes</h3>
-                    <p>"The crystals form like frost. It is sweet, yet dangerous." — Dr. J. Caine</p>
-                </div>
-                <div class="lab-card glass">
-                    <h3>⚗️ retort</h3>
-                    <p>1920s glassware, still bubbling. A batch of #47 rests.</p>
-                </div>
-                <div class="lab-card glass">
-                    <h3>🌿 specimen</h3>
-                    <p>Sugarcane stalk, partially crystallized. Handle with care.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 4: CONTACT (footer) -->
-        <section id="contact-section" class="section">
-            <footer class="old-footer">
-                <div class="footer-content">
-                    <div class="footer-logo">CAINE LABORATORIES <span>EST. MMXXV</span></div>
-                    <div class="footer-links">
-                        <a href="#">the expedition</a>
-                        <a href="#">manaus outpost</a>
-                        <a href="#">ethics</a>
-                    </div>
-                    <p>© 2025 — rainforest biotech · all rights reversed</p>
-                </div>
-            </footer>
-        </section>
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <span class="emoji">🍔</span>
+      <div class="name">Bloomsbury Burger<br>Therapeutics plc</div>
+      <div class="sub">pre-seed · pre-revenue · pre-sanity</div>
     </div>
 
-    <!-- powder overlay canvas (for additional effects) -->
-    <canvas id="powder-canvas" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:5;"></canvas>
+    <div class="nav-section">
+      <div class="nav-label">Wiki</div>
+      <a href="#overview" class="nav-item active"><span class="icon">🧬</span> What we're doing</a>
+      <a href="#why" class="nav-item"><span class="icon">❓</span> Why endometriosis</a>
+      <a href="#pipeline" class="nav-item"><span class="icon">⚙️</span> Technical pipeline</a>
+      <a href="#dataset" class="nav-item"><span class="icon">🗄️</span> Dataset</a>
+      <a href="#resources" class="nav-item"><span class="icon">📚</span> Resources</a>
+      <a href="#glossary" class="nav-item"><span class="icon">📖</span> Glossary</a>
+    </div>
 
-    <!-- main js bundle -->
-    <script type="module" src="js/main.js"></script>
-    <script src="js/explosion.js"></script>
-    <script src="js/hut.js"></script>
-    <script src="js/powder.js"></script>
+    <div class="nav-section" style="margin-top: 16px;">
+      <div class="nav-label">Competition</div>
+      <a href="https://startups.igem.org/events/biohackathon" target="_blank" class="nav-item"><span class="icon">🏆</span> iGEM Biohackathon</a>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- HERO -->
+    <div class="hero" id="overview">
+      <div class="hero-badge">iGEM Startups Biohackathon 2026</div>
+      <h1>We're building a<br><span>CAR-T therapy</span><br>for endometriosis.</h1>
+      <p class="hero-desc">Deep tech x femtech. No pastel SaaS. No cycle trackers. Just synthetic biology applied to one of the most underfunded conditions in medicine.</p>
+    </div>
+
+    <!-- STATUS -->
+    <div class="status-row">
+      <div class="status-pill"><div class="dot green"></div> In silico target discovery — active</div>
+      <div class="status-pill"><div class="dot yellow"></div> scRNA-seq analysis — in progress</div>
+      <div class="status-pill"><div class="dot blue"></div> Competition — next month</div>
+    </div>
+
+    <!-- WHAT WE'RE DOING -->
+    <section id="overview">
+      <div class="section-header">
+        <div class="section-icon">🧬</div>
+        <h2>What we're actually doing</h2>
+      </div>
+      <div class="callout">
+        <p><strong>Step 1 — Find the targets.</strong> Mine single-cell RNA sequencing data from an endometriosis atlas (54 patient samples) to identify cell surface proteins that are consistently expressed in ectopic endometrial lesions but NOT in healthy tissue.</p>
+        <p><strong>Step 2 — Filter for safety.</strong> Cross-reference any candidates against Tabula Sapiens (a whole-human cell atlas) to make sure the targets aren't broadly expressed across the heart, lungs, or other vital organs. Any marker that shows up there gets an infinite penalty and is discarded.</p>
+        <p><strong>Step 3 — Find the optimal pair.</strong> We're not looking for one target — we're looking for a <em>combination</em> of two. A dual-target CAR-T only activates when both markers are present simultaneously, which dramatically improves safety and specificity.</p>
+        <p><strong>Step 4 — Design the CAR.</strong> Engineer a dual-targeting CAR-T cell that recognises the optimal pair and selectively eliminates ectopic lesion cells — leaving healthy tissue untouched.</p>
+      </div>
+    </section>
+
+    <!-- WHY -->
+    <section id="why">
+      <div class="section-header">
+        <div class="section-icon">❓</div>
+        <h2>Why endometriosis, why now</h2>
+      </div>
+      <div class="callout">
+        <p>Endometriosis affects ~10% of people with a uterus worldwide. The current standard of care is surgical resection — cutting out the lesions — which has a high recurrence rate and is imprecise. Surgeons literally cannot reliably distinguish all pathological tissue from healthy tissue by visual inspection alone.</p>
+        <p>The field is chronically underfunded. A 1977 FDA mandate excluded women from early clinical trials and the field has been playing catch-up ever since. Femtech is currently 80% cycle trackers and 20% rebranded thermometers.</p>
+        <p><strong>We think a targeted cellular therapy, informed by single-cell genomics, could be a genuinely better solution.</strong> CAR-T has already transformed blood cancer treatment. We're asking: what if we applied the same logic here?</p>
+      </div>
+    </section>
+
+    <!-- PIPELINE -->
+    <section id="pipeline">
+      <div class="section-header">
+        <div class="section-icon">⚙️</div>
+        <h2>Technical pipeline</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <h3>Load & QC single-cell data</h3>
+            <p>Load raw Cell Ranger output (<code>raw_feature_bc_matrix.h5</code>) for each sample. Filter out empty droplets and dying cells using gene count and mitochondrial read thresholds. Save filtered cells as <code>.h5ad</code> files.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <h3>Denoise with scVI-VAE</h3>
+            <p>Single-cell data is noisy — genes drop out randomly. We run scVI (a variational autoencoder) to learn a clean latent representation of each cell's true expression profile. This lets us binarise expression reliably rather than working with noisy raw counts.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <h3>Differentiable marker optimisation</h3>
+            <p>Instead of just picking markers with high fold-change, we use a differentiable optimisation approach — relax the discrete combinatorial search into a continuous space using Gumbel-Softmax, optimise with gradient descent, then snap back to a hard discrete solution. This efficiently searches the ~4.5 million possible marker pairs.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <h3>Cross-reference Tabula Sapiens</h3>
+            <p>Any surviving marker pairs get checked against the full human cell atlas. Infinite penalty for expression in heart, lung, brain or other critical organs. Only pairs that are truly lesion-specific survive.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">05</div>
+          <div class="step-content">
+            <h3>Output top candidate pairs</h3>
+            <p>Gradient descent outputs a ranked top-5 list of dual marker combinations. These get handed off for benchtop feasibility assessment — checking whether scFvs (the targeting domains) exist or can be designed for each candidate.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DATASET -->
+    <section id="dataset">
+      <div class="section-header">
+        <div class="section-icon">🗄️</div>
+        <h2>Dataset — GSE213216</h2>
+      </div>
+      <div class="callout" style="margin-bottom: 16px;">
+        <p>We're using the <strong>Human Endometriosis Cell Atlas</strong> published in Nature Genetics (2024). It contains single-cell RNA sequencing data from 54 patient samples across multiple tissue types: ectopic endometrial lesions (endometriomas + peritoneal lesions), eutopic endometrium, and unaffected control tissue.</p>
+        <p>Total size: ~15.7GB. Format: Cell Ranger output (10x Genomics). Each sample loads as a barcodes × genes matrix.</p>
+      </div>
+      <div class="tags">
+        <span class="tag pink">54 samples</span>
+        <span class="tag pink">~15.7 GB</span>
+        <span class="tag green">10x Genomics scRNA-seq</span>
+        <span class="tag green">Cell Ranger output</span>
+        <span class="tag blue">Ectopic lesions</span>
+        <span class="tag blue">Eutopic endometrium</span>
+        <span class="tag blue">Control tissue</span>
+        <span class="tag purple">Nature Genetics 2024</span>
+      </div>
+    </section>
+
+    <!-- RESOURCES -->
+    <section id="resources">
+      <div class="section-header">
+        <div class="section-icon">📚</div>
+        <h2>Key resources</h2>
+      </div>
+      <div class="resources">
+        <a href="https://www.nature.com/articles/s41588-024-01873-w" target="_blank" class="resource-card">
+          <div class="r-type">📄 Paper</div>
+          <div class="r-title">Human Endometriosis Cell Atlas</div>
+          <div class="r-desc">Nature Genetics 2024. The dataset we're mining. Single-cell atlas of endometriosis lesions across 54 patients.</div>
+          <div class="r-link">nature.com →</div>
+        </a>
+        <a href="https://www.nature.com/articles/s41586-019-1546-z" target="_blank" class="resource-card">
+          <div class="r-type">📄 Paper</div>
+          <div class="r-title">CAR-T cell therapy blueprint</div>
+          <div class="r-desc">Nature 2019. The conceptual framework we're adapting for endometriosis — using CAR-T to target solid tissue.</div>
+          <div class="r-link">nature.com →</div>
+        </a>
+        <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE213216" target="_blank" class="resource-card">
+          <div class="r-type">🗄️ Dataset</div>
+          <div class="r-title">GSE213216 on GEO</div>
+          <div class="r-desc">NCBI GEO page for the endometriosis atlas. Download the raw data here.</div>
+          <div class="r-link">ncbi.nlm.nih.gov →</div>
+        </a>
+        <a href="https://www.jnj.com/media-center/press-releases/johnson-johnsons-dual-targeting-car-t-cell-therapy-shows-encouraging-first-results-in-large-b-cell-lymphoma" target="_blank" class="resource-card">
+          <div class="r-type">📰 News</div>
+          <div class="r-title">Dual-targeting CAR-T — J&J results</div>
+          <div class="r-desc">Proof that dual-target CAR-T works in humans. Encouraging early results in large B-cell lymphoma.</div>
+          <div class="r-link">jnj.com →</div>
+        </a>
+        <a href="https://startups.igem.org/events/biohackathon" target="_blank" class="resource-card">
+          <div class="r-type">🏆 Competition</div>
+          <div class="r-title">iGEM Startups Biohackathon</div>
+          <div class="r-desc">The competition we're entering. Sign up if you haven't already.</div>
+          <div class="r-link">startups.igem.org →</div>
+        </a>
+        <a href="https://www.sc-best-practices.org" target="_blank" class="resource-card">
+          <div class="r-type">📖 Guide</div>
+          <div class="r-title">Single-cell best practices</div>
+          <div class="r-desc">The definitive guide to scRNA-seq analysis. QC, normalisation, integration, everything.</div>
+          <div class="r-link">sc-best-practices.org →</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- GLOSSARY -->
+    <section id="glossary">
+      <div class="section-header">
+        <div class="section-icon">📖</div>
+        <h2>Glossary — for the new people</h2>
+      </div>
+      <div class="faq">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">What is a CAR-T cell? <span class="chevron">▼</span></div>
+          <div class="faq-a">CAR-T stands for Chimeric Antigen Receptor T-cell. It's a type of immune cell (T-cell) that we genetically engineer to express a synthetic receptor (the CAR) on its surface. This receptor recognises specific proteins on target cells and triggers the T-cell to destroy them. It's already used in blood cancers and has transformed treatment for some patients.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">What is scRNA-seq? <span class="chevron">▼</span></div>
+          <div class="faq-a">Single-cell RNA sequencing. It lets us measure which genes are switched on or off in thousands of individual cells simultaneously. Traditional RNA-seq gives you an average across millions of cells — scRNA-seq gives you a snapshot of every single cell independently. This is how we can identify what makes ectopic endometrial cells different from healthy ones.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">What's ectopic vs eutopic endometrium? <span class="chevron">▼</span></div>
+          <div class="faq-a">Eutopic endometrium is the normal uterine lining — where it's supposed to be. Ectopic means "out of place" — in endometriosis, endometrial-like tissue grows outside the uterus (on the ovaries, peritoneum, fallopian tubes, etc). These lesions are what we want to target with the CAR-T. Our targets need to be present in ectopic tissue but NOT in eutopic tissue or healthy organs.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">What is scVI? <span class="chevron">▼</span></div>
+          <div class="faq-a">scVI is a deep learning model (variational autoencoder) designed specifically for single-cell data. Single-cell measurements are very noisy — genes randomly drop out and counts are sparse. scVI learns a cleaner latent representation of each cell's true biology by modelling the technical noise explicitly. We use it to denoise the data before doing marker discovery.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">What is Tabula Sapiens? <span class="chevron">▼</span></div>
+          <div class="faq-a">A whole-human cell atlas — essentially a map of gene expression across every major cell type in the human body. We use it as a safety filter. If a candidate marker is also expressed in heart cells, lung cells, or neurons, we throw it out immediately — we don't want the CAR-T attacking those.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">Why dual targeting? <span class="chevron">▼</span></div>
+          <div class="faq-a">A CAR-T that targets one marker is risky — if that marker appears anywhere else in the body, you get off-target toxicity. A dual-target CAR only activates when BOTH markers are present simultaneously (like an AND gate). This is far more specific, because the probability of two markers co-occurring in healthy tissue is much lower than either one alone. J&J recently showed this works in humans.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <span>bloomsbury burger therapeutics plc © 2026</span>
+      <span>pre-seed · pre-revenue · pre-sanity</span>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function toggle(el) {
+    el.parentElement.classList.toggle('open');
+  }
+
+  // Smooth scroll for sidebar nav
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      a.classList.add('active');
+    });
+  });
+</script>
+
 </body>
 </html>
