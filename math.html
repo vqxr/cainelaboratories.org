@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BBT — Mathematics</title>
+<link rel="stylesheet" href="style.css">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$'], ['\\[','\\]']],
+      tags: 'ams',
+      macros: {
+        R: '\\mathbb{R}',
+        E: '\\mathbb{E}',
+        argmax: '\\operatorname{argmax}',
+        argmin: '\\operatorname{argmin}',
+        softmax: '\\operatorname{softmax}',
+        sigmoid: '\\operatorname{sigmoid}',
+        KL: '\\operatorname{KL}',
+      }
+    },
+    options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js" async></script>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <span class="emoji">🍔</span>
+      <div class="name">Bloomsbury Burger<br>Therapeutics plc</div>
+      <div class="sub">pre-seed · pre-revenue · pre-sanity</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Pages</div>
+      <a href="index.html" class="nav-item"><span class="icon">🏠</span> Overview</a>
+      <a href="pipeline.html" class="nav-item"><span class="icon">⚙️</span> Pipeline</a>
+      <a href="math.html" class="nav-item active"><span class="icon">∑</span> Mathematics</a>
+      <a href="dataset.html" class="nav-item"><span class="icon">🗄️</span> Dataset</a>
+      <a href="console.html" class="nav-item"><span class="icon">🖥</span> Lab Console</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="nav-section">
+      <div class="nav-label">On this page</div>
+      <a href="#problem" class="nav-item"><span class="icon">·</span> Problem formulation</a>
+      <a href="#relaxation" class="nav-item"><span class="icon">·</span> Continuous relaxation</a>
+      <a href="#objective" class="nav-item"><span class="icon">·</span> Joint objective</a>
+      <a href="#gumbel" class="nav-item"><span class="icon">·</span> Gumbel-Softmax</a>
+      <a href="#safety" class="nav-item"><span class="icon">·</span> Safety penalty</a>
+      <a href="#gradient" class="nav-item"><span class="icon">·</span> Gradient derivation</a>
+      <a href="#novelty" class="nav-item"><span class="icon">·</span> Novelty claim</a>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-badge">
+        Theoretical Framework · Differentiable Combinatorial Optimisation
+        <span class="novelty-badge">Possibly novel</span>
+      </div>
+      <h1>The <span>Mathematics</span></h1>
+      <p class="hero-desc">
+        A complete derivation of our differentiable dual-marker optimisation framework.
+        We believe the specific combination — Gumbel-Softmax relaxation over gene expression binarisations
+        with a jointly-differentiable whole-body safety penalty — has not appeared in the literature.
+      </p>
+    </div>
+
+    <!-- ─── SECTION 1: PROBLEM FORMULATION ─────────────────── -->
+    <section id="problem" class="reveal">
+      <div class="section-header">
+        <div class="section-icon">📐</div>
+        <h2>1. Problem formulation</h2>
+      </div>
+      <div class="callout purple" style="margin-bottom:20px;">
+        <p>We want to find a pair of surface markers $(g_1, g_2)$ from the transcriptome that
+        are <strong>maximally expressed on ectopic lesion cells</strong> and
+        <strong>minimally expressed on any healthy tissue</strong> in the whole human body.
+        The combinatorial search space is intractably large for brute force.</p>
+      </div>
+
+      <div class="eq-item">
+        <div class="eq-header">
+          <span class="eq-title">1.1 — Discrete marker selection problem</span>
+          <span class="eq-tag">NP-hard in general</span>
+        </div>
+        <div class="eq-formula">
+          $$\argmax_{(g_1, g_2) \in \mathcal{G}^2,\; g_1 \neq g_2} \;\; \mathcal{S}(g_1, g_2) - \lambda \cdot \mathcal{P}(g_1, g_2)$$
+        </div>
+        <div class="eq-desc">
+          where $\mathcal{G}$ is the full gene vocabulary ($|\mathcal{G}| \approx 33{,}000$),
+          $\mathcal{S}$ is a <strong>specificity score</strong> over the lesion atlas,
+          $\mathcal{P}$ is a <strong>safety penalty</strong> from Tabula Sapiens, and
+          $\lambda \in \R^+$ is a regularisation coefficient weighting safety against specificity.
+          The number of candidate pairs is $\binom{|\mathcal{G}|}{2} \approx 5.4 \times 10^8$ — enumeration is infeasible.
+          <br><br>
+          We therefore require a continuous relaxation that preserves gradient flow through the selection operator.
+        </div>
+      </div>
+
+      <div class="eq-item" style="margin-top:8px;">
+        <div class="eq-header">
+          <span class="eq-title">1.2 — Gene expression matrix</span>
+          <span class="eq-tag">Input space</span>
+        </div>
+        <div class="eq-formula">
+          $$X \in \R^{N \times G}, \quad X_{ij} = \text{denoised expression of gene } j \text{ in cell } i$$
+        </div>
+        <div class="eq-desc">
+          $N$ = number of cells after QC, $G = |\mathcal{G}|$. Each entry is the scVI-denoised
+          latent mean $\mu_{ij}$ — not the raw count. This matters: raw counts are zero-inflated
+          and not suitable for gradient-based optimisation. The denoised representation from
+          the scVI-VAE provides a smooth, continuous signal.
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION 2: CONTINUOUS RELAXATION ───────────────── -->
+    <section id="relaxation" class="reveal">
+      <div class="section-header">
+        <div class="section-icon">🔁</div>
+        <h2>2. Continuous relaxation of gene selection</h2>
+      </div>
+      <div class="callout blue" style="margin-bottom:20px;">
+        <p>Instead of selecting a hard indicator $z_j \in \{0,1\}$ per gene, we learn a continuous
+        <strong>attention weight vector</strong> $\alpha \in \Delta^{G-1}$ (the $(G-1)$-simplex).
+        This converts the combinatorial problem into a differentiable objective.</p>
+      </div>
+
+      <div class="eq-item">
+        <div class="eq-header">
+          <span class="eq-title">2.1 — Soft selection via learnable logits</span>
+          <span class="eq-tag">Continuous proxy</span>
+        </div>
+        <div class="eq-formula">
+          $$\alpha = \softmax\!\left(\frac{\theta}{\tau}\right), \quad \theta \in \R^G, \quad \tau > 0$$
+        </div>
+        <div class="eq-desc">
+          $\theta$ is a learnable logit vector initialised uniformly. $\tau$ is a temperature hyperparameter.
+          At high $\tau$, $\alpha$ is near-uniform (exploration). As $\tau \to 0$, $\alpha$ concentrates
+          mass on a single gene (exploitation / hard selection). We anneal $\tau$ during training.
+          <br><br>
+          The <code>effective gene expression</code> under the soft selection is the weighted sum:
+        </div>
+        <div class="eq-formula" style="margin-top:8px;">
+          $$\tilde{x}^{(k)} = X^\top \alpha^{(k)} \in \R^N, \quad k \in \{1,2\}$$
+        </div>
+        <div class="eq-desc">
+          We maintain <em>two independent</em> logit vectors $\theta^{(1)}, \theta^{(2)}$ for the two markers,
+          with an orthogonality constraint to prevent degenerate solutions where both select the same gene.
+        </div>
+      </div>
+
+      <div class="eq-item" style="margin-top:8px;">
+        <div class="eq-header">
+          <span class="eq-title">2.2 — Orthogonality constraint</span>
+          <span class="eq-tag">Anti-degeneracy</span>
+        </div>
+        <div class="eq-formula">
+          $$\mathcal{L}_{\text{ortho}} = \left(\alpha^{(1)} \cdot \alpha^{(2)}\right)^2 = \left(\sum_{j=1}^G \alpha^{(1)}_j \, \alpha^{(2)}_j\right)^2$$
+        </div>
+        <div class="eq-desc">
+          This penalty is zero when $\alpha^{(1)} \perp \alpha^{(2)}$ in $\R^G$ — i.e. when the two
+          soft selections place probability mass on non-overlapping genes. This forces the model to
+          discover genuinely distinct markers rather than two copies of the same gene.
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION 3: JOINT OBJECTIVE ─────────────────────── -->
+    <section id="objective" class="reveal">
+      <div class="section-header">
+        <div class="section-icon">🎯</div>
+        <h2>3. Joint objective function</h2>
+      </div>
+
+      <div class="eq-item">
+        <div class="eq-header">
+          <span class="eq-title">3.1 — Full loss</span>
+          <span class="eq-tag">Main result <span class="novelty-badge">Novel claim</span></span>
+        </div>
+        <div class="eq-formula">
+          $$\mathcal{L}(\theta^{(1)}, \theta^{(2)}) = -\mathcal{S}_{\text{soft}}(\alpha^{(1)}, \alpha^{(2)}) + \lambda_1 \mathcal{P}_{\text{safety}}(\alpha^{(1)}, \alpha^{(2)}) + \lambda_2 \mathcal{L}_{\text{ortho}}(\alpha^{(1)}, \alpha^{(2)})$$
+        </div>
+        <div class="eq-desc">
+          This objective is <strong>fully differentiable</strong> with respect to $\theta^{(1)}, \theta^{(2)}$
+          through all three terms. Gradient descent in the continuous space $\R^G \times \R^G$
+          efficiently navigates the combinatorial gene-pair landscape.
+        </div>
+      </div>
+
+      <div class="eq-item" style="margin-top:8px;">
+        <div class="eq-header">
+          <span class="eq-title">3.2 — Specificity score $\mathcal{S}_{\text{soft}}$</span>
+          <span class="eq-tag">Lesion vs control</span>
+        </div>
+        <div class="eq-formula">
+          $$\mathcal{S}_{\text{soft}} = \frac{1}{|\mathcal{C}_{\text{ecto}}|} \sum_{i \in \mathcal{C}_{\text{ecto}}} \sigma\!\left(\tilde{x}^{(1)}_i\right) \cdot \sigma\!\left(\tilde{x}^{(2)}_i\right) - \frac{1}{|\mathcal{C}_{\text{ctrl}}|} \sum_{i \in \mathcal{C}_{\text{ctrl}}} \sigma\!\left(\tilde{x}^{(1)}_i\right) \cdot \sigma\!\left(\tilde{x}^{(2)}_i\right)$$
+        </div>
+        <div class="eq-desc">
+          where $\sigma = \sigmoid$, $\mathcal{C}_{\text{ecto}}$ is the set of ectopic lesion cells
+          and $\mathcal{C}_{\text{ctrl}}$ is the set of control (unaffected) cells.
+          The product $\sigma(\tilde{x}^{(1)}_i) \cdot \sigma(\tilde{x}^{(2)}_i)$ approximates the
+          joint AND-gate probability that <em>both</em> markers are expressed in cell $i$.
+          This is the key innovation: the AND-gate structure is made end-to-end differentiable.
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION 4: GUMBEL-SOFTMAX ──────────────────────── -->
+    <section id="gumbel" class="reveal">
+      <div class="section-header">
+        <div class="section-icon">🎲</div>
+        <h2>4. Gumbel-Softmax reparameterisation</h2>
+      </div>
+      <div class="callout purple" style="margin-bottom:20px;">
+        <p>To recover a hard, discrete pair selection at the end of training while maintaining
+        gradient flow during training, we use the <strong>Gumbel-Softmax (concrete distribution)</strong>
+        trick, originally developed for discrete variational autoencoders. Here we apply it
+        to combinatorial biological search — a context we have not seen in the literature.</p>
+      </div>
+
+      <div class="eq-item">
+        <div class="eq-header">
+          <span class="eq-title">4.1 — Gumbel noise injection</span>
+          <span class="eq-tag">Stochastic relaxation</span>
+        </div>
+        <div class="eq-formula">
+          $$\hat{\alpha}^{(k)}_j = \frac{\exp\!\left((\theta^{(k)}_j + g_j) / \tau\right)}{\sum_{l=1}^G \exp\!\left((\theta^{(k)}_l + g_l) / \tau\right)}, \quad g_j \sim \text{Gumbel}(0,1)$$
+        </div>
+        <div class="eq-desc">
+          Gumbel noise $g_j = -\log(-\log(U_j))$, $U_j \sim \text{Uniform}(0,1)$.
+          This has the property that $\argmax_j (\theta_j + g_j)$ is distributed as a categorical
+          sample from $\softmax(\theta)$. Combined with the straight-through estimator (STE),
+          this gives an unbiased gradient estimate through the discrete argmax.
+        </div>
+      </div>
+
+      <div class="eq-item" style="margin-top:8px;">
+        <div class="eq-header">
+          <span class="eq-title">4.2 — Temperature annealing schedule</span>
+          <span class="eq-tag">Convergence</span>
+        </div>
+        <div class="eq-formula">
+          $$\tau(t) = \tau_0 \cdot \exp\!\left(-\eta \cdot t\right), \quad t = 0, 1, \ldots, T$$
+        </div>
+        <div class="eq-desc">
+          We anneal from $\tau_0 = 1.0$ to $\tau_{\min} = 0.05$ over $T = 500$ gradient steps,
+          with $\eta = \log(\tau_0 / \tau_{\min}) / T$. At $\tau_{\min}$, $\hat{\alpha}^{(k)}$
+          is approximately one-hot, and we take $\argmax_j \theta^{(k)}_j$ as the final hard selection.
+        </div>
+      </div>
+
+      <div class="eq-item" style="margin-top:8px;">
+        <div class="eq-header">
+          <span class="eq-title">4.3 — Straight-Through Estimator (STE)</span>
+          <span class="eq-tag">Gradient flow</span>
+        </div>
+        <div class="eq-formula">
+          $$z^{(k)} = \text{one\_hot}\!\left(\argmax_j \hat{\alpha}^{(k)}_j\right), \quad \frac{\partial \mathcal{L}}{\partial \theta^{(k)}} \approx \frac{\partial \mathcal{L}}{\partial \hat{\alpha}^{(k)}}$$
+        </div>
+        <div class="eq-desc">
+          In the forward pass, we use the hard one-hot $z^{(k)}$ for evaluation.
+          In the backward pass, we pass gradients as if we had used the soft $\hat{\alpha}^{(k)}$.
+          This allows gradient descent while maintaining discrete semantics at inference.
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION 5: SAFETY PENALTY ──────────────────────── -->
+    <section id="safety" class="reveal">
+      <div class="section-header">
+        <div class="section-icon">🛡️</div>
+        <h2>5. Whole-body safety penalty</h2>
+      </div>
+      <div class="callout green" style="margin-bottom:20px;">
+        <p>The safety term cross-references expression against <strong>Tabula Sapiens</strong>,
+        the whole-human cell atlas. Any marker pair with non-trivial expression in critical organs
+        incurs a large penalty. This is incorporated directly into the loss and is <em>differentiable</em>
+        with respect to $\alpha$ — the safety signal backpropagates into the marker selection.</p>
+      </div>
+
+      <div class="eq-item">
+        <div class="eq-header">
+          <span class="eq-title">5.1 — Organ-wise expression projection</span>
+          <span class="eq-tag">Tabula Sapiens interface</span>
+        </div>
+        <div class="eq-formula">
+          $$e^{(k)}_o = \frac{1}{|T_o|} \sum_{i \in T_o} \sigma\!\left(\tilde{x}^{(k)}_i\right), \quad o \in \mathcal{O}_{\text{critical}}$$
+        </div>
+        <div class="eq-desc">
+          where $T_o$ is the set of Tabula Sapiens cells annotated to organ $o$,
+          and $\mathcal{O}_{\text{critical}} = \{\text{heart, lung, brain, liver, kidney, \ldots}\}$.
+          This projects the soft gene selection onto the expression level in each critical organ.
+        </div>
+      </div>
+
+      <div class="eq-item" style="margin-top:8px;">
+        <div class="eq-header">
+          <span class="eq-title">5.2 — Joint safety penalty</span>
+          <span class="eq-tag">AND-gate safety</span>
+        </div>
+        <div class="eq-formula">
+          $$\mathcal{P}_{\text{safety}}(\alpha^{(1)}, \alpha^{(2)}) = \sum_{o \in \mathcal{O}_{\text{critical}}} w_o \cdot \underbrace{e^{(1)}_o \cdot e^{(2)}_o}_{\text{AND expression in organ } o}$$
+        </div>
+        <div class="eq-desc">
+          The AND-gate structure mirrors the CAR-T targeting logic: toxicity only occurs if
+          <em>both</em> markers are co-expressed. We penalise the joint expression probability,
+          not individual expression. $w_o$ are organ-specific weights ($w_{\text{brain}} = w_{\text{heart}} = 10$,
+          others $= 1$). The full gradient $\partial \mathcal{P}_{\text{safety}} / \partial \theta^{(k)}$
+          flows back through both $e^{(1)}_o$ and $e^{(2)}_o$.
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION 6: GRADIENT DERIVATION ─────────────────── -->
+    <section id="gradient" class="reveal">
+      <div class="section-header">
+        <div class="section-icon">∇</div>
+        <h2>6. Gradient derivation</h2>
+      </div>
+
+      <div class="eq-item">
+        <div class="eq-header">
+          <span class="eq-title">6.1 — Gradient of loss w.r.t. logits</span>
+          <span class="eq-tag">Chain rule</span>
+        </div>
+        <div class="eq-formula">
+          $$\frac{\partial \mathcal{L}}{\partial \theta^{(k)}_j} = \left(\frac{\partial \mathcal{L}}{\partial \alpha^{(k)}}\right)^\top \frac{\partial \alpha^{(k)}}{\partial \theta^{(k)}_j}$$
+        </div>
+        <div class="eq-desc">
+          The Jacobian of the softmax has a closed form. For the soft selection $\alpha = \softmax(\theta/\tau)$:
+        </div>
+        <div class="eq-formula" style="margin-top:8px;">
+          $$\frac{\partial \alpha_j}{\partial \theta_l} = \frac{1}{\tau}\left(\alpha_j \delta_{jl} - \alpha_j \alpha_l\right) = \frac{\alpha_j(\delta_{jl} - \alpha_l)}{\tau}$$
+        </div>
+        <div class="eq-desc">
+          So the full gradient update is:
+        </div>
+        <div class="eq-formula" style="margin-top:8px;">
+          $$\frac{\partial \mathcal{L}}{\partial \theta^{(k)}} = \frac{1}{\tau}\left(\operatorname{diag}(\alpha^{(k)}) - \alpha^{(k)} {\alpha^{(k)}}^\top\right) \frac{\partial \mathcal{L}}{\partial \alpha^{(k)}}$$
+        </div>
+        <div class="eq-desc">
+          This is a standard softmax gradient, but note that at low $\tau$ it becomes numerically unstable.
+          We use log-space computations and gradient clipping with $\|\nabla\|_{\max} \leq 1.0$.
+        </div>
+      </div>
+
+      <div class="eq-item" style="margin-top:8px;">
+        <div class="eq-header">
+          <span class="eq-title">6.2 — Update rule</span>
+          <span class="eq-tag">Adam optimiser</span>
+        </div>
+        <div class="eq-formula">
+          $$\theta^{(k)}_{t+1} = \theta^{(k)}_t - \eta_t \cdot \hat{m}_t \oslash \left(\sqrt{\hat{v}_t} + \epsilon\right)$$
+        </div>
+        <div class="eq-desc">
+          We use the Adam optimiser with $\eta = 3 \times 10^{-3}$, $\beta_1 = 0.9$, $\beta_2 = 0.999$,
+          $\epsilon = 10^{-8}$. $\hat{m}_t, \hat{v}_t$ are bias-corrected first and second moment estimates.
+          Training runs for $T = 500$ steps on a single A100 GPU, completing in under 2 minutes.
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION 7: NOVELTY CLAIM ───────────────────────── -->
+    <section id="novelty" class="reveal">
+      <div class="section-header">
+        <div class="section-icon">⭐</div>
+        <h2>7. Novelty claim</h2>
+      </div>
+
+      <div class="callout" style="border-left-color:var(--yellow); margin-bottom:20px;">
+        <p><strong style="color:var(--yellow);">We believe this formulation is novel.</strong>
+        Specifically: the combination of (1) Gumbel-Softmax relaxation applied to transcriptomic
+        gene selection, (2) a jointly differentiable AND-gate specificity objective, and
+        (3) a whole-body safety penalty backpropagating through cross-atlas expression projections —
+        as a single end-to-end differentiable system — does not appear in existing literature.
+        We are actively reviewing to confirm or falsify this.</p>
+      </div>
+
+      <div class="eq-item">
+        <div class="eq-header">
+          <span class="eq-title">Prior work comparison</span>
+          <span class="eq-tag">Literature review</span>
+        </div>
+        <div style="padding: 4px 0;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;">
+              <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:8px;">EXISTING WORK</div>
+              <div style="font-size:12px;color:var(--muted);line-height:1.8;">
+                • Gumbel-Softmax: discrete VAEs (Jang et al. 2017)<br>
+                • Differentiable gene selection: feature attribution (SHAP, integrated gradients)<br>
+                • Marker discovery: differential expression (DESeq2, Seurat)<br>
+                • CAR-T target identification: manual + fold-change filters
+              </div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid rgba(255,209,102,0.2);border-radius:8px;padding:14px;">
+              <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--yellow);margin-bottom:8px;">OUR CONTRIBUTION</div>
+              <div style="font-size:12px;color:var(--muted);line-height:1.8;">
+                • Gumbel-Softmax <strong style="color:var(--text);">applied to gene space</strong> for target discovery<br>
+                • <strong style="color:var(--text);">AND-gate specificity</strong> made differentiable end-to-end<br>
+                • <strong style="color:var(--text);">Cross-atlas safety penalty</strong> backpropagating into selection<br>
+                • Joint optimisation of specificity + safety in single loss
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout" style="border-left-color:var(--purple);margin-top:12px;">
+        <p style="font-family:'DM Mono',monospace;font-size:11px;color:var(--purple);">OPEN QUESTION</p>
+        <p style="margin-top:6px;">If you know of prior work combining differentiable relaxations with cross-atlas safety constraints for biological target discovery, please flag it. We want to understand exactly what, if anything, is new here before making any claims in writing.</p>
+      </div>
+    </section>
+
+    <div class="footer">
+      <span>bloomsbury burger therapeutics plc © 2026</span>
+      <span>pre-seed · pre-revenue · pre-sanity</span>
+    </div>
+
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

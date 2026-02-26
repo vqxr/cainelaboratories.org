@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BBT — Pipeline</title>
+<link rel="stylesheet" href="style.css">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js" async></script>
+</head>
+<body>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <span class="emoji">🍔</span>
+      <div class="name">Bloomsbury Burger<br>Therapeutics plc</div>
+      <div class="sub">pre-seed · pre-revenue · pre-sanity</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Pages</div>
+      <a href="index.html" class="nav-item"><span class="icon">🏠</span> Overview</a>
+      <a href="pipeline.html" class="nav-item active"><span class="icon">⚙️</span> Pipeline</a>
+      <a href="math.html" class="nav-item"><span class="icon">∑</span> Mathematics</a>
+      <a href="dataset.html" class="nav-item"><span class="icon">🗄️</span> Dataset</a>
+      <a href="console.html" class="nav-item"><span class="icon">🖥</span> Lab Console</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="nav-section">
+      <div class="nav-label">Steps</div>
+      <a onclick="selectPipeStep(0)" class="nav-item pipe-nav-item active"><span class="icon">·</span> 01 QC</a>
+      <a onclick="selectPipeStep(1)" class="nav-item pipe-nav-item"><span class="icon">·</span> 02 scVI</a>
+      <a onclick="selectPipeStep(2)" class="nav-item pipe-nav-item"><span class="icon">·</span> 03 Optimisation</a>
+      <a onclick="selectPipeStep(3)" class="nav-item pipe-nav-item"><span class="icon">·</span> 04 Safety</a>
+      <a onclick="selectPipeStep(4)" class="nav-item pipe-nav-item"><span class="icon">·</span> 05 Output</a>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="hero">
+      <div class="hero-badge">Methods · Technical Architecture</div>
+      <h1>The <span>Pipeline</span></h1>
+      <p class="hero-desc">A complete technical description of the computational pipeline — from raw Cell Ranger output to ranked dual-marker candidates. This reads like a methods section.</p>
+    </div>
+
+    <!-- STEP PANELS -->
+    <div class="pipe-step-content reveal" id="step-0">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(255,77,109,0.1);border-color:rgba(255,77,109,0.2);">01</div>
+        <h2>Data Ingestion & Quality Control</h2>
+      </div>
+      <div class="callout" style="margin-bottom:16px;">
+        <p>Raw Cell Ranger outputs (<code>raw_feature_bc_matrix.h5</code>) are parsed for each of the 54 patient samples. Quality control removes empty droplets and dying cells using three filters: minimum gene count, maximum mitochondrial read fraction, and minimum total UMI count.</p>
+        <p>Filtered cells are exported as <code>.h5ad</code> files (AnnData format) for downstream processing. Metadata (patient ID, tissue type, sample batch) are embedded in <code>adata.obs</code>.</p>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title">Gene counts per cell — histogram (QC filter threshold shown)</div>
+        <canvas id="hist-canvas" width="700" height="200"></canvas>
+        <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;font-family:'DM Mono',monospace;">
+          <span style="color:var(--accent);">■ filtered (removed)</span>
+          <span style="color:var(--blue);">■ kept</span>
+          <span style="color:var(--yellow);">— threshold</span>
+        </div>
+      </div>
+
+      <div class="eq-item" style="margin-top:16px;">
+        <div class="eq-header"><span class="eq-title">QC filter criteria</span></div>
+        <div class="eq-formula">
+          $$\text{keep cell } i \iff n\_\text{genes}(i) \geq 200 \;\wedge\; \frac{MT\text{-}UMI_i}{\text{total-}UMI_i} \leq 0.2 \;\wedge\; \text{total-}UMI_i \geq 500$$
+        </div>
+      </div>
+
+      <div class="tags" style="margin-top:16px;">
+        <span class="tag pink">scanpy</span>
+        <span class="tag blue">AnnData</span>
+        <span class="tag green">min_genes=200</span>
+        <span class="tag green">max_MT=20%</span>
+        <span class="tag yellow">54 samples</span>
+      </div>
+
+      <div style="margin-top:20px;display:flex;gap:8px;">
+        <button onclick="selectPipeStep(1)" style="background:var(--accent);border:none;color:white;font-family:'DM Mono',monospace;font-size:12px;padding:8px 18px;border-radius:6px;cursor:pointer;">Next: scVI Modelling →</button>
+      </div>
+    </div>
+
+    <div class="pipe-step-content reveal" id="step-1" style="display:none;">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(116,179,255,0.1);border-color:rgba(116,179,255,0.2);">02</div>
+        <h2>scVI Latent Modelling</h2>
+      </div>
+      <div class="callout blue" style="margin-bottom:16px;">
+        <p>Single-cell RNA sequencing exhibits stochastic dropout and technical noise. We train a variational autoencoder (<strong>scVI</strong>) to infer latent representations approximating true gene expression distributions. This enables stable binarisation for downstream combinatorial optimisation, replacing noisy raw counts with smooth denoised values.</p>
+      </div>
+
+      <div class="eq-item" style="margin-bottom:12px;">
+        <div class="eq-header"><span class="eq-title">scVI generative model</span><span class="eq-tag">Lopez et al. 2018</span></div>
+        <div class="eq-formula">
+          $$p(x_{ij} \mid z_i, s_i) = \text{NegBinomial}\!\left(\mu_{ij}(z_i, s_i),\; \phi_j\right)$$
+        </div>
+        <div class="eq-desc">
+          where $z_i \in \R^d$ is the latent cell state, $s_i$ is library size, $\mu_{ij}$ is
+          the decoded mean expression (a neural network), and $\phi_j$ is a learned gene-specific
+          dispersion. The inference network $q(z_i | x_i)$ gives us the denoised latent $z_i$
+          which we decode back to get $\hat{\mu}_{ij}$ — our denoised expression estimate.
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title">UMAP embedding — denoised latent space (mock, n=~280k cells)</div>
+        <canvas id="umap-canvas" width="700" height="320"></canvas>
+        <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;font-family:'DM Mono',monospace;flex-wrap:wrap;">
+          <span style="color:#ff4d6d;">● Ectopic Lesion</span>
+          <span style="color:#74b3ff;">● Eutopic</span>
+          <span style="color:#52d48a;">● Control</span>
+          <span style="color:#c77dff;">● Stromal</span>
+          <span style="color:#ffd166;">● Immune</span>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;display:flex;gap:8px;">
+        <button onclick="selectPipeStep(0)" style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;padding:8px 18px;border-radius:6px;cursor:pointer;">← Back</button>
+        <button onclick="selectPipeStep(2)" style="background:var(--accent);border:none;color:white;font-family:'DM Mono',monospace;font-size:12px;padding:8px 18px;border-radius:6px;cursor:pointer;">Next: Optimisation →</button>
+      </div>
+    </div>
+
+    <div class="pipe-step-content reveal" id="step-2" style="display:none;">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(199,125,255,0.1);border-color:rgba(199,125,255,0.2);">03</div>
+        <h2>Differentiable Marker Optimisation</h2>
+      </div>
+      <div class="callout purple" style="margin-bottom:16px;">
+        <p>The combinatorial search space contains ~4.5 million possible marker pairs. Instead of brute-force enumeration, we relax the discrete selection problem using a <strong>Gumbel-Softmax</strong> formulation. Gradient descent is performed in continuous space before annealing back to a discrete pair selection.</p>
+        <p>We believe this specific formulation — applied to transcriptomic target discovery with an AND-gate objective — is novel. <a href="math.html" style="color:var(--accent);">Full derivation →</a></p>
+      </div>
+
+      <div class="eq-item" style="margin-bottom:12px;">
+        <div class="eq-header"><span class="eq-title">Joint loss function</span><span class="eq-tag">Novel claim <span class="novelty-badge">★ Possibly new</span></span></div>
+        <div class="eq-formula">
+          $$\mathcal{L} = -\mathcal{S}_{\text{soft}}(\alpha^{(1)}, \alpha^{(2)}) + \lambda_1 \mathcal{P}_{\text{safety}} + \lambda_2 \left(\alpha^{(1)} \cdot \alpha^{(2)}\right)^2$$
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title">Training loss curve — gradient descent convergence</div>
+        <canvas id="loss-canvas" width="700" height="220"></canvas>
+      </div>
+
+      <div style="margin-top:20px;display:flex;gap:8px;">
+        <button onclick="selectPipeStep(1)" style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;padding:8px 18px;border-radius:6px;cursor:pointer;">← Back</button>
+        <button onclick="selectPipeStep(3)" style="background:var(--accent);border:none;color:white;font-family:'DM Mono',monospace;font-size:12px;padding:8px 18px;border-radius:6px;cursor:pointer;">Next: Safety Filter →</button>
+      </div>
+    </div>
+
+    <div class="pipe-step-content" id="step-3" style="display:none;">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(82,212,138,0.1);border-color:rgba(82,212,138,0.2);">04</div>
+        <h2>Safety Filtering via Whole-Body Atlas</h2>
+      </div>
+      <div class="callout green" style="margin-bottom:16px;">
+        <p>Candidate markers are cross-referenced against <strong>Tabula Sapiens</strong>. Expression in heart, lung, brain or other critical tissues incurs an infinite penalty and is excluded. Only lesion-specific dual markers survive this filter.</p>
+      </div>
+
+      <div class="body-diagram" style="margin:20px 0;">
+        <div class="organ-list">
+          <div class="organ-item">
+            <div class="organ-dot excluded"></div>
+            <span>Heart</span>
+            <span class="organ-status ex">EXCLUDED</span>
+          </div>
+          <div class="organ-item">
+            <div class="organ-dot excluded"></div>
+            <span>Brain / CNS</span>
+            <span class="organ-status ex">EXCLUDED</span>
+          </div>
+          <div class="organ-item">
+            <div class="organ-dot excluded"></div>
+            <span>Lung</span>
+            <span class="organ-status ex">EXCLUDED</span>
+          </div>
+          <div class="organ-item">
+            <div class="organ-dot excluded"></div>
+            <span>Liver</span>
+            <span class="organ-status ex">EXCLUDED</span>
+          </div>
+          <div class="organ-item">
+            <div class="organ-dot excluded"></div>
+            <span>Kidney</span>
+            <span class="organ-status ex">EXCLUDED</span>
+          </div>
+          <div class="organ-item">
+            <div class="organ-dot clear"></div>
+            <span>Ectopic lesion</span>
+            <span class="organ-status ok">TARGET ✓</span>
+          </div>
+          <div class="organ-item">
+            <div class="organ-dot clear"></div>
+            <span>Eutopic endometrium</span>
+            <span class="organ-status ok">CLEAR ✓</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;display:flex;gap:8px;">
+        <button onclick="selectPipeStep(2)" style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;padding:8px 18px;border-radius:6px;cursor:pointer;">← Back</button>
+        <button onclick="selectPipeStep(4)" style="background:var(--accent);border:none;color:white;font-family:'DM Mono',monospace;font-size:12px;padding:8px 18px;border-radius:6px;cursor:pointer;">Next: Output →</button>
+      </div>
+    </div>
+
+    <div class="pipe-step-content" id="step-4" style="display:none;">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(255,209,102,0.1);border-color:rgba(255,209,102,0.2);">05</div>
+        <h2>Output — Ranked Candidate Pairs</h2>
+      </div>
+      <div class="callout" style="margin-bottom:16px;border-left-color:var(--yellow);">
+        <p>Gradient descent outputs a ranked top-5 list of dual marker combinations. Each pair is scored on specificity (expression in ectopic vs control) and safety (expression in whole-body atlas). The top pairs are handed off for benchtop feasibility assessment.</p>
+      </div>
+      <div class="pairs-list" id="pairs-container">
+        <div style="text-align:center;padding:40px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;">Loading candidate pairs...</div>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:8px;">
+        <button onclick="selectPipeStep(3)" style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;padding:8px 18px;border-radius:6px;cursor:pointer;">← Back</button>
+        <a href="console.html" style="background:var(--accent);border:none;color:white;font-family:'DM Mono',monospace;font-size:12px;padding:8px 18px;border-radius:6px;cursor:pointer;text-decoration:none;">→ Open Lab Console</a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>bloomsbury burger therapeutics plc © 2026</span>
+      <span>pre-seed · pre-revenue · pre-sanity</span>
+    </div>
+  </main>
+</div>
+
+<script src="script.js"></script>
+<script>
+  // Override selectPipeStep to also manage step display
+  const origSelect = window.selectPipeStep;
+  window.selectPipeStep = function(idx) {
+    document.querySelectorAll('.pipe-step-content').forEach((el, i) => {
+      el.style.display = i === idx ? 'block' : 'none';
+    });
+    document.querySelectorAll('.pipe-nav-item').forEach((el, i) => {
+      el.classList.toggle('active', i === idx);
+    });
+    // Redraw charts for the newly visible step
+    if (idx === 0) drawHistogram('hist-canvas');
+    if (idx === 1) { drawUMAP('umap-canvas'); }
+    if (idx === 2) drawLossCurve('loss-canvas');
+  };
+</script>
+</body>
+</html>

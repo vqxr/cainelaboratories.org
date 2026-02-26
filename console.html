@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BBT — Lab Console</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <span class="emoji">🍔</span>
+      <div class="name">Bloomsbury Burger<br>Therapeutics plc</div>
+      <div class="sub">pre-seed · pre-revenue · pre-sanity</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Pages</div>
+      <a href="index.html" class="nav-item"><span class="icon">🏠</span> Overview</a>
+      <a href="pipeline.html" class="nav-item"><span class="icon">⚙️</span> Pipeline</a>
+      <a href="math.html" class="nav-item"><span class="icon">∑</span> Mathematics</a>
+      <a href="dataset.html" class="nav-item"><span class="icon">🗄️</span> Dataset</a>
+      <a href="console.html" class="nav-item active"><span class="icon">🖥</span> Lab Console</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="nav-section">
+      <div class="nav-label">System</div>
+      <div class="nav-item" style="cursor:default;"><span class="dot green"></span> <span style="font-size:11px;font-family:'DM Mono',monospace;">Atlas loaded</span></div>
+      <div class="nav-item" style="cursor:default;"><span class="dot green"></span> <span style="font-size:11px;font-family:'DM Mono',monospace;">scVI: trained</span></div>
+      <div class="nav-item" style="cursor:default;"><span class="dot blue"></span> <span style="font-size:11px;font-family:'DM Mono',monospace;" id="optimisation-status">converged ✓</span></div>
+    </div>
+  </nav>
+
+  <main class="main" style="max-width:1100px;">
+    <div class="hero">
+      <div class="hero-badge">Internal · Lab Dashboard · Live</div>
+      <h1>Lab <span>Console</span></h1>
+      <p class="hero-desc">Real-time status of the computational pipeline. This is the control room.</p>
+    </div>
+
+    <!-- STATUS BAR -->
+    <div class="status-row">
+      <div class="status-pill"><span class="dot green"></span> Atlas loaded</div>
+      <div class="status-pill"><span class="dot green"></span> Samples: 54/54</div>
+      <div class="status-pill"><span class="dot green"></span> Optimisation: converged</div>
+      <div class="status-pill"><span class="dot blue"></span> Pair stability: 0.92</div>
+      <div class="status-pill"><span class="dot yellow"></span> Bench validation: pending</div>
+    </div>
+
+    <!-- TERMINAL -->
+    <div class="reveal" style="margin-bottom:24px;">
+      <div class="terminal-box">
+        <div class="terminal-body" id="terminal-output"></div>
+      </div>
+    </div>
+
+    <!-- TOP ROW: UMAP + LOSS -->
+    <div class="console-grid reveal">
+      <div class="console-panel">
+        <div class="panel-header">
+          <span class="panel-title">UMAP Embedding</span>
+          <span style="font-size:10px;font-family:'DM Mono',monospace;color:var(--green);">● live</span>
+        </div>
+        <div class="panel-body">
+          <canvas id="umap-canvas" width="400" height="300" style="width:100%;border-radius:6px;"></canvas>
+          <div style="margin-top:10px;font-size:11px;color:var(--muted);line-height:1.6;">
+            Latent space embedding of denoised single-cell profiles.
+            Lesion-specific clusters are visibly separable from control tissue.
+          </div>
+        </div>
+      </div>
+
+      <div class="console-panel">
+        <div class="panel-header">
+          <span class="panel-title">Loss Curve</span>
+          <span style="font-size:10px;font-family:'DM Mono',monospace;color:var(--green);">● converged</span>
+        </div>
+        <div class="panel-body">
+          <canvas id="loss-canvas" width="400" height="300" style="width:100%;border-radius:6px;"></canvas>
+          <div style="margin-top:10px;font-size:11px;color:var(--muted);line-height:1.6;">
+            Training convergence of differentiable marker optimisation.
+            Plateau indicates stable discrete solution at ~step 130.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CANDIDATE PAIRS -->
+    <div class="reveal" style="margin-top:12px;">
+      <div class="console-panel" style="border-radius:10px;overflow:visible;">
+        <div class="panel-header">
+          <span class="panel-title">Top Candidate Pairs</span>
+          <span style="font-size:10px;font-family:'DM Mono',monospace;color:var(--yellow);">loaded from top_pairs.json</span>
+        </div>
+        <div class="panel-body">
+          <div class="pairs-list" id="pairs-container">
+            <div style="text-align:center;padding:30px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;">
+              Loading from top_pairs.json...
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METRICS ROW -->
+    <div class="reveal" style="margin-top:12px;">
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-value"><span data-counter="280" data-suffix="k">280k</span></div>
+          <div class="stat-label">Cells post-QC</div>
+          <div class="stat-desc">After filtering empty droplets and high-MT cells.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value"><span style="color:var(--accent);">500</span></div>
+          <div class="stat-label">Optimisation steps</div>
+          <div class="stat-desc">Gradient steps to convergence. ~2min on A100.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value"><span style="color:var(--green);">0.92</span></div>
+          <div class="stat-label">Pair stability</div>
+          <div class="stat-desc">Cross-run consistency score across 10 random seeds.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>bloomsbury burger therapeutics plc © 2026</span>
+      <span>pre-seed · pre-revenue · pre-sanity</span>
+    </div>
+  </main>
+</div>
+
+<script src="script.js"></script>
+<script>
+  // Terminal typing sequence
+  const terminalLines = [
+    { prefix: '<span class="prompt">❯ </span>', text: 'python run_pipeline.py --samples 54 --mode full' },
+    { prefix: '<span class="output">✓ </span>', text: 'Atlas loaded: GSE213216 (54 samples, 15.7GB)' },
+    { prefix: '<span class="output">✓ </span>', text: 'QC complete: 280,441 cells retained' },
+    { prefix: '<span class="output">✓ </span>', text: 'scVI model loaded (epoch 400, ELBO: -1842.3)' },
+    { prefix: '<span class="output">✓ </span>', text: 'Latent representations: shape (280441, 20)' },
+    { prefix: '<span class="prompt">❯ </span>', text: 'Running differentiable optimisation...' },
+    { prefix: '<span class="warn">→ </span>', text: 'Step 0/500: L=2.847, τ=1.000' },
+    { prefix: '<span class="warn">→ </span>', text: 'Step 100/500: L=0.621, τ=0.472' },
+    { prefix: '<span class="warn">→ </span>', text: 'Step 200/500: L=0.241, τ=0.223' },
+    { prefix: '<span class="warn">→ </span>', text: 'Step 300/500: L=0.198, τ=0.105' },
+    { prefix: '<span class="output">✓ </span>', text: 'Converged at step 412 (ΔL < 1e-4)' },
+    { prefix: '<span class="output">✓ </span>', text: 'Top pair: PTPRC × EPCAM | spec=0.97 safe=0.99' },
+    { prefix: '<span class="output">✓ </span>', text: 'Tabula Sapiens check: PASS (5/5 pairs clear)' },
+    { prefix: '<span class="prompt">❯ </span>', text: 'Results written to top_pairs.json' },
+  ];
+  typeLines('terminal-output', terminalLines, 40);
+
+  // Draw charts on load
+  window.addEventListener('load', () => {
+    drawUMAP('umap-canvas');
+    drawLossCurve('loss-canvas');
+  });
+</script>
+</body>
+</html>
