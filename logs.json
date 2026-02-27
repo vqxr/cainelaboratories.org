@@ -29,7 +29,7 @@
     "tags": ["scvi", "model", "trained"],
     "type": "model",
     "file": "scvi_model/ + all_samples_combined.h5ad",
-    "link": null
+    "link": "https://liveuclac-my.sharepoint.com/:u:/g/personal/zcqshmk_ucl_ac_uk/IQB9qfSmKuV3S6M6xmvGZG68AX1mpulsAum87h9GNvK2sGc?e=ZTxdgx"
   },
   {
     "version": "v0.4.0",
@@ -38,6 +38,5 @@
     "tags": ["scvi", "integrated", "latent", "umap", "final-qc"],
     "file": "all_samples_combined_scvi.h5ad",
     "link": "https://liveuclac-my.sharepoint.com/:u:/g/personal/zcqshmk_ucl_ac_uk/IQCdN1EqSdhiSqE3g530ywbPATQaGuic7jsM1HgEsqtmoJI?e=djUHHC",
-    "model_link": "https://liveuclac-my.sharepoint.com/:u:/g/personal/zcqshmk_ucl_ac_uk/IQB9qfSmKuV3S6M6xmvGZG68AX1mpulsAum87h9GNvK2sGc?e=ZTxdgx"
   }
 ]
