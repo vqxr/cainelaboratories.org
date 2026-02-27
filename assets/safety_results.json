@@ -1,0 +1,13 @@
+[
+  {
+    "pair_id": "pair001",
+    "marker_1": { "ensembl": "ENSG000001...", "symbol": "CD3E" },
+    "marker_2": { "ensembl": "ENSG000002...", "symbol": "CD4" },
+    "tissue": "Heart",
+    "cell_type": "all",
+    "safety_profile": "unsafe",
+    "notes": "Expressed in cardiomyocytes",
+    "tested_by": "Abdurrahman",
+    "timestamp": "2026-02-27T10:30:00Z"
+  }
+]
