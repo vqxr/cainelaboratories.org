@@ -193,6 +193,16 @@
     if (!container) return;
     let html = '';
     logs.forEach(log => {
+      // Build file link if link exists
+      let fileHtml = '';
+      if (log.file) {
+        if (log.link) {
+          fileHtml = `<a href="${log.link}" target="_blank" class="log-file-link">📁 ${log.file}</a>`;
+        } else {
+          fileHtml = `<span class="log-file">📁 ${log.file}</span>`;
+        }
+      }
+
       html += `
         <div class="log-entry">
           <div class="log-header">
@@ -201,7 +211,7 @@
             ${log.tags ? log.tags.map(t => `<span class="log-tag">${t}</span>`).join('') : ''}
           </div>
           <div class="log-description">${log.description}</div>
-          ${log.file ? `<div class="log-file">📁 ${log.file}</div>` : ''}
+          ${fileHtml}
         </div>
       `;
     });
@@ -211,6 +221,27 @@
   // Load logs when page loads
   loadLogs();
 </script>
+
+<!-- Additional style for log file links -->
+<style>
+  .log-file-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--blue);
+    background: rgba(116,179,255,0.05);
+    border: 1px solid rgba(116,179,255,0.2);
+    border-radius: 4px;
+    padding: 2px 8px;
+    display: inline-block;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .log-file-link:hover {
+    background: rgba(116,179,255,0.15);
+    border-color: var(--blue);
+    color: var(--text);
+  }
+</style>
 
 </body>
 </html>
