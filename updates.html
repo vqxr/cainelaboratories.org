@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BBT — Updates</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <span class="emoji">🍔</span>
+      <div class="name">Bloomsbury Burger<br>Therapeutics plc</div>
+      <div class="sub">pre-seed · pre-revenue · pre-sanity</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Pages</div>
+      <a href="index.html" class="nav-item"><span class="icon">🏠</span> Overview</a>
+      <a href="pipeline.html" class="nav-item"><span class="icon">⚙️</span> Pipeline</a>
+      <a href="math.html" class="nav-item"><span class="icon">∑</span> Mathematics</a>
+      <a href="dataset.html" class="nav-item"><span class="icon">🗄️</span> Dataset</a>
+      <a href="console.html" class="nav-item"><span class="icon">🖥</span> Lab Console</a>
+      <a href="updates.html" class="nav-item active"><span class="icon">📋</span> Updates</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="nav-section">
+      <div class="nav-label">On this page</div>
+      <a href="#tasks" class="nav-item"><span class="icon">·</span> Task Board</a>
+      <a href="#safety-results" class="nav-item"><span class="icon">·</span> Safety Results</a>
+      <a href="#changelog" class="nav-item"><span class="icon">·</span> Changelog</a>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="hero">
+      <div class="hero-badge">Internal · Team Coordination · Live</div>
+      <h1>مسكين <span>Distributed</span></h1>
+      <p class="hero-desc">Task board, safety profiling results, and version changelog. Miskin distributed computing — two laptops, zero GPUs, infinite ambition.</p>
+    </div>
+
+    <!-- TASK BOARD -->
+    <section id="tasks" class="reveal">
+      <div class="section-header">
+        <div class="section-icon">📌</div>
+        <h2>Task board</h2>
+      </div>
+
+      <div class="task-grid" id="task-grid">
+        <!-- populated by JS -->
+      </div>
+    </section>
+
+    <!-- SAFETY RESULTS -->
+    <section id="safety-results" class="reveal">
+      <div class="section-header">
+        <div class="section-icon">🛡️</div>
+        <h2>Safety profiling results</h2>
+      </div>
+      <div class="callout" style="margin-bottom:16px;">
+        <p>Distributed safety checks across Tabula Sapiens subsets. Each person runs one tissue subset and contributes results in the shared format below. Add your results to <code>safety_results.json</code>.</p>
+      </div>
+
+      <div style="background:#0a0a0b;border:1px solid var(--border);border-radius:10px;padding:20px;font-family:'DM Mono',monospace;font-size:12px;line-height:2;margin-bottom:16px;">
+        <div style="color:var(--muted);"># Schema — one entry per (pair, tissue) test</div>
+        <div><span style="color:var(--accent);">"pair_id"</span>       → <span style="color:var(--green);">string</span> <span style="color:var(--muted2);">  # e.g. "pair001"</span></div>
+        <div><span style="color:var(--accent);">"marker_1/2"</span>    → <span style="color:var(--green);">{ ensembl, symbol }</span></div>
+        <div><span style="color:var(--accent);">"tissue"</span>        → <span style="color:var(--green);">string</span> <span style="color:var(--muted2);">  # Tabula Sapiens organ</span></div>
+        <div><span style="color:var(--accent);">"cell_type"</span>     → <span style="color:var(--green);">string | "all"</span></div>
+        <div><span style="color:var(--accent);">"safety_profile"</span>→ <span style="color:var(--yellow);">0–1 float or "safe"/"unsafe"</span></div>
+        <div><span style="color:var(--accent);">"tested_by"</span>     → <span style="color:var(--blue);">string</span></div>
+        <div><span style="color:var(--accent);">"timestamp"</span>     → <span style="color:var(--blue);">ISO 8601</span></div>
+      </div>
+
+      <div class="safety-results-list" id="safety-results-container">
+        <div style="text-align:center;padding:30px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;">
+          No results yet — add entries to safety_results.json to populate this table.
+        </div>
+      </div>
+    </section>
+
+    <!-- CHANGELOG -->
+    <section id="changelog" class="reveal">
+      <div class="section-header">
+        <div class="section-icon">📋</div>
+        <h2>Changelog</h2>
+      </div>
+      <div class="callout" style="margin-bottom:16px;">
+        <p>Version history of all datasets and pipeline artifacts. New entries are added as we refine the data.</p>
+      </div>
+      <div class="logs-container" id="logs-container">
+        <!-- populated by JS -->
+      </div>
+    </section>
+
+    <div class="footer">
+      <span>bloomsbury burger therapeutics plc © 2026</span>
+      <span>pre-seed · pre-revenue · pre-sanity</span>
+    </div>
+  </main>
+</div>
+
+<style>
+/* ── TASK GRID ── */
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.task-column {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.task-col-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.task-col-header .col-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+}
+
+.task-col-header .col-dot.todo { background: var(--muted); }
+.task-col-header .col-dot.doing { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
+.task-col-header .col-dot.done { background: var(--green); box-shadow: 0 0 6px var(--green); }
+
+.task-list {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 80px;
+}
+
+.task-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  transition: border-color 0.15s;
+}
+
+.task-card:hover { border-color: rgba(255,77,109,0.3); }
+
+.task-title {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.task-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.task-person {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--accent2);
+  background: rgba(255,77,109,0.1);
+  border: 1px solid rgba(255,77,109,0.2);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+.task-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+/* ── SAFETY RESULTS TABLE ── */
+.safety-results-list {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.safety-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr 120px 80px 100px;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  font-family: 'DM Mono', monospace;
+}
+
+.safety-row:last-child { border-bottom: none; }
+
+.safety-row.header {
+  background: var(--surface2);
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.safety-cell {
+  padding: 10px 14px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+}
+
+.safety-cell:last-child { border-right: none; }
+
+.safety-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.safety-badge.safe { background: rgba(82,212,138,0.1); color: var(--green); border: 1px solid rgba(82,212,138,0.25); }
+.safety-badge.unsafe { background: rgba(255,77,109,0.1); color: var(--accent2); border: 1px solid rgba(255,77,109,0.25); }
+.safety-badge.numeric { background: var(--surface2); color: var(--yellow); border: 1px solid rgba(255,209,102,0.25); }
+
+@media (max-width: 900px) {
+  .task-grid { grid-template-columns: 1fr; }
+  .safety-row { grid-template-columns: 80px 1fr 1fr 80px; }
+  .safety-row > .safety-cell:nth-child(5),
+  .safety-row > .safety-cell:nth-child(6) { display: none; }
+}
+
+/* Model download button */
+.model-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  border: 1px solid rgba(199,125,255,0.35);
+  background: rgba(199,125,255,0.08);
+  color: var(--purple);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.model-btn:hover {
+  background: rgba(199,125,255,0.18);
+  border-color: var(--purple);
+  color: var(--text);
+}
+.model-btn.pending {
+  border-color: rgba(255,209,102,0.3);
+  background: rgba(255,209,102,0.06);
+  color: var(--yellow);
+  cursor: default;
+}
+</style>
+
+<script>
+  // ── SMOOTH SCROLL ──
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      a.classList.add('active');
+    });
+  });
+
+  // ── TASK DATA ──
+  const tasks = {
+    todo: [
+      { title: 'Tabula Sapiens — Kidney subset', person: 'TBD', tag: 'safety' },
+      { title: 'Tabula Sapiens — Lung subset', person: 'TBD', tag: 'safety' },
+      { title: 'scFv availability check for top-5 pairs', person: 'TBD', tag: 'validation' },
+      { title: 'Benchtop IHC validation plan', person: 'TBD', tag: 'wet lab' },
+    ],
+    doing: [
+      { title: 'scVI latent representation training', person: 'Haziq', tag: 'compute' },
+      { title: 'Tabula Sapiens — Heart subset', person: 'Haziq', tag: 'safety' },
+      { title: 'Differentiable optimisation run', person: 'Haziq', tag: 'compute' },
+    ],
+    done: [
+      { title: 'Download GSE213216 raw data', person: 'Abdurrahman', tag: 'data' },
+      { title: 'Per-sample QC (43/54 samples)', person: 'Abdurrahman', tag: 'data' },
+      { title: 'Combine samples → all_samples_combined.h5ad', person: 'Abdurrahman', tag: 'data' },
+      { title: 'Web scrape sample metadata', person: 'Haziq', tag: 'data' },
+      { title: 'Safety results JSON schema', person: 'Abdurrahman', tag: 'infra' },
+      { title: 'Dataset page + clickable download link', person: 'Abdurrahman', tag: 'site' },
+    ],
+  };
+
+  function renderTasks() {
+    const grid = document.getElementById('task-grid');
+    const cols = [
+      { key: 'todo',  label: 'To do',      dot: 'todo' },
+      { key: 'doing', label: 'In progress', dot: 'doing' },
+      { key: 'done',  label: 'Done',        dot: 'done' },
+    ];
+
+    grid.innerHTML = cols.map(col => `
+      <div class="task-column">
+        <div class="task-col-header">
+          <span class="col-dot ${col.dot}"></span>
+          ${col.label}
+          <span style="margin-left:auto;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1px 8px;font-size:10px;">${tasks[col.key].length}</span>
+        </div>
+        <div class="task-list">
+          ${tasks[col.key].map(t => `
+            <div class="task-card">
+              <div class="task-title">${t.title}</div>
+              <div class="task-meta">
+                <span class="task-person">${t.person}</span>
+                <span class="task-tag">${t.tag}</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ── SAFETY RESULTS ──
+  async function loadSafetyResults() {
+    const container = document.getElementById('safety-results-container');
+    try {
+      const res = await fetch('./assets/safety_results.json');
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      renderSafetyResults(data, container);
+    } catch {
+      // no file yet — show placeholder
+    }
+  }
+
+  function renderSafetyResults(data, container) {
+    if (!data || !data.length) return;
+    const header = `
+      <div class="safety-row header">
+        <div class="safety-cell">Pair</div>
+        <div class="safety-cell">Marker 1</div>
+        <div class="safety-cell">Marker 2</div>
+        <div class="safety-cell">Tissue</div>
+        <div class="safety-cell">Profile</div>
+        <div class="safety-cell">Tested by</div>
+      </div>`;
+
+    const rows = data.map(d => {
+      let badgeHtml;
+      if (typeof d.safety_profile === 'number') {
+        badgeHtml = `<span class="safety-badge numeric">${d.safety_profile.toFixed(2)}</span>`;
+      } else {
+        const cls = d.safety_profile === 'safe' ? 'safe' : 'unsafe';
+        badgeHtml = `<span class="safety-badge ${cls}">${d.safety_profile}</span>`;
+      }
+      return `
+        <div class="safety-row">
+          <div class="safety-cell" style="color:var(--accent);font-size:11px;">${d.pair_id}</div>
+          <div class="safety-cell">${d.marker_1?.symbol || '—'}</div>
+          <div class="safety-cell">${d.marker_2?.symbol || '—'}</div>
+          <div class="safety-cell">${d.tissue}</div>
+          <div class="safety-cell">${badgeHtml}</div>
+          <div class="safety-cell" style="color:var(--muted);">${d.tested_by}</div>
+        </div>`;
+    }).join('');
+
+    container.innerHTML = header + rows;
+  }
+
+  // ── CHANGELOG ──
+  async function loadLogs() {
+    try {
+      const response = await fetch('logs.json');
+      if (!response.ok) throw new Error('Failed to load logs');
+      const logs = await response.json();
+      renderLogs(logs);
+    } catch (error) {
+      document.getElementById('logs-container').innerHTML = '<p style="color: var(--accent);">Failed to load logs.json</p>';
+    }
+  }
+
+  function renderLogs(logs) {
+    const container = document.getElementById('logs-container');
+    if (!container) return;
+    let html = '';
+    logs.forEach(log => {
+      let fileHtml = '';
+      if (log.file) {
+        if (log.type === 'model') {
+          // Special scVI model button
+          if (log.link) {
+            fileHtml = `
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+                <a href="${log.link}" target="_blank" class="model-btn">
+                  <span>🧠</span> Download scVI model
+                </a>
+                <span class="log-file" style="display:flex;align-items:center;gap:5px;">📁 ${log.file}</span>
+              </div>`;
+          } else {
+            fileHtml = `
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;align-items:center;">
+                <span class="model-btn pending">🧠 scVI model — upload link pending</span>
+                <span class="log-file" style="display:flex;align-items:center;gap:5px;">📁 ${log.file}</span>
+              </div>`;
+          }
+        } else if (log.link) {
+          fileHtml = `<a href="${log.link}" target="_blank" class="log-file-link">📁 ${log.file}</a>`;
+        } else {
+          fileHtml = `<span class="log-file">📁 ${log.file}</span>`;
+        }
+      }
+      html += `
+        <div class="log-entry">
+          <div class="log-header">
+            <span class="log-version">${log.version}</span>
+            <span class="log-date">${log.date}</span>
+            ${log.tags ? log.tags.map(t => `<span class="log-tag">${t}</span>`).join('') : ''}
+          </div>
+          <div class="log-description">${log.description}</div>
+          ${fileHtml}
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  renderTasks();
+  loadSafetyResults();
+  loadLogs();
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>
