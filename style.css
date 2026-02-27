@@ -812,3 +812,264 @@ mjx-container { color: var(--text) !important; }
   .resources { grid-template-columns: 1fr; }
   .console-grid { grid-template-columns: 1fr; }
 }
+
+
+/* ══════════════════════════════════════════════════════════
+   Updates page — logs, task board, safety table
+   ══════════════════════════════════════════════════════════ */
+
+/* ── CHANGELOG / LOGS ─────────────────────────────────────── */
+.logs-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.log-entry {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  transition: border-color 0.2s;
+}
+
+.log-entry:hover { border-color: rgba(255,77,109,0.3); }
+
+.log-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.log-version {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent);
+  background: rgba(255,77,109,0.1);
+  border: 1px solid rgba(255,77,109,0.2);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+.log-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.log-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.log-description {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.log-file {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--green);
+  background: rgba(82,212,138,0.05);
+  border: 1px solid rgba(82,212,138,0.2);
+  border-radius: 4px;
+  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.log-file-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--blue);
+  background: rgba(116,179,255,0.05);
+  border: 1px solid rgba(116,179,255,0.2);
+  border-radius: 4px;
+  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.log-file-link:hover {
+  background: rgba(116,179,255,0.15);
+  border-color: var(--blue);
+  color: var(--text);
+}
+
+.model-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  border: 1px solid rgba(199,125,255,0.35);
+  background: rgba(199,125,255,0.08);
+  color: var(--purple);
+  transition: all 0.2s;
+}
+
+.model-btn:hover {
+  background: rgba(199,125,255,0.18);
+  border-color: var(--purple);
+  color: var(--text);
+}
+
+.model-btn.pending {
+  border-color: rgba(255,209,102,0.3);
+  background: rgba(255,209,102,0.06);
+  color: var(--yellow);
+  cursor: default;
+}
+
+/* ── TASK BOARD ───────────────────────────────────────────── */
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.task-column {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.task-col-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.task-col-badge {
+  margin-left: auto;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1px 8px;
+  font-size: 10px;
+}
+
+.task-list {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 60px;
+}
+
+.task-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  transition: border-color 0.15s;
+}
+
+.task-card:hover { border-color: rgba(255,77,109,0.3); }
+
+.task-title {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.task-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+.task-person {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--accent2);
+  background: rgba(255,77,109,0.1);
+  border: 1px solid rgba(255,77,109,0.2);
+  border-radius: 4px;
+  padding: 1px 7px;
+}
+
+.task-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 7px;
+}
+
+/* ── SAFETY RESULTS TABLE ─────────────────────────────────── */
+.safety-table-wrap {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.safety-row {
+  display: grid;
+  grid-template-columns: 72px 1fr 1fr 110px 80px 100px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  font-family: 'DM Mono', monospace;
+}
+
+.safety-row:last-child { border-bottom: none; }
+
+.safety-row.header {
+  background: var(--surface2);
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.safety-cell {
+  padding: 10px 14px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+}
+
+.safety-cell:last-child { border-right: none; }
+
+.safety-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.safety-badge.safe    { background: rgba(82,212,138,0.1);  color: var(--green);   border: 1px solid rgba(82,212,138,0.25); }
+.safety-badge.unsafe  { background: rgba(255,77,109,0.1);  color: var(--accent2); border: 1px solid rgba(255,77,109,0.25); }
+.safety-badge.numeric { background: var(--surface2);       color: var(--yellow);  border: 1px solid rgba(255,209,102,0.25); }
+
+@media (max-width: 900px) {
+  .task-grid { grid-template-columns: 1fr; }
+  .safety-row { grid-template-columns: 72px 1fr 1fr 80px; }
+  .safety-row > .safety-cell:nth-child(5),
+  .safety-row > .safety-cell:nth-child(6) { display: none; }
+}
