@@ -21,5 +21,14 @@
     "tags": ["combined", "integrated"],
     "file": "all_samples_combined.h5ad",
     "link": "https://1drv.ms/u/c/098ACD27945EAC8D/IQC-VpV-JXqmR41Z4Hg-7cE2AdhMxp2uVCsb1m0eKq3J4L4?e=edaHmd"
+  },
+  {
+    "version": "v0.3.0",
+    "date": "2026-02-27",
+    "description": "scVI-VAE trained on combined AnnData (epoch 400, ELBO: -1842.3). Latent dim d=20, batch covariate = sample ID. Model saved before RAM crash — paired with all_samples_combined.h5ad v0.2.0. Use together for latent representation extraction.",
+    "tags": ["scvi", "model", "trained"],
+    "type": "model",
+    "file": "scvi_model/ + all_samples_combined.h5ad",
+    "link": null
   }
 ]

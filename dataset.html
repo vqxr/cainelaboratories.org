@@ -23,6 +23,7 @@
       <a href="math.html" class="nav-item"><span class="icon">∑</span> Mathematics</a>
       <a href="dataset.html" class="nav-item active"><span class="icon">🗄️</span> Dataset</a>
       <a href="console.html" class="nav-item"><span class="icon">🖥</span> Lab Console</a>
+      <a href="updates.html" class="nav-item"><span class="icon">📋</span> Updates</a>
     </div>
     <div class="sidebar-divider"></div>
     <div class="nav-section">
@@ -30,7 +31,7 @@
       <a href="#overview" class="nav-item"><span class="icon">·</span> Overview</a>
       <a href="#structure" class="nav-item"><span class="icon">·</span> Data structure</a>
       <a href="#validation" class="nav-item"><span class="icon">·</span> Validation</a>
-      <a href="#logs" class="nav-item"><span class="icon">·</span> Version Logs</a>
+      <a href="updates.html#changelog" class="nav-item"><span class="icon">·</span> Version Logs →</a>
     </div>
   </nav>
 
@@ -143,17 +144,14 @@
       </div>
     </section>
 
-    <!-- VERSION LOGS -->
+    <!-- VERSION LOGS → moved to Updates page -->
     <section id="logs" class="reveal">
       <div class="section-header">
         <div class="section-icon">📋</div>
-        <h2>Dataset version logs</h2>
+        <h2>Version logs</h2>
       </div>
-      <div class="callout" style="margin-bottom:16px;">
-        <p>Changelog of all generated dataset versions. New entries are added as we refine the data (filtering, integration, denoising).</p>
-      </div>
-      <div class="logs-container" id="logs-container">
-        <!-- populated by JavaScript -->
+      <div class="callout">
+        <p>Version logs have moved to the <a href="updates.html#changelog" style="color:var(--accent);text-decoration:none;">Updates page →</a> along with the task board and distributed safety profiling results.</p>
       </div>
     </section>
 
@@ -174,52 +172,6 @@
       a.classList.add('active');
     });
   });
-
-  // Fetch logs from external JSON file
-  async function loadLogs() {
-    try {
-      const response = await fetch('logs.json');
-      if (!response.ok) throw new Error('Failed to load logs');
-      const logs = await response.json();
-      renderLogs(logs);
-    } catch (error) {
-      console.error('Error loading logs:', error);
-      document.getElementById('logs-container').innerHTML = '<p style="color: var(--accent);">Failed to load logs. Please check that logs.json exists.</p>';
-    }
-  }
-
-  function renderLogs(logs) {
-    const container = document.getElementById('logs-container');
-    if (!container) return;
-    let html = '';
-    logs.forEach(log => {
-      // Build file link if link exists
-      let fileHtml = '';
-      if (log.file) {
-        if (log.link) {
-          fileHtml = `<a href="${log.link}" target="_blank" class="log-file-link">📁 ${log.file}</a>`;
-        } else {
-          fileHtml = `<span class="log-file">📁 ${log.file}</span>`;
-        }
-      }
-
-      html += `
-        <div class="log-entry">
-          <div class="log-header">
-            <span class="log-version">${log.version}</span>
-            <span class="log-date">${log.date}</span>
-            ${log.tags ? log.tags.map(t => `<span class="log-tag">${t}</span>`).join('') : ''}
-          </div>
-          <div class="log-description">${log.description}</div>
-          ${fileHtml}
-        </div>
-      `;
-    });
-    container.innerHTML = html;
-  }
-
-  // Load logs when page loads
-  loadLogs();
 </script>
 
 <!-- Additional style for log file links -->
