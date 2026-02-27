@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BBT — Dataset</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -29,6 +30,7 @@
       <a href="#overview" class="nav-item"><span class="icon">·</span> Overview</a>
       <a href="#structure" class="nav-item"><span class="icon">·</span> Data structure</a>
       <a href="#validation" class="nav-item"><span class="icon">·</span> Validation</a>
+      <a href="#logs" class="nav-item"><span class="icon">·</span> Version Logs</a>
     </div>
   </nav>
 
@@ -39,6 +41,7 @@
       <p class="hero-desc">Scientific grounding for the atlas we're mining. The Human Endometriosis Cell Atlas — 54 patient samples, 15.7GB of scRNA-seq data across ectopic lesions, eutopic endometrium, and healthy controls.</p>
     </div>
 
+    <!-- OVERVIEW -->
     <section id="overview" class="reveal">
       <div class="section-header">
         <div class="section-icon">📊</div>
@@ -78,6 +81,7 @@
       </div>
     </section>
 
+    <!-- DATA STRUCTURE -->
     <section id="structure" class="reveal">
       <div class="section-header">
         <div class="section-icon">🔢</div>
@@ -101,6 +105,7 @@
       </div>
     </section>
 
+    <!-- VALIDATION -->
     <section id="validation" class="reveal">
       <div class="section-header">
         <div class="section-icon">✅</div>
@@ -138,6 +143,20 @@
       </div>
     </section>
 
+    <!-- VERSION LOGS (NEW) -->
+    <section id="logs" class="reveal">
+      <div class="section-header">
+        <div class="section-icon">📋</div>
+        <h2>Dataset version logs</h2>
+      </div>
+      <div class="callout" style="margin-bottom:16px;">
+        <p>Changelog of all generated dataset versions. New entries are added as we refine the data (filtering, integration, denoising).</p>
+      </div>
+      <div class="logs-container" id="logs-container">
+        <!-- dynamically populated by JavaScript -->
+      </div>
+    </section>
+
     <div class="footer">
       <span>bloomsbury burger therapeutics plc © 2026</span>
       <span>pre-seed · pre-revenue · pre-sanity</span>
@@ -145,6 +164,139 @@
   </main>
 </div>
 
-<script src="script.js"></script>
+<script>
+  // Dataset version logs – simply add a new object to this array to display a new log entry.
+  // Each entry can have:
+  // - version: string (e.g., "v0.1.0")
+  // - date: string (e.g., "2026-02-27")
+  // - description: string (what changed, key metrics)
+  // - tags: array of strings (optional, e.g., ["raw", "filtered", "combined"])
+  // - file: string (optional, filename)
+  const datasetLogs = [
+    {
+      version: "v0.0.0",
+      date: "2026-02-26",
+      description: "Raw data downloaded from GEO (GSE213216). 54 samples in tar.gz format. Total size ~15.7GB.",
+      tags: ["raw", "public"],
+      file: "GSE213216_RAW"
+    },
+    {
+      version: "v0.1.0",
+      date: "2026-02-26",
+      description: "Per-sample QC: filtered cells with ≥500 genes and ≤20% mitochondrial reads. All genes retained. 43 samples successfully processed (2 failed due to missing raw matrix).",
+      tags: ["filtered", "per-sample"],
+      file: "GSM*_filtered.h5ad (43 files)"
+    },
+    {
+      version: "v0.2.0",
+      date: "2026-02-26",
+      description: "Combined all 43 filtered samples into a single AnnData object. Total cells: ~283,000 (exact sum to be calculated). Genes: 33,538. Added sample metadata column 'tissue_type' (currently unknown).",
+      tags: ["combined", "integrated"],
+      file: "all_samples_combined.h5ad"
+    }
+    // Add new logs here – they will automatically appear on the page.
+  ];
+
+  function renderLogs() {
+    const container = document.getElementById('logs-container');
+    if (!container) return;
+    let html = '';
+    datasetLogs.forEach(log => {
+      html += `
+        <div class="log-entry">
+          <div class="log-header">
+            <span class="log-version">${log.version}</span>
+            <span class="log-date">${log.date}</span>
+            ${log.tags ? log.tags.map(t => `<span class="log-tag">${t}</span>`).join('') : ''}
+          </div>
+          <div class="log-description">${log.description}</div>
+          ${log.file ? `<div class="log-file">📁 ${log.file}</div>` : ''}
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  renderLogs();
+
+  // Smooth scroll and active nav (same as before)
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      a.classList.add('active');
+    });
+  });
+</script>
+
+<!-- Add minimal CSS for log entries (extend style.css or embed) -->
+<style>
+  .logs-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .log-entry {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    transition: border-color 0.2s;
+  }
+  .log-entry:hover {
+    border-color: rgba(255,77,109,0.3);
+  }
+  .log-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .log-version {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    background: rgba(255,77,109,0.1);
+    border: 1px solid rgba(255,77,109,0.2);
+    border-radius: 4px;
+    padding: 2px 8px;
+  }
+  .log-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .log-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--blue);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .log-description {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+  .log-file {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    background: rgba(82,212,138,0.05);
+    border: 1px solid rgba(82,212,138,0.2);
+    border-radius: 4px;
+    padding: 2px 8px;
+    display: inline-block;
+  }
+</style>
+
 </body>
 </html>
