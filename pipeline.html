@@ -11,7 +11,7 @@
     options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
   };
 </script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js" async></script>
 </head>
 <body>
 
@@ -114,7 +114,7 @@
 
       <div class="chart-container">
         <div class="chart-title">UMAP embedding — denoised latent space (mock, n=~280k cells)</div>
-        <canvas id="umap-canvas" width="700" height="320"></canvas>
+        <img src="assets/umap.png" alt="UMAP Embedding" style="width:100%;border-radius:6px;display:block;" />
         <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;font-family:'DM Mono',monospace;flex-wrap:wrap;">
           <span style="color:#ff4d6d;">● Ectopic Lesion</span>
           <span style="color:#74b3ff;">● Eutopic</span>
@@ -250,7 +250,7 @@
     });
     // Redraw charts for the newly visible step
     if (idx === 0) drawHistogram('hist-canvas');
-    if (idx === 1) { drawUMAP('umap-canvas'); }
+    // UMAP now uses static image
     if (idx === 2) drawLossCurve('loss-canvas');
   };
 </script>
