@@ -28,7 +28,7 @@
     <div class="nav-section">
       <div class="nav-label">On this page</div>
       <a href="#tasks" class="nav-item"><span class="icon">·</span> Task Board</a>
-      <a href="#safety-results" class="nav-item"><span class="icon">·</span> Safety Results</a>
+      <a href="#safety" class="nav-item"><span class="icon">·</span> Safety Results</a>
       <a href="#changelog" class="nav-item"><span class="icon">·</span> Changelog</a>
     </div>
   </nav>
@@ -37,7 +37,7 @@
     <div class="hero">
       <div class="hero-badge">Internal · Team Coordination · Live</div>
       <h1>مسكين <span>Distributed</span></h1>
-      <p class="hero-desc">Task board, safety profiling results, and version changelog. Miskin distributed computing — two laptops, zero GPUs, infinite ambition.</p>
+      <p class="hero-desc">Task board, safety profiling results, and version changelog. Two laptops, zero budget, infinite ambition.</p>
     </div>
 
     <!-- TASK BOARD -->
@@ -46,36 +46,33 @@
         <div class="section-icon">📌</div>
         <h2>Task board</h2>
       </div>
-
-      <div class="task-grid" id="task-grid">
-        <!-- populated by JS -->
-      </div>
+      <div class="task-grid" id="task-grid"></div>
     </section>
 
     <!-- SAFETY RESULTS -->
-    <section id="safety-results" class="reveal">
+    <section id="safety" class="reveal">
       <div class="section-header">
         <div class="section-icon">🛡️</div>
         <h2>Safety profiling results</h2>
       </div>
       <div class="callout" style="margin-bottom:16px;">
-        <p>Distributed safety checks across Tabula Sapiens subsets. Each person runs one tissue subset and contributes results in the shared format below. Add your results to <code>safety_results.json</code>.</p>
+        <p>Distributed safety checks across Tabula Sapiens subsets. Each person runs one tissue subset and contributes results in the shared format. Add entries to <code>assets/safety_results.json</code> to populate this table.</p>
       </div>
 
       <div style="background:#0a0a0b;border:1px solid var(--border);border-radius:10px;padding:20px;font-family:'DM Mono',monospace;font-size:12px;line-height:2;margin-bottom:16px;">
         <div style="color:var(--muted);"># Schema — one entry per (pair, tissue) test</div>
-        <div><span style="color:var(--accent);">"pair_id"</span>       → <span style="color:var(--green);">string</span> <span style="color:var(--muted2);">  # e.g. "pair001"</span></div>
-        <div><span style="color:var(--accent);">"marker_1/2"</span>    → <span style="color:var(--green);">{ ensembl, symbol }</span></div>
-        <div><span style="color:var(--accent);">"tissue"</span>        → <span style="color:var(--green);">string</span> <span style="color:var(--muted2);">  # Tabula Sapiens organ</span></div>
-        <div><span style="color:var(--accent);">"cell_type"</span>     → <span style="color:var(--green);">string | "all"</span></div>
-        <div><span style="color:var(--accent);">"safety_profile"</span>→ <span style="color:var(--yellow);">0–1 float or "safe"/"unsafe"</span></div>
-        <div><span style="color:var(--accent);">"tested_by"</span>     → <span style="color:var(--blue);">string</span></div>
-        <div><span style="color:var(--accent);">"timestamp"</span>     → <span style="color:var(--blue);">ISO 8601</span></div>
+        <div><span style="color:var(--accent);">"pair_id"</span>        → <span style="color:var(--green);">string</span></div>
+        <div><span style="color:var(--accent);">"marker_1/2"</span>     → <span style="color:var(--green);">{ ensembl, symbol }</span></div>
+        <div><span style="color:var(--accent);">"tissue"</span>         → <span style="color:var(--green);">string</span>  <span style="color:var(--muted);"># Tabula Sapiens organ</span></div>
+        <div><span style="color:var(--accent);">"cell_type"</span>      → <span style="color:var(--green);">string | "all"</span></div>
+        <div><span style="color:var(--accent);">"safety_profile"</span> → <span style="color:var(--yellow);">0–1 float or "safe"/"unsafe"</span></div>
+        <div><span style="color:var(--accent);">"tested_by"</span>      → <span style="color:var(--blue);">string</span></div>
+        <div><span style="color:var(--accent);">"timestamp"</span>      → <span style="color:var(--blue);">ISO 8601</span></div>
       </div>
 
-      <div class="safety-results-list" id="safety-results-container">
-        <div style="text-align:center;padding:30px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;">
-          No results yet — add entries to safety_results.json to populate this table.
+      <div id="safety-results-container">
+        <div style="text-align:center;padding:30px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;">
+          No results yet — add entries to assets/safety_results.json to populate this table.
         </div>
       </div>
     </section>
@@ -87,10 +84,10 @@
         <h2>Changelog</h2>
       </div>
       <div class="callout" style="margin-bottom:16px;">
-        <p>Version history of all datasets and pipeline artifacts. New entries are added as we refine the data.</p>
+        <p>Version history of all datasets and pipeline artifacts. New entries added as we refine the data.</p>
       </div>
       <div class="logs-container" id="logs-container">
-        <!-- populated by JS -->
+        <div style="text-align:center;padding:30px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;">Loading...</div>
       </div>
     </section>
 
@@ -102,50 +99,44 @@
 </div>
 
 <style>
-/* ── TASK GRID ── */
 .task-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
-
 .task-column {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
 }
-
 .task-col-header {
-  padding: 12px 16px;
+  padding: 10px 14px;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   gap: 8px;
   font-family: 'DM Mono', monospace;
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--muted);
 }
-
-.task-col-header .col-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
+.task-col-badge {
+  margin-left: auto;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1px 8px;
+  font-size: 10px;
 }
-
-.task-col-header .col-dot.todo { background: var(--muted); }
-.task-col-header .col-dot.doing { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
-.task-col-header .col-dot.done { background: var(--green); box-shadow: 0 0 6px var(--green); }
-
 .task-list {
   padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  min-height: 80px;
+  gap: 6px;
+  min-height: 60px;
 }
-
 .task-card {
   background: var(--surface2);
   border: 1px solid var(--border);
@@ -153,23 +144,15 @@
   padding: 10px 12px;
   transition: border-color 0.15s;
 }
-
 .task-card:hover { border-color: rgba(255,77,109,0.3); }
-
 .task-title {
   font-size: 13px;
   font-weight: 500;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   color: var(--text);
+  line-height: 1.4;
 }
-
-.task-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
+.task-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .task-person {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
@@ -177,9 +160,8 @@
   background: rgba(255,77,109,0.1);
   border: 1px solid rgba(255,77,109,0.2);
   border-radius: 4px;
-  padding: 1px 6px;
+  padding: 1px 7px;
 }
-
 .task-tag {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
@@ -187,27 +169,21 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 4px;
-  padding: 1px 6px;
+  padding: 1px 7px;
 }
-
-/* ── SAFETY RESULTS TABLE ── */
-.safety-results-list {
+.safety-table-wrap {
   border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
 }
-
 .safety-row {
   display: grid;
-  grid-template-columns: 80px 1fr 1fr 120px 80px 100px;
-  gap: 0;
+  grid-template-columns: 72px 1fr 1fr 110px 80px 100px;
   border-bottom: 1px solid var(--border);
   font-size: 12px;
   font-family: 'DM Mono', monospace;
 }
-
 .safety-row:last-child { border-bottom: none; }
-
 .safety-row.header {
   background: var(--surface2);
   color: var(--muted);
@@ -215,35 +191,22 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
-
 .safety-cell {
   padding: 10px 14px;
   border-right: 1px solid var(--border);
   display: flex;
   align-items: center;
 }
-
 .safety-cell:last-child { border-right: none; }
-
 .safety-badge {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
   padding: 2px 8px;
   border-radius: 4px;
 }
-
-.safety-badge.safe { background: rgba(82,212,138,0.1); color: var(--green); border: 1px solid rgba(82,212,138,0.25); }
-.safety-badge.unsafe { background: rgba(255,77,109,0.1); color: var(--accent2); border: 1px solid rgba(255,77,109,0.25); }
-.safety-badge.numeric { background: var(--surface2); color: var(--yellow); border: 1px solid rgba(255,209,102,0.25); }
-
-@media (max-width: 900px) {
-  .task-grid { grid-template-columns: 1fr; }
-  .safety-row { grid-template-columns: 80px 1fr 1fr 80px; }
-  .safety-row > .safety-cell:nth-child(5),
-  .safety-row > .safety-cell:nth-child(6) { display: none; }
-}
-
-/* Model download button */
+.safety-badge.safe    { background: rgba(82,212,138,0.1);  color: var(--green);   border: 1px solid rgba(82,212,138,0.25); }
+.safety-badge.unsafe  { background: rgba(255,77,109,0.1);  color: var(--accent2); border: 1px solid rgba(255,77,109,0.25); }
+.safety-badge.numeric { background: var(--surface2);       color: var(--yellow);  border: 1px solid rgba(255,209,102,0.25); }
 .model-btn {
   display: inline-flex;
   align-items: center;
@@ -257,7 +220,6 @@
   background: rgba(199,125,255,0.08);
   color: var(--purple);
   transition: all 0.2s;
-  cursor: pointer;
 }
 .model-btn:hover {
   background: rgba(199,125,255,0.18);
@@ -270,10 +232,16 @@
   color: var(--yellow);
   cursor: default;
 }
+@media (max-width: 900px) {
+  .task-grid { grid-template-columns: 1fr; }
+  .safety-row { grid-template-columns: 72px 1fr 1fr 80px; }
+  .safety-row > .safety-cell:nth-child(5),
+  .safety-row > .safety-cell:nth-child(6) { display: none; }
+}
 </style>
 
+<script src="script.js"></script>
 <script>
-  // ── SMOOTH SCROLL ──
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
       e.preventDefault();
@@ -283,7 +251,6 @@
     });
   });
 
-  // ── TASK DATA ──
   const tasks = {
     todo: [
       { title: 'Tabula Sapiens — Kidney subset', person: 'TBD', tag: 'safety' },
@@ -309,17 +276,16 @@
   function renderTasks() {
     const grid = document.getElementById('task-grid');
     const cols = [
-      { key: 'todo',  label: 'To do',      dot: 'todo' },
-      { key: 'doing', label: 'In progress', dot: 'doing' },
-      { key: 'done',  label: 'Done',        dot: 'done' },
+      { key: 'todo',  label: 'To do',      dot: 'background:var(--muted)' },
+      { key: 'doing', label: 'In progress', dot: 'background:var(--yellow);box-shadow:0 0 6px var(--yellow)' },
+      { key: 'done',  label: 'Done',        dot: 'background:var(--green);box-shadow:0 0 6px var(--green)' },
     ];
-
     grid.innerHTML = cols.map(col => `
       <div class="task-column">
         <div class="task-col-header">
-          <span class="col-dot ${col.dot}"></span>
+          <span class="dot" style="${col.dot}"></span>
           ${col.label}
-          <span style="margin-left:auto;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1px 8px;font-size:10px;">${tasks[col.key].length}</span>
+          <span class="task-col-badge">${tasks[col.key].length}</span>
         </div>
         <div class="task-list">
           ${tasks[col.key].map(t => `
@@ -329,30 +295,19 @@
                 <span class="task-person">${t.person}</span>
                 <span class="task-tag">${t.tag}</span>
               </div>
-            </div>
-          `).join('')}
+            </div>`).join('')}
         </div>
-      </div>
-    `).join('');
+      </div>`).join('');
   }
 
-  // ── SAFETY RESULTS ──
   async function loadSafetyResults() {
-    const container = document.getElementById('safety-results-container');
     try {
       const res = await fetch('./assets/safety_results.json');
       if (!res.ok) throw new Error();
       const data = await res.json();
-      renderSafetyResults(data, container);
-    } catch {
-      // no file yet — show placeholder
-    }
-  }
-
-  function renderSafetyResults(data, container) {
-    if (!data || !data.length) return;
-    const header = `
-      <div class="safety-row header">
+      if (!data || !data.length) return;
+      const container = document.getElementById('safety-results-container');
+      const header = `<div class="safety-row header">
         <div class="safety-cell">Pair</div>
         <div class="safety-cell">Marker 1</div>
         <div class="safety-cell">Marker 2</div>
@@ -360,73 +315,52 @@
         <div class="safety-cell">Profile</div>
         <div class="safety-cell">Tested by</div>
       </div>`;
-
-    const rows = data.map(d => {
-      let badgeHtml;
-      if (typeof d.safety_profile === 'number') {
-        badgeHtml = `<span class="safety-badge numeric">${d.safety_profile.toFixed(2)}</span>`;
-      } else {
-        const cls = d.safety_profile === 'safe' ? 'safe' : 'unsafe';
-        badgeHtml = `<span class="safety-badge ${cls}">${d.safety_profile}</span>`;
-      }
-      return `
-        <div class="safety-row">
-          <div class="safety-cell" style="color:var(--accent);font-size:11px;">${d.pair_id}</div>
+      const rows = data.map(d => {
+        let badge;
+        if (typeof d.safety_profile === 'number') {
+          badge = `<span class="safety-badge numeric">${d.safety_profile.toFixed(2)}</span>`;
+        } else {
+          badge = `<span class="safety-badge ${d.safety_profile === 'safe' ? 'safe' : 'unsafe'}">${d.safety_profile}</span>`;
+        }
+        return `<div class="safety-row">
+          <div class="safety-cell" style="color:var(--accent);">${d.pair_id}</div>
           <div class="safety-cell">${d.marker_1?.symbol || '—'}</div>
           <div class="safety-cell">${d.marker_2?.symbol || '—'}</div>
           <div class="safety-cell">${d.tissue}</div>
-          <div class="safety-cell">${badgeHtml}</div>
+          <div class="safety-cell">${badge}</div>
           <div class="safety-cell" style="color:var(--muted);">${d.tested_by}</div>
         </div>`;
-    }).join('');
-
-    container.innerHTML = header + rows;
+      }).join('');
+      container.innerHTML = `<div class="safety-table-wrap">${header}${rows}</div>`;
+    } catch { /* keep placeholder */ }
   }
 
-  // ── CHANGELOG ──
   async function loadLogs() {
-    try {
-      const response = await fetch('logs.json');
-      if (!response.ok) throw new Error('Failed to load logs');
-      const logs = await response.json();
-      renderLogs(logs);
-    } catch (error) {
-      document.getElementById('logs-container').innerHTML = '<p style="color: var(--accent);">Failed to load logs.json</p>';
-    }
-  }
-
-  function renderLogs(logs) {
     const container = document.getElementById('logs-container');
-    if (!container) return;
-    let html = '';
-    logs.forEach(log => {
-      let fileHtml = '';
-      if (log.file) {
-        if (log.type === 'model') {
-          // Special scVI model button
-          if (log.link) {
-            fileHtml = `
-              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
-                <a href="${log.link}" target="_blank" class="model-btn">
-                  <span>🧠</span> Download scVI model
-                </a>
-                <span class="log-file" style="display:flex;align-items:center;gap:5px;">📁 ${log.file}</span>
-              </div>`;
-          } else {
-            fileHtml = `
-              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;align-items:center;">
+    try {
+      const res = await fetch('logs.json');
+      if (!res.ok) throw new Error();
+      const logs = await res.json();
+      container.innerHTML = logs.map(log => {
+        let fileHtml = '';
+        if (log.file) {
+          if (log.type === 'model') {
+            if (log.link) {
+              fileHtml = `<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                <a href="${log.link}" target="_blank" class="model-btn">🧠 Download scVI model</a>
+                <span class="log-file">📁 ${log.file}</span></div>`;
+            } else {
+              fileHtml = `<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
                 <span class="model-btn pending">🧠 scVI model — upload link pending</span>
-                <span class="log-file" style="display:flex;align-items:center;gap:5px;">📁 ${log.file}</span>
-              </div>`;
+                <span class="log-file">📁 ${log.file}</span></div>`;
+            }
+          } else if (log.link) {
+            fileHtml = `<div style="margin-top:8px;"><a href="${log.link}" target="_blank" class="log-file-link">📁 ${log.file}</a></div>`;
+          } else {
+            fileHtml = `<div style="margin-top:8px;"><span class="log-file">📁 ${log.file}</span></div>`;
           }
-        } else if (log.link) {
-          fileHtml = `<a href="${log.link}" target="_blank" class="log-file-link">📁 ${log.file}</a>`;
-        } else {
-          fileHtml = `<span class="log-file">📁 ${log.file}</span>`;
         }
-      }
-      html += `
-        <div class="log-entry">
+        return `<div class="log-entry">
           <div class="log-header">
             <span class="log-version">${log.version}</span>
             <span class="log-date">${log.date}</span>
@@ -434,17 +368,16 @@
           </div>
           <div class="log-description">${log.description}</div>
           ${fileHtml}
-        </div>
-      `;
-    });
-    container.innerHTML = html;
+        </div>`;
+      }).join('');
+    } catch {
+      container.innerHTML = '<p style="color:var(--accent);font-family:DM Mono,monospace;font-size:12px;padding:16px;">Failed to load logs.json</p>';
+    }
   }
 
   renderTasks();
   loadSafetyResults();
   loadLogs();
 </script>
-
-<script src="script.js"></script>
 </body>
 </html>

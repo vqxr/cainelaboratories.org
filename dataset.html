@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BBT — Dataset</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -31,7 +30,6 @@
       <a href="#overview" class="nav-item"><span class="icon">·</span> Overview</a>
       <a href="#structure" class="nav-item"><span class="icon">·</span> Data structure</a>
       <a href="#validation" class="nav-item"><span class="icon">·</span> Validation</a>
-      <a href="updates.html#changelog" class="nav-item"><span class="icon">·</span> Version Logs →</a>
     </div>
   </nav>
 
@@ -42,7 +40,6 @@
       <p class="hero-desc">Scientific grounding for the atlas we're mining. The Human Endometriosis Cell Atlas — 54 patient samples, 15.7GB of scRNA-seq data across ectopic lesions, eutopic endometrium, and healthy controls.</p>
     </div>
 
-    <!-- OVERVIEW -->
     <section id="overview" class="reveal">
       <div class="section-header">
         <div class="section-icon">📊</div>
@@ -82,7 +79,6 @@
       </div>
     </section>
 
-    <!-- DATA STRUCTURE -->
     <section id="structure" class="reveal">
       <div class="section-header">
         <div class="section-icon">🔢</div>
@@ -106,7 +102,6 @@
       </div>
     </section>
 
-    <!-- VALIDATION -->
     <section id="validation" class="reveal">
       <div class="section-header">
         <div class="section-icon">✅</div>
@@ -144,17 +139,6 @@
       </div>
     </section>
 
-    <!-- VERSION LOGS → moved to Updates page -->
-    <section id="logs" class="reveal">
-      <div class="section-header">
-        <div class="section-icon">📋</div>
-        <h2>Version logs</h2>
-      </div>
-      <div class="callout">
-        <p>Version logs have moved to the <a href="updates.html#changelog" style="color:var(--accent);text-decoration:none;">Updates page →</a> along with the task board and distributed safety profiling results.</p>
-      </div>
-    </section>
-
     <div class="footer">
       <span>bloomsbury burger therapeutics plc © 2026</span>
       <span>pre-seed · pre-revenue · pre-sanity</span>
@@ -162,38 +146,6 @@
   </main>
 </div>
 
-<script>
-  // Smooth scroll and active nav
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      a.classList.add('active');
-    });
-  });
-</script>
-
-<!-- Additional style for log file links -->
-<style>
-  .log-file-link {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--blue);
-    background: rgba(116,179,255,0.05);
-    border: 1px solid rgba(116,179,255,0.2);
-    border-radius: 4px;
-    padding: 2px 8px;
-    display: inline-block;
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-  .log-file-link:hover {
-    background: rgba(116,179,255,0.15);
-    border-color: var(--blue);
-    color: var(--text);
-  }
-</style>
-
+<script src="script.js"></script>
 </body>
 </html>
