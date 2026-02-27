@@ -4,7 +4,8 @@
     "date": "2026-02-26",
     "description": "Raw data downloaded from GEO (GSE213216). 54 samples in tar.gz format. Total size ~15.7GB.",
     "tags": ["raw", "public"],
-    "file": "GSE213216_RAW"
+    "file": "GSE213216_RAW",
+    "link": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE213216"
   },
   {
     "version": "v0.1.0",
@@ -18,6 +19,7 @@
     "date": "2026-02-26",
     "description": "Combined all 43 filtered samples into a single AnnData object. Total cells: ~283,000 (exact sum to be calculated). Genes: 33,538. Added sample metadata column 'tissue_type' (currently unknown).",
     "tags": ["combined", "integrated"],
-    "file": "all_samples_combined.h5ad"
+    "file": "all_samples_combined.h5ad",
+    "link": "https://1drv.ms/u/c/098ACD27945EAC8D/IQC-VpV-JXqmR41Z4Hg-7cE2AdhMxp2uVCsb1m0eKq3J4L4?e=edaHmd"
   }
 ]
