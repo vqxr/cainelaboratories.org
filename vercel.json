@@ -19,6 +19,7 @@
     { "source": "/pipeline", "destination": "/pipeline.html" },
     { "source": "/math", "destination": "/math.html" },
     { "source": "/dataset", "destination": "/dataset.html" },
-    { "source": "/console", "destination": "/console.html" }
+    { "source": "/console", "destination": "/console.html" },
+    { "source": "/updates", "destination": "/updates.html" }
   ]
 }
