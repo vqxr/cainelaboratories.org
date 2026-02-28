@@ -1,12 +1,11 @@
-// helix.js — The hero object. Glass-rod double helix with red target nodes.
+// helix.js — Hero object. Thick glass-rod helix with glowing red nodes.
 import * as THREE from 'three';
 import { COLORS } from '../core/engine.js';
 
 let helixGroup;
-let strandA;  // group for strand 1 + its nodes
-let strandB;  // group for strand 2 + its nodes
+let strandA;
+let strandB;
 
-// Strand separation state (driven by scroll chapter 3)
 let targetSeparation = 0;
 let currentSeparation = 0;
 
@@ -15,18 +14,18 @@ export function createHelix(scene) {
     strandA = new THREE.Group();
     strandB = new THREE.Group();
 
-    const turns = 5;
-    const height = 10;
-    const radius = 1.0;
-    const segments = 240;
+    const turns    = 5;
+    const height   = 12;
+    const radius   = 1.1;
+    const segments = 300;
 
     const strand1Points = [];
     const strand2Points = [];
 
     for (let i = 0; i <= segments; i++) {
-        const t = i / segments;
+        const t     = i / segments;
         const angle = t * turns * Math.PI * 2;
-        const y = (t - 0.5) * height;
+        const y     = (t - 0.5) * height;
 
         strand1Points.push(new THREE.Vector3(
             Math.cos(angle) * radius,
@@ -40,98 +39,121 @@ export function createHelix(scene) {
         ));
     }
 
-    // Glass rod material — this is what makes it look expensive
+    // ── Glass rod material ─────────────────────────────────────────
+    // tube radius is now 0.055 — was 0.04, nearly invisible before
     const strandMat = new THREE.MeshPhysicalMaterial({
-        color: 0xe8e8ea,
-        roughness: 0.08,
-        metalness: 0.0,
-        transmission: 0.5,   // semi-transparent glass
-        thickness: 0.4,
-        ior: 1.45,
-        transparent: true,
-        opacity: 0.9,
+        color:               new THREE.Color(0xd0d8f0),
+        roughness:           0.05,
+        metalness:           0.0,
+        transmission:        0.6,
+        thickness:           0.8,
+        ior:                 1.5,
+        transparent:         true,
+        opacity:             0.95,
+        envMapIntensity:     1.0,
+        clearcoat:           1.0,
+        clearcoatRoughness:  0.1,
     });
 
-    // Build tube strands
-    const curve1 = new THREE.CatmullRomCurve3(strand1Points);
-    const curve2 = new THREE.CatmullRomCurve3(strand2Points);
-    const tubeGeo1 = new THREE.TubeGeometry(curve1, 240, 0.04, 8, false);
-    const tubeGeo2 = new THREE.TubeGeometry(curve2, 240, 0.04, 8, false);
+    const curve1   = new THREE.CatmullRomCurve3(strand1Points);
+    const curve2   = new THREE.CatmullRomCurve3(strand2Points);
+    const tubeGeo1 = new THREE.TubeGeometry(curve1, 300, 0.055, 10, false);
+    const tubeGeo2 = new THREE.TubeGeometry(curve2, 300, 0.055, 10, false);
 
     strandA.add(new THREE.Mesh(tubeGeo1, strandMat));
-    strandB.add(new THREE.Mesh(tubeGeo2, strandMat));
+    strandB.add(new THREE.Mesh(tubeGeo2, strandMat.clone()));
 
-    // Rungs (connecting lines) — barely visible, just structural
+    // ── Rungs ──────────────────────────────────────────────────────
     const rungMat = new THREE.LineBasicMaterial({
-        color: 0xffffff,
+        color:       0x4466aa,
         transparent: true,
-        opacity: 0.06,
+        opacity:     0.15,
     });
 
-    for (let i = 0; i <= segments; i += 8) {
-        const rungGeo = new THREE.BufferGeometry().setFromPoints([
-            strand1Points[i],
-            strand2Points[i],
+    for (let i = 0; i <= segments; i += 10) {
+        const geo = new THREE.BufferGeometry().setFromPoints([
+            strand1Points[i], strand2Points[i],
         ]);
-        helixGroup.add(new THREE.Line(rungGeo, rungMat));
+        helixGroup.add(new THREE.Line(geo, rungMat));
     }
 
-    // Target node spheres — red emissive, one colour only
-    // These represent the "found" dual targets
-    const nodeMat = new THREE.MeshPhysicalMaterial({
-        color: 0xff4d6d,
-        emissive: new THREE.Color(0xff4d6d),
-        emissiveIntensity: 0.4,
-        roughness: 0.1,
-        metalness: 0.0,
+    // ── Red emissive nodes ─────────────────────────────────────────
+    // These are what bloom. High emissiveIntensity = visible glow corona.
+    const nodeMat = new THREE.MeshStandardMaterial({
+        color:             new THREE.Color(0xff2244),
+        emissive:          new THREE.Color(0xff1133),
+        emissiveIntensity: 3.0,   // HIGH — this feeds the bloom pass
+        roughness:         0.2,
+        metalness:         0.0,
     });
-    const nodeGeo = new THREE.SphereGeometry(0.09, 16, 16);
 
-    // Strand A nodes
-    for (let i = 0; i <= segments; i += 12) {
-        const n = new THREE.Mesh(nodeGeo, nodeMat);
-        n.position.copy(strand1Points[i]);
-        strandA.add(n);
+    // Slightly larger nodes — 0.12 radius, visible from distance
+    const nodeGeo = new THREE.SphereGeometry(0.12, 16, 16);
+
+    for (let i = 0; i <= segments; i += 15) {
+        const nA = new THREE.Mesh(nodeGeo, nodeMat);
+        nA.position.copy(strand1Points[i]);
+        strandA.add(nA);
+
+        const nB = new THREE.Mesh(nodeGeo, nodeMat.clone());
+        nB.position.copy(strand2Points[i]);
+        strandB.add(nB);
     }
 
-    // Strand B nodes
-    for (let i = 0; i <= segments; i += 12) {
-        const n = new THREE.Mesh(nodeGeo, nodeMat.clone());
-        n.position.copy(strand2Points[i]);
-        strandB.add(n);
-    }
+    // ── Highlight two "found target" nodes — bigger, brighter ──────
+    const targetMat = new THREE.MeshStandardMaterial({
+        color:             new THREE.Color(0xff4466),
+        emissive:          new THREE.Color(0xff2244),
+        emissiveIntensity: 6.0,   // Very high — will corona in bloom
+        roughness:         0.1,
+        metalness:         0.0,
+    });
+    const targetGeo = new THREE.SphereGeometry(0.2, 20, 20);
+
+    // Strand A target — roughly 1/3 up
+    const tA = new THREE.Mesh(targetGeo, targetMat);
+    tA.position.copy(strand1Points[Math.floor(segments * 0.33)]);
+    strandA.add(tA);
+
+    // Strand B target — roughly 2/3 up
+    const tB = new THREE.Mesh(targetGeo, targetMat.clone());
+    tB.position.copy(strand2Points[Math.floor(segments * 0.66)]);
+    strandB.add(tB);
 
     helixGroup.add(strandA);
     helixGroup.add(strandB);
 
-    // Centre-stage, close enough to be sculptural
-    helixGroup.position.set(0, 1, -6);
+    // Centre, close enough to feel monumental
+    helixGroup.position.set(0, 1, -5);
 
     scene.add(helixGroup);
     return helixGroup;
 }
 
-// Called by scroll.js when entering chapter 3
 export function setHelixSeparation(amount) {
-    targetSeparation = amount;  // 0 = neutral, 1 = fully separated
+    targetSeparation = amount;
 }
 
-// Called every frame from main.js
 export function updateHelix(time) {
     if (!helixGroup) return;
 
-    // Smooth interpolation toward target separation
-    currentSeparation += (targetSeparation - currentSeparation) * 0.04;
+    // Smooth interpolation
+    currentSeparation += (targetSeparation - currentSeparation) * 0.035;
 
-    // Strands drift apart along X axis — dual-target visualisation
-    if (strandA) strandA.position.x = -currentSeparation * 0.5;
-    if (strandB) strandB.position.x = currentSeparation * 0.5;
+    if (strandA) strandA.position.x = -currentSeparation * 0.6;
+    if (strandB) strandB.position.x =  currentSeparation * 0.6;
 
-    // Pulse the node emissive intensity gently
-    const pulse = 0.3 + Math.sin(time * 1.4) * 0.15;
+    // Very slow idle rotation — barely perceptible, just alive
+    helixGroup.rotation.y = time * 0.04;
+
+    // Breathing pulse on all emissive nodes
+    const pulse = 2.5 + Math.sin(time * 1.2) * 0.8;
     helixGroup.traverse(child => {
-        if (child.isMesh && child.material.emissive) {
-            child.material.emissiveIntensity = pulse;
+        if (child.isMesh && child.material.emissiveIntensity !== undefined) {
+            // Only pulse regular nodes, not the two big target nodes (intensity ~6)
+            if (child.material.emissiveIntensity < 5.5) {
+                child.material.emissiveIntensity = pulse;
+            }
         }
     });
 }
