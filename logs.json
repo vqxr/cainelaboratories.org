@@ -29,6 +29,14 @@
     "tags": ["scvi", "model", "trained"],
     "type": "model",
     "file": "scvi_model/ + all_samples_combined.h5ad",
-    "link": null
+    "link": "https://liveuclac-my.sharepoint.com/:u:/g/personal/zcqshmk_ucl_ac_uk/IQB9qfSmKuV3S6M6xmvGZG68AX1mpulsAum87h9GNvK2sGc?e=ZTxdgx"
+  },
+  {
+    "version": "v0.4.0",
+    "date": "2026-02-27",
+    "description": "Final QC applied to combined data: cells with ≥1000 total counts, ≤20% mitochondrial reads, ≤8000 genes detected (to exclude multiplets). Retained 247,990 cells and 38,224 genes (no gene filtering). scVI model (v0.3.0) used to compute latent representation (batch_key='sample') stored in .obsm['X_scVI']; UMAP computed from latent space (neighbors + umap). No clustering applied. Raw counts preserved. Denoised expression can be materialised per gene subset.",
+    "tags": ["scvi", "integrated", "latent", "umap", "final-qc"],
+    "file": "all_samples_combined_scvi.h5ad",
+    "link": "https://liveuclac-my.sharepoint.com/:u:/g/personal/zcqshmk_ucl_ac_uk/IQCdN1EqSdhiSqE3g530ywbPATQaGuic7jsM1HgEsqtmoJI?e=djUHHC"
   }
 ]
