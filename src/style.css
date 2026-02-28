@@ -307,20 +307,16 @@ h1 span {
 
 .section-text {
     padding: 90px 72px;
-    /* Gradient fades to transparent — 3D bleeds through */
-    background: linear-gradient(105deg,
-            rgba(6, 6, 12, 0.97) 0%,
-            rgba(6, 6, 12, 0.92) 55%,
-            rgba(6, 6, 12, 0.4) 80%,
-            rgba(6, 6, 12, 0.0) 100%);
+    /* Dark glass panel with rounded corners */
+    background: rgba(6, 6, 12, 0.92);
+    border-radius: 16px;
+    margin: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(20px);
 }
 
 .content-section.right .section-text {
-    background: linear-gradient(-105deg,
-            rgba(6, 6, 12, 0.97) 0%,
-            rgba(6, 6, 12, 0.92) 55%,
-            rgba(6, 6, 12, 0.4) 80%,
-            rgba(6, 6, 12, 0.0) 100%);
+    background: rgba(6, 6, 12, 0.92);
 }
 
 .section-badge {

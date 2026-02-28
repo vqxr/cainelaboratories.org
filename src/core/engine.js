@@ -63,9 +63,9 @@ export function initEngine() {
 
     const bloom = new UnrealBloomPass(
         new THREE.Vector2(window.innerWidth, window.innerHeight),
-        1.4,   // strength
+        0.8,   // strength — subtle glow
         0.6,   // radius
-        0.12   // threshold — low = more glow
+        0.25   // threshold — only bright emissives bloom
     );
     composer.addPass(bloom);
     composer.addPass(new OutputPass());
