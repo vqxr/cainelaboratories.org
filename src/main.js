@@ -1,7 +1,7 @@
-// main.js — Slim orchestrator
+// main.js — Orchestrator. Uses composer.render() for bloom post-processing.
 import './style.css';
 
-import { initEngine, getScene, getCamera, getComposer } from './core/engine.js';
+import { initEngine, getScene, getCamera, getRenderer, getComposer } from './core/engine.js';
 import { initScroll } from './core/scroll.js';
 import { createHelix, updateHelix } from './world/helix.js';
 import { createCellField, updateCellField } from './world/cell-field.js';
@@ -25,11 +25,11 @@ async function init() {
         const res = await fetch('/top_pairs.json');
         const data = await res.json();
         buildCardsUI(data);
-    } catch (e) {}
+    } catch (e) { }
 
-    // Use composer (not renderer) so bloom post-processing runs every frame
-    const composer = getComposer();
-    composer.setAnimationLoop(animate);
+    // Animation loop lives on the RENDERER, but we render via composer for bloom
+    const renderer = getRenderer();
+    renderer.setAnimationLoop(animate);
 }
 
 function animate(time) {

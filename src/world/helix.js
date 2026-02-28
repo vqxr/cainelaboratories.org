@@ -1,130 +1,212 @@
-// helix.js — Hero object. Thick glass-rod helix with glowing red nodes.
+// helix.js — Custom GLSL shaders. No MeshPhysicalMaterial transmission
+// (requires envmap, silently invisible without one).
+// Instead: custom vertex+fragment shaders for chromatic glass effect.
 import * as THREE from 'three';
-import { COLORS } from '../core/engine.js';
 
 let helixGroup;
 let strandA;
 let strandB;
-
 let targetSeparation = 0;
 let currentSeparation = 0;
+
+// ── Custom glass shader ──────────────────────────────────────────────────
+// Fresnel rim + internal refraction shimmer + specular highlight.
+// Works without an environment map. Always visible.
+const glassVert = /* glsl */`
+    varying vec3 vNormal;
+    varying vec3 vViewDir;
+    varying vec3 vWorldPos;
+    varying vec2 vUv;
+    void main() {
+        vUv = uv;
+        vec4 worldPos = modelMatrix * vec4(position, 1.0);
+        vWorldPos = worldPos.xyz;
+        vNormal = normalize(normalMatrix * normal);
+        vViewDir = normalize(cameraPosition - worldPos.xyz);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+`;
+
+const glassFrag = /* glsl */`
+    uniform float uTime;
+    uniform vec3  uColor;
+    uniform float uFresnelPower;
+    varying vec3  vNormal;
+    varying vec3  vViewDir;
+    varying vec3  vWorldPos;
+    varying vec2  vUv;
+
+    void main() {
+        // Fresnel — bright at silhouette edges like real glass
+        float fresnel = pow(1.0 - clamp(dot(vNormal, vViewDir), 0.0, 1.0), uFresnelPower);
+
+        // Internal shimmer — simulates refraction without an envmap
+        float shimmer = sin(vWorldPos.y * 4.0 + uTime * 0.8) * 0.5 + 0.5;
+        shimmer *= sin(vWorldPos.x * 6.0 - uTime * 0.5) * 0.5 + 0.5;
+
+        // Chromatic split at edges — red/blue dispersion
+        vec3 col = uColor;
+        col.r += fresnel * 0.4 + shimmer * 0.08;
+        col.b += fresnel * 0.6 + shimmer * 0.12;
+        col.g += shimmer * 0.04;
+
+        // Specular hotspot from key light direction
+        vec3 lightDir = normalize(vec3(5.0, 8.0, 6.0));
+        vec3 halfVec  = normalize(lightDir + vViewDir);
+        float spec    = pow(max(dot(vNormal, halfVec), 0.0), 80.0);
+        col += vec3(spec * 1.2);
+
+        // Rim from blue light (left-back)
+        vec3 rimDir = normalize(vec3(-8.0, 2.0, -6.0));
+        float rim   = pow(max(dot(vNormal, rimDir), 0.0), 3.0) * (1.0 - dot(vNormal, vViewDir));
+        col += vec3(0.1, 0.2, 0.8) * rim * 0.6;
+
+        // Opacity — fresnel edges opaque, core transparent
+        float alpha = mix(0.10, 0.85, fresnel) + shimmer * 0.05;
+
+        gl_FragColor = vec4(col, alpha);
+    }
+`;
+
+// ── Node glow shader ─────────────────────────────────────────────────────
+// Pure emissive spheres that feed the bloom pass.
+const nodeVert = /* glsl */`
+    varying vec3 vNormal;
+    varying vec3 vViewDir;
+    void main() {
+        vec4 worldPos = modelMatrix * vec4(position, 1.0);
+        vNormal   = normalize(normalMatrix * normal);
+        vViewDir  = normalize(cameraPosition - worldPos.xyz);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+`;
+
+const nodeFrag = /* glsl */`
+    uniform float uTime;
+    uniform float uPulse;
+    uniform vec3  uColor;
+    uniform float uBrightness;
+    varying vec3  vNormal;
+    varying vec3  vViewDir;
+    void main() {
+        float fresnel = pow(1.0 - clamp(dot(vNormal, vViewDir), 0.0, 1.0), 2.0);
+        // Hot core + glowing edge
+        vec3 col = uColor * uBrightness;
+        col += vec3(1.0, 0.6, 0.5) * uBrightness * 0.3 * (1.0 - fresnel); // hot white core
+        col += uColor * fresnel * 2.0;  // bright rim feeds bloom
+        col *= 0.85 + uPulse * 0.15;
+        gl_FragColor = vec4(col, 1.0);
+    }
+`;
 
 export function createHelix(scene) {
     helixGroup = new THREE.Group();
     strandA = new THREE.Group();
     strandB = new THREE.Group();
 
-    const turns    = 5;
-    const height   = 12;
-    const radius   = 1.1;
-    const segments = 300;
+    const turns = 5;
+    const height = 12;
+    const radius = 1.1;
+    const segments = 280;
 
-    const strand1Points = [];
-    const strand2Points = [];
+    const pts1 = [], pts2 = [];
 
     for (let i = 0; i <= segments; i++) {
-        const t     = i / segments;
+        const t = i / segments;
         const angle = t * turns * Math.PI * 2;
-        const y     = (t - 0.5) * height;
-
-        strand1Points.push(new THREE.Vector3(
-            Math.cos(angle) * radius,
-            y,
-            Math.sin(angle) * radius
-        ));
-        strand2Points.push(new THREE.Vector3(
-            Math.cos(angle + Math.PI) * radius,
-            y,
-            Math.sin(angle + Math.PI) * radius
-        ));
+        const y = (t - 0.5) * height;
+        pts1.push(new THREE.Vector3(Math.cos(angle) * radius, y, Math.sin(angle) * radius));
+        pts2.push(new THREE.Vector3(Math.cos(angle + Math.PI) * radius, y, Math.sin(angle + Math.PI) * radius));
     }
 
-    // ── Glass rod material ─────────────────────────────────────────
-    // tube radius is now 0.055 — was 0.04, nearly invisible before
-    const strandMat = new THREE.MeshPhysicalMaterial({
-        color:               new THREE.Color(0xd0d8f0),
-        roughness:           0.05,
-        metalness:           0.0,
-        transmission:        0.6,
-        thickness:           0.8,
-        ior:                 1.5,
-        transparent:         true,
-        opacity:             0.95,
-        envMapIntensity:     1.0,
-        clearcoat:           1.0,
-        clearcoatRoughness:  0.1,
-    });
-
-    const curve1   = new THREE.CatmullRomCurve3(strand1Points);
-    const curve2   = new THREE.CatmullRomCurve3(strand2Points);
-    const tubeGeo1 = new THREE.TubeGeometry(curve1, 300, 0.055, 10, false);
-    const tubeGeo2 = new THREE.TubeGeometry(curve2, 300, 0.055, 10, false);
-
-    strandA.add(new THREE.Mesh(tubeGeo1, strandMat));
-    strandB.add(new THREE.Mesh(tubeGeo2, strandMat.clone()));
-
-    // ── Rungs ──────────────────────────────────────────────────────
-    const rungMat = new THREE.LineBasicMaterial({
-        color:       0x4466aa,
+    // Glass strand material — custom shader, always renders
+    const glassMat = () => new THREE.ShaderMaterial({
+        vertexShader: glassVert,
+        fragmentShader: glassFrag,
+        uniforms: {
+            uTime: { value: 0 },
+            uColor: { value: new THREE.Color(0x8899dd) },
+            uFresnelPower: { value: 3.5 },
+        },
         transparent: true,
-        opacity:     0.15,
+        side: THREE.DoubleSide,
+        depthWrite: false,
     });
 
+    // Build tubes
+    const matA = glassMat();
+    const matB = glassMat();
+    strandA.add(new THREE.Mesh(
+        new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts1), 280, 0.08, 10, false), matA
+    ));
+    strandB.add(new THREE.Mesh(
+        new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts2), 280, 0.08, 10, false), matB
+    ));
+
+    // Store materials for animation
+    helixGroup.userData.glassMats = [matA, matB];
+
+    // Rungs — subtle blue structure lines
+    const rungMat = new THREE.ShaderMaterial({
+        vertexShader: `void main() { gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+        fragmentShader: `void main() { gl_FragColor = vec4(0.3, 0.5, 1.0, 0.18); }`,
+        transparent: true,
+        depthWrite: false,
+    });
     for (let i = 0; i <= segments; i += 10) {
-        const geo = new THREE.BufferGeometry().setFromPoints([
-            strand1Points[i], strand2Points[i],
-        ]);
+        const geo = new THREE.BufferGeometry().setFromPoints([pts1[i], pts2[i]]);
         helixGroup.add(new THREE.Line(geo, rungMat));
     }
 
-    // ── Red emissive nodes ─────────────────────────────────────────
-    // These are what bloom. High emissiveIntensity = visible glow corona.
-    const nodeMat = new THREE.MeshStandardMaterial({
-        color:             new THREE.Color(0xff2244),
-        emissive:          new THREE.Color(0xff1133),
-        emissiveIntensity: 3.0,   // HIGH — this feeds the bloom pass
-        roughness:         0.2,
-        metalness:         0.0,
+    // Regular nodes — small red emissive
+    const makeNodeMat = (brightness) => new THREE.ShaderMaterial({
+        vertexShader: nodeVert,
+        fragmentShader: nodeFrag,
+        uniforms: {
+            uTime: { value: 0 },
+            uPulse: { value: 0 },
+            uColor: { value: new THREE.Color(0xff2244) },
+            uBrightness: { value: brightness },
+        },
     });
 
-    // Slightly larger nodes — 0.12 radius, visible from distance
-    const nodeGeo = new THREE.SphereGeometry(0.12, 16, 16);
+    const nodeGeo = new THREE.SphereGeometry(0.1, 16, 16);
+    const targetGeo = new THREE.SphereGeometry(0.22, 20, 20);  // 2 hero nodes
 
-    for (let i = 0; i <= segments; i += 15) {
-        const nA = new THREE.Mesh(nodeGeo, nodeMat);
-        nA.position.copy(strand1Points[i]);
+    const nodeMats = [];
+
+    for (let i = 0; i <= segments; i += 14) {
+        const mA = makeNodeMat(2.5);
+        const mB = makeNodeMat(2.5);
+        nodeMats.push(mA, mB);
+        const nA = new THREE.Mesh(nodeGeo, mA);
+        const nB = new THREE.Mesh(nodeGeo, mB);
+        nA.position.copy(pts1[i]);
+        nB.position.copy(pts2[i]);
         strandA.add(nA);
-
-        const nB = new THREE.Mesh(nodeGeo, nodeMat.clone());
-        nB.position.copy(strand2Points[i]);
         strandB.add(nB);
     }
 
-    // ── Highlight two "found target" nodes — bigger, brighter ──────
-    const targetMat = new THREE.MeshStandardMaterial({
-        color:             new THREE.Color(0xff4466),
-        emissive:          new THREE.Color(0xff2244),
-        emissiveIntensity: 6.0,   // Very high — will corona in bloom
-        roughness:         0.1,
-        metalness:         0.0,
-    });
-    const targetGeo = new THREE.SphereGeometry(0.2, 20, 20);
+    // Two hero "target found" nodes — larger, much brighter, will corona hard
+    const heroA = new THREE.Mesh(targetGeo, makeNodeMat(5.5));
+    const heroB = new THREE.Mesh(targetGeo, makeNodeMat(5.5));
+    heroA.position.copy(pts1[Math.floor(segments * 0.32)]);
+    heroB.position.copy(pts2[Math.floor(segments * 0.67)]);
+    nodeMats.push(heroA.material, heroB.material);
+    strandA.add(heroA);
+    strandB.add(heroB);
 
-    // Strand A target — roughly 1/3 up
-    const tA = new THREE.Mesh(targetGeo, targetMat);
-    tA.position.copy(strand1Points[Math.floor(segments * 0.33)]);
-    strandA.add(tA);
+    // Small point lights AT the hero nodes — actual light cast into scene
+    const lightA = new THREE.PointLight(0xff1133, 2.0, 8);
+    lightA.position.copy(pts1[Math.floor(segments * 0.32)]);
+    const lightB = new THREE.PointLight(0xff1133, 2.0, 8);
+    lightB.position.copy(pts2[Math.floor(segments * 0.67)]);
+    helixGroup.add(lightA, lightB);
 
-    // Strand B target — roughly 2/3 up
-    const tB = new THREE.Mesh(targetGeo, targetMat.clone());
-    tB.position.copy(strand2Points[Math.floor(segments * 0.66)]);
-    strandB.add(tB);
+    helixGroup.userData.nodeMats = nodeMats;
 
-    helixGroup.add(strandA);
-    helixGroup.add(strandB);
-
-    // Centre, close enough to feel monumental
-    helixGroup.position.set(0, 1, -5);
+    helixGroup.add(strandA, strandB);
+    helixGroup.position.set(0, 0, -4);
 
     scene.add(helixGroup);
     return helixGroup;
@@ -137,25 +219,26 @@ export function setHelixSeparation(amount) {
 export function updateHelix(time) {
     if (!helixGroup) return;
 
-    // Smooth interpolation
     currentSeparation += (targetSeparation - currentSeparation) * 0.035;
+    if (strandA) strandA.position.x = -currentSeparation * 0.7;
+    if (strandB) strandB.position.x = currentSeparation * 0.7;
 
-    if (strandA) strandA.position.x = -currentSeparation * 0.6;
-    if (strandB) strandB.position.x =  currentSeparation * 0.6;
+    // Very slow rotation — alive but not spinning
+    helixGroup.rotation.y = time * 0.05;
 
-    // Very slow idle rotation — barely perceptible, just alive
-    helixGroup.rotation.y = time * 0.04;
+    // Update glass shader time (shimmer animation)
+    if (helixGroup.userData.glassMats) {
+        helixGroup.userData.glassMats.forEach(m => { m.uniforms.uTime.value = time; });
+    }
 
-    // Breathing pulse on all emissive nodes
-    const pulse = 2.5 + Math.sin(time * 1.2) * 0.8;
-    helixGroup.traverse(child => {
-        if (child.isMesh && child.material.emissiveIntensity !== undefined) {
-            // Only pulse regular nodes, not the two big target nodes (intensity ~6)
-            if (child.material.emissiveIntensity < 5.5) {
-                child.material.emissiveIntensity = pulse;
-            }
-        }
-    });
+    // Pulse nodes — offset phase so they breathe, not flash
+    const pulse = Math.sin(time * 1.5) * 0.5 + 0.5;
+    if (helixGroup.userData.nodeMats) {
+        helixGroup.userData.nodeMats.forEach((m, i) => {
+            m.uniforms.uTime.value = time;
+            m.uniforms.uPulse.value = Math.sin(time * 1.5 + i * 0.4) * 0.5 + 0.5;
+        });
+    }
 }
 
 export function getHelixGroup() { return helixGroup; }

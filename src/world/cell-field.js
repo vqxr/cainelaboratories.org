@@ -1,39 +1,65 @@
-// cell-field.js — Sparse translucent cell spheres behind the helix.
-// Minimal overhead: 12 objects, Y-drift only, GPU-friendly.
+// cell-field.js — Translucent cell spheres with custom shader.
+// No MeshPhysicalMaterial transmission — uses custom fresnel shader instead.
 import * as THREE from 'three';
-import { COLORS } from '../core/engine.js';
 
 const cells = [];
 
-// Deterministic positions — not random so they look intentional
+const cellVert = /* glsl */`
+    varying vec3 vNormal;
+    varying vec3 vViewDir;
+    varying vec3 vWorldPos;
+    void main() {
+        vec4 wp  = modelMatrix * vec4(position, 1.0);
+        vWorldPos = wp.xyz;
+        vNormal   = normalize(normalMatrix * normal);
+        vViewDir  = normalize(cameraPosition - wp.xyz);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+`;
+
+const cellFrag = /* glsl */`
+    uniform float uTime;
+    uniform float uPhase;
+    varying vec3  vNormal;
+    varying vec3  vViewDir;
+    varying vec3  vWorldPos;
+    void main() {
+        float fresnel = pow(1.0 - clamp(dot(vNormal, vViewDir), 0.0, 1.0), 3.0);
+        // Soft membrane colour — cold blue-white
+        vec3 inner = vec3(0.04, 0.06, 0.18);
+        vec3 edge  = vec3(0.3, 0.5, 1.0);
+        vec3 col   = mix(inner, edge, fresnel);
+        // Subtle internal pulse
+        float pulse = sin(uTime * 0.4 + uPhase) * 0.5 + 0.5;
+        col += vec3(0.02, 0.04, 0.12) * pulse;
+        float alpha = mix(0.02, 0.35, fresnel);
+        gl_FragColor = vec4(col, alpha);
+    }
+`;
+
 const POSITIONS = [
-    [-8, 2, -14], [6, 4, -18], [-5, -1, -20],
-    [9, -2, -15], [-3, 5, -22], [7, 1, -12],
-    [-9, 0, -17], [4, 6, -19], [-6, -3, -13],
-    [8, 3, -21], [-4, 2, -16], [5, -1, -23],
+    [-7, 2, -14], [6, 3, -18], [-4, -1, -20],
+    [8, -2, -15], [-3, 4, -22], [7, 0, -12],
+    [-8, 1, -17], [4, 5, -19], [-5, -2, -13],
+    [9, 2, -21], [-4, 1, -16], [5, -1, -23],
 ];
-
-// Each cell gets a unique drift phase
+const SIZES = [0.7, 0.55, 0.8, 0.5, 0.85, 0.6, 0.7, 0.55, 0.75, 0.65, 0.5, 0.75];
 const PHASES = [0, 0.8, 1.6, 2.4, 3.2, 4.0, 0.4, 1.2, 2.0, 2.8, 3.6, 4.4];
-
-// Sizes vary slightly
-const SIZES = [0.6, 0.5, 0.7, 0.45, 0.8, 0.55, 0.65, 0.5, 0.75, 0.6, 0.5, 0.7];
-
-const cellMat = new THREE.MeshPhysicalMaterial({
-    color: COLORS.CELL,
-    transmission: 0.85,
-    roughness: 0.05,
-    metalness: 0.0,
-    ior: 1.33,   // water-like — biological cells are mostly water
-    transparent: true,
-    opacity: 0.55,
-    side: THREE.DoubleSide,
-});
 
 export function createCellField(scene) {
     POSITIONS.forEach(([x, y, z], i) => {
-        const geo = new THREE.SphereGeometry(SIZES[i], 32, 32);
-        const mesh = new THREE.Mesh(geo, cellMat.clone());
+        const mat = new THREE.ShaderMaterial({
+            vertexShader: cellVert,
+            fragmentShader: cellFrag,
+            uniforms: {
+                uTime: { value: 0 },
+                uPhase: { value: PHASES[i] },
+            },
+            transparent: true,
+            side: THREE.DoubleSide,
+            depthWrite: false,
+        });
+        const mesh = new THREE.Mesh(new THREE.SphereGeometry(SIZES[i], 32, 32), mat);
         mesh.position.set(x, y, z);
         mesh.userData.baseY = y;
         mesh.userData.phase = PHASES[i];
@@ -44,8 +70,7 @@ export function createCellField(scene) {
 
 export function updateCellField(time) {
     cells.forEach(cell => {
-        // Gentle independent Y drift only — GPU isn't touched
-        cell.position.y = cell.userData.baseY
-            + Math.sin(time * 0.08 + cell.userData.phase) * 0.25;
+        cell.position.y = cell.userData.baseY + Math.sin(time * 0.07 + cell.userData.phase) * 0.3;
+        cell.material.uniforms.uTime.value = time;
     });
 }
