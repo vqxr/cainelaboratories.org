@@ -22,12 +22,12 @@ let safetyData = [];
 let torsoGroup;
 
 // Colors
-const COLOR_BG = 0xffffff;
+const COLOR_BG = 0x050508;
 const COLOR_ECTOPIC = new THREE.Color('#ff4d6d');
 const COLOR_EUTOPIC = new THREE.Color('#74b3ff');
 const COLOR_CONTROL = new THREE.Color('#52d48a');
-const COLOR_BASE = new THREE.Color('#cccccc');
-const COLOR_HUMAN = new THREE.Color('#222222');
+const COLOR_BASE = new THREE.Color('#333333');
+const COLOR_HUMAN = new THREE.Color('#888888');
 
 // --- INITIALIZATION ---
 init();
@@ -67,7 +67,7 @@ function setupThree() {
     scene = new THREE.Scene();
     // Use transparent background so CSS background shows through
     scene.background = null;
-    scene.fog = new THREE.FogExp2(COLOR_BG, 0.008);
+    scene.fog = new THREE.FogExp2(COLOR_BG, 0.012);
 
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 0, 50);
@@ -75,7 +75,7 @@ function setupThree() {
     renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance", alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0xffffff, 0); // Transparent clear color
+    renderer.setClearColor(0x000000, 0); // Transparent clear color
 
     container.appendChild(renderer.domElement);
 
@@ -94,40 +94,91 @@ function setupLenis() {
 
 // --- SCENE CREATION ---
 function createTorso() {
-    // High-tech blueprint look
-    const geometry = new THREE.CylinderGeometry(15, 12, 40, 32, 16);
+    // High-tech medical "Core" look
+    // 1. Outer Icosahedron Wireframe
+    const geometry = new THREE.IcosahedronGeometry(15, 2);
     const edges = new THREE.EdgesGeometry(geometry);
-    const material = new THREE.LineBasicMaterial({ color: 0x222222, transparent: true, opacity: 0.15 });
-    const torsoMesh = new THREE.LineSegments(edges, material);
+    const material = new THREE.LineBasicMaterial({
+        color: COLOR_ECTOPIC,
+        transparent: true,
+        opacity: 0.2,
+        blending: THREE.AdditiveBlending
+    });
+    const coreMesh = new THREE.LineSegments(edges, material);
 
-    // Glowing dot for lesion (closer to magenta/red)
-    const lesionGeo = new THREE.SphereGeometry(0.8, 16, 16);
-    const lesionMat = new THREE.MeshBasicMaterial({ color: 0xff1053, transparent: true, opacity: 0.9 });
+    // 2. Inner Glowing Particle Core
+    const corePointsCount = 2000;
+    const corePointsGeo = new THREE.BufferGeometry();
+    const corePointsPos = new Float32Array(corePointsCount * 3);
+    for (let i = 0; i < corePointsCount; i++) {
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos((Math.random() * 2) - 1);
+        const r = 8 * Math.pow(Math.random(), 0.5);
+        corePointsPos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+        corePointsPos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+        corePointsPos[i * 3 + 2] = r * Math.cos(phi);
+    }
+    corePointsGeo.setAttribute('position', new THREE.BufferAttribute(corePointsPos, 3));
+    const corePointsMat = new THREE.PointsMaterial({
+        color: COLOR_ECTOPIC,
+        size: 0.15,
+        transparent: true,
+        opacity: 0.6,
+        blending: THREE.AdditiveBlending
+    });
+    const corePoints = new THREE.Points(corePointsGeo, corePointsMat);
+
+    // 3. Glowing dot for lesion (closer to magenta/red)
+    const lesionGeo = new THREE.SphereGeometry(1.2, 32, 32);
+    const lesionMat = new THREE.MeshBasicMaterial({
+        color: 0xff1053,
+        transparent: true,
+        opacity: 0.8,
+        blending: THREE.AdditiveBlending
+    });
     const lesionMesh = new THREE.Mesh(lesionGeo, lesionMat);
-    lesionMesh.position.set(-5, -5, 5); // approximate pelvic region
+    lesionMesh.position.set(-5, -5, 5);
 
-    // Add a couple of "floating guide rings" to sell the hi-tech feel
-    const ringGeo = new THREE.RingGeometry(18, 18.2, 64);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0x999999, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
-    const ring1 = new THREE.Mesh(ringGeo, ringMat);
-    ring1.rotation.x = Math.PI / 2;
-    ring1.position.y = 10;
+    // 4. Scanning Rings
+    const ringGroup = new THREE.Group();
+    const ringColors = [COLOR_ECTOPIC, COLOR_EUTOPIC, COLOR_CONTROL];
 
-    const ring2 = new THREE.Mesh(ringGeo, ringMat);
-    ring2.rotation.x = Math.PI / 2;
-    ring2.position.y = -10;
+    for (let i = 0; i < 3; i++) {
+        const ringGeo = new THREE.RingGeometry(18 + i * 2, 18.1 + i * 2, 64);
+        const ringMat = new THREE.MeshBasicMaterial({
+            color: ringColors[i],
+            transparent: true,
+            opacity: 0.15,
+            side: THREE.DoubleSide,
+            blending: THREE.AdditiveBlending
+        });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = Math.PI / 2 + (Math.random() - 0.5) * 0.5;
+        ring.rotation.y = (Math.random() - 0.5) * 0.5;
+        ringGroup.add(ring);
+    }
 
     torsoGroup = new THREE.Group();
-    torsoGroup.add(torsoMesh);
+    torsoGroup.add(coreMesh);
+    torsoGroup.add(corePoints);
     torsoGroup.add(lesionMesh);
-    torsoGroup.add(ring1);
-    torsoGroup.add(ring2);
+    torsoGroup.add(ringGroup);
     torsoGroup.position.set(0, 0, 0);
 
     scene.add(torsoGroup);
 
-    // Animate it gently
-    gsap.to(torsoGroup.rotation, { y: Math.PI * 2, duration: 40, repeat: -1, ease: "none" });
+    // Dynamic rotation animations
+    gsap.to(coreMesh.rotation, { y: Math.PI * 2, duration: 25, repeat: -1, ease: "none" });
+    gsap.to(corePoints.rotation, { y: -Math.PI * 2, duration: 40, repeat: -1, ease: "none" });
+
+    ringGroup.children.forEach((ring, i) => {
+        gsap.to(ring.rotation, {
+            z: Math.PI * 2 * (i % 2 === 0 ? 1 : -1),
+            duration: 15 + i * 5,
+            repeat: -1,
+            ease: "none"
+        });
+    });
 }
 
 function createDataUniverse() {
@@ -189,7 +240,7 @@ function createDataUniverse() {
 
     uniforms = {
         uTime: { value: 0 },
-        uSize: { value: 4.0 },
+        uSize: { value: 2.0 }, // Smaller base size for starry look
         uProgress: { value: 0.0 }, // Morph progress
         uIsConvergence: { value: false },
         uTargetColor: { value: new THREE.Color(0xffffff) },
@@ -203,7 +254,7 @@ function createDataUniverse() {
         fragmentShader: pointFragmentShader,
         transparent: true,
         depthWrite: false,
-        blending: THREE.NormalBlending // Changed to Normal for dark-on-white visibility
+        blending: THREE.AdditiveBlending // Using Additive for punchy glowing particles on dark bg
     });
 
     pointCloud = new THREE.Points(geometry, material);
@@ -256,7 +307,7 @@ function createHumanSilhouette() {
     // Minimal shader for human
     silhouetteUniforms = {
         uTime: { value: 0 },
-        uSize: { value: 3.0 },
+        uSize: { value: 1.5 }, // Smaller for silhouette too
         uHoverState: { value: 0.0 }, // 0 = normal, 1 = hovering
         uOrganDim: { value: 0.0 } // 0 = normal, 1 = dim organs
     };
@@ -302,17 +353,17 @@ function createHumanSilhouette() {
 
 function createSearchBeams() {
     searchBeamA = new THREE.SpotLight(COLOR_EUTOPIC, 0);
-    searchBeamA.angle = Math.PI / 6;
-    searchBeamA.penumbra = 0.5;
-    searchBeamA.position.set(-30, 0, 20);
+    searchBeamA.angle = Math.PI / 4;
+    searchBeamA.penumbra = 0.8;
+    searchBeamA.position.set(-30, 20, 20);
     searchBeamA.target.position.set(0, -100, 0);
     scene.add(searchBeamA);
     scene.add(searchBeamA.target);
 
     searchBeamB = new THREE.SpotLight(COLOR_CONTROL, 0);
-    searchBeamB.angle = Math.PI / 6;
-    searchBeamB.penumbra = 0.5;
-    searchBeamB.position.set(30, 0, 20);
+    searchBeamB.angle = Math.PI / 4;
+    searchBeamB.penumbra = 0.8;
+    searchBeamB.position.set(30, 20, 20);
     searchBeamB.target.position.set(0, -100, 0);
     scene.add(searchBeamB);
     scene.add(searchBeamB.target);
@@ -364,11 +415,18 @@ function setupScrollAnimations() {
     gsap.utils.toArray("#scene-1 .fade-text").forEach((el) => {
         gsap.to(el, { opacity: 1, y: 0, scrollTrigger: { trigger: el, start: "top 80%", end: "bottom 60%", scrub: true } });
     });
-    tl1.to(camera.position, { y: -100, z: 40, ease: "power1.inOut" }, 0);
-    tl1.to(scene.fog, { density: 0.005 }, 0);
+    tl1.to(camera.position, { y: -100, z: 50, ease: "power1.inOut" }, 0);
+    tl1.to(scene.fog, { density: 0.008 }, 0);
     if (torsoGroup) {
-        tl1.to(torsoGroup.children[0].material, { opacity: 0, duration: 0.5 }, 0);
-        tl1.to(torsoGroup.children[1].material, { opacity: 0, duration: 0.5 }, 0);
+        torsoGroup.children.forEach(child => {
+            if (child.material) {
+                tl1.to(child.material, { opacity: 0, duration: 0.5 }, 0);
+            } else if (child.children) {
+                child.children.forEach(c => {
+                    if (c.material) tl1.to(c.material, { opacity: 0, duration: 0.5 }, 0);
+                });
+            }
+        });
     }
 
     // SCENE 2

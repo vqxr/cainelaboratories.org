@@ -82,7 +82,8 @@ void main() {
     if (distanceToCenter > 0.5) {
         discard;
     }
-    float alpha = vAlpha * (1.0 - (distanceToCenter * 2.0));
+    // Sharper falloff to make them look like distinct dots, not fuzzy clouds
+    float alpha = vAlpha * smoothstep(0.5, 0.3, distanceToCenter);
     gl_FragColor = vec4(vColor, alpha);
 }
 `;

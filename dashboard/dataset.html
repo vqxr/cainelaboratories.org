@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script src="lock.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BBT — Dataset</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <span class="emoji">🍔</span>
+      <div class="name">Bloomsbury Burger<br>Therapeutics plc</div>
+      <div class="sub">pre-seed · pre-revenue · pre-sanity</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Pages</div>
+      <a href="index.html" class="nav-item"><span class="icon">🏠</span> Overview</a>
+      <a href="pipeline.html" class="nav-item"><span class="icon">⚙️</span> Pipeline</a>
+      <a href="math.html" class="nav-item"><span class="icon">∑</span> Mathematics</a>
+      <a href="dataset.html" class="nav-item active"><span class="icon">🗄️</span> Dataset</a>
+      <a href="console.html" class="nav-item"><span class="icon">🖥</span> Lab Console</a>
+      <a href="updates.html" class="nav-item"><span class="icon">📋</span> Updates</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="nav-section">
+      <div class="nav-label">On this page</div>
+      <a href="#overview" class="nav-item"><span class="icon">·</span> Overview</a>
+      <a href="#structure" class="nav-item"><span class="icon">·</span> Data structure</a>
+      <a href="#validation" class="nav-item"><span class="icon">·</span> Validation</a>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="hero">
+      <div class="hero-badge">GSE213216 · Nature Genetics 2024 · 10x Genomics</div>
+      <h1>The <span>Dataset</span></h1>
+      <p class="hero-desc">Scientific grounding for the atlas we're mining. The Human Endometriosis Cell Atlas — 54 patient samples, 15.7GB of scRNA-seq data across ectopic lesions, eutopic endometrium, and healthy controls.</p>
+    </div>
+
+    <section id="overview" class="reveal">
+      <div class="section-header">
+        <div class="section-icon">📊</div>
+        <h2>Dataset overview</h2>
+      </div>
+      <div class="stat-grid" style="margin-bottom:20px;">
+        <div class="stat-card">
+          <div class="stat-value"><span data-counter="54">54</span></div>
+          <div class="stat-label">Patient samples</div>
+          <div class="stat-desc">Across ectopic lesions, eutopic endometrium, and unaffected control tissue.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value"><span>15.7</span><span style="font-size:18px;color:var(--accent);">GB</span></div>
+          <div class="stat-label">Raw data</div>
+          <div class="stat-desc">Cell Ranger output. Sparse barcodes × genes matrices per sample.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value"><span style="color:var(--accent);">3</span></div>
+          <div class="stat-label">Tissue types</div>
+          <div class="stat-desc">Ectopic lesion, eutopic endometrium, unaffected peritoneal control.</div>
+        </div>
+      </div>
+      <div class="callout">
+        <p>The <strong>Human Endometriosis Cell Atlas</strong> (Nature Genetics, 2024) provides single-cell RNA sequencing data across lesion, eutopic and unaffected tissue. This enables precise identification of lesion-specific expression signatures at single-cell resolution — the granularity required for safe CAR-T target discovery.</p>
+        <p>The atlas represents the largest and most comprehensive scRNA-seq dataset for endometriosis to date. Critically, it includes <strong>matched eutopic tissue</strong> from the same patients — allowing us to identify markers that distinguish ectopic from eutopic endometrium, not just from control tissue.</p>
+      </div>
+      <div class="tags" style="margin-top:14px;">
+        <span class="tag pink">54 samples</span>
+        <span class="tag pink">~15.7 GB</span>
+        <span class="tag green">10x Genomics scRNA-seq</span>
+        <span class="tag green">Cell Ranger output</span>
+        <span class="tag blue">Ectopic lesions (endometriomas + peritoneal)</span>
+        <span class="tag blue">Eutopic endometrium</span>
+        <span class="tag blue">Control tissue</span>
+        <span class="tag purple">Nature Genetics 2024</span>
+        <span class="tag yellow">NCBI GEO: GSE213216</span>
+      </div>
+    </section>
+
+    <section id="structure" class="reveal">
+      <div class="section-header">
+        <div class="section-icon">🔢</div>
+        <h2>Data structure</h2>
+      </div>
+      <div class="callout" style="margin-bottom:16px;">
+        <p>Each sample is a sparse matrix in Cell Ranger HDF5 format. After loading, the structure is:</p>
+      </div>
+
+      <div style="background:#0a0a0b;border:1px solid var(--border);border-radius:10px;padding:20px;font-family:'DM Mono',monospace;font-size:12px;line-height:2;margin-bottom:16px;">
+        <div style="color:var(--muted);"># AnnData structure after QC</div>
+        <div><span style="color:var(--accent);">adata</span><span style="color:var(--muted);">.shape</span> → <span style="color:var(--green);">(N_cells, 33_538)</span> <span style="color:var(--muted2);">  # cells × genes</span></div>
+        <div><span style="color:var(--accent);">adata</span><span style="color:var(--muted);">.obs</span> → <span style="color:var(--blue);">['patient_id', 'tissue_type', 'batch', 'n_genes', 'pct_mt']</span></div>
+        <div><span style="color:var(--accent);">adata</span><span style="color:var(--muted);">.var</span> → <span style="color:var(--blue);">['gene_name', 'gene_id', 'highly_variable']</span></div>
+        <div><span style="color:var(--accent);">adata</span><span style="color:var(--muted);">.layers['counts']</span> → <span style="color:var(--yellow);">raw UMI counts (sparse)</span></div>
+        <div><span style="color:var(--accent);">adata</span><span style="color:var(--muted);">.obsm['X_scVI']</span> → <span style="color:var(--purple);">latent representation (d=20)</span></div>
+      </div>
+
+      <div class="callout blue">
+        <p>Integration across 54 samples requires <strong>batch-aware modelling</strong>. Sample batch is passed as a covariate to scVI, which learns to disentangle biological variation from technical batch effects. This is critical — naïve integration would confound tissue type with sample preparation batch.</p>
+      </div>
+    </section>
+
+    <section id="validation" class="reveal">
+      <div class="section-header">
+        <div class="section-icon">✅</div>
+        <h2>Validation strategy</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">V1</div>
+          <div class="step-content">
+            <h3>Literature cross-check</h3>
+            <p>Top candidate markers are checked against existing endometriosis literature. Known markers (e.g. CA-125, VEGF) should appear in top-ranked pairs as a sanity check. Novel candidates are flagged for further investigation.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">V2</div>
+          <div class="step-content">
+            <h3>scFv availability</h3>
+            <p>For each candidate gene, we check whether existing single-chain variable fragments (scFvs) are available in the literature or antibody databases. No scFv = harder (not impossible) to engineer the CAR domain.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">V3</div>
+          <div class="step-content">
+            <h3>Surface protein confirmation</h3>
+            <p>CAR-T targets must be surface-accessible proteins. mRNA expression in scRNA-seq doesn't guarantee surface protein expression. Top candidates require protein-level validation (IHC, flow cytometry) in lesion tissue.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">V4</div>
+          <div class="step-content">
+            <h3>Tabula Sapiens orthogonal check</h3>
+            <p>Independent of the optimisation penalty: we manually inspect expression heatmaps for each top pair across all Tabula Sapiens cell types. No surprises allowed before anything goes near a lab.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      <span>bloomsbury burger therapeutics plc © 2026</span>
+      <span>pre-seed · pre-revenue · pre-sanity</span>
+    </div>
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
