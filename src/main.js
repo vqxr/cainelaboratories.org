@@ -5,9 +5,12 @@ import { initEngine, getScene, getCamera, getRenderer, getComposer } from './cor
 import { initScroll } from './core/scroll.js';
 import { createHelix, updateHelix } from './world/helix.js';
 import { createCellField, updateCellField } from './world/cell-field.js';
+import { createMarkers, updateMarkers } from './world/markers.js';
 import { buildCardsUI } from './ui/cards.js';
 import { initSoundToggle } from './ui/sound-toggle.js';
 import { initGlassPanel } from './ui/glass-panel.js';
+import { initCursor } from './ui/cursor.js';
+import { initHoverSounds } from './ui/hover-sounds.js';
 
 init();
 
@@ -16,10 +19,13 @@ async function init() {
 
     createHelix(scene);
     createCellField(scene);
+    createMarkers(scene);
 
     initScroll(camera);
     initSoundToggle();
     initGlassPanel();
+    initCursor();
+    initHoverSounds();
 
     try {
         const res = await fetch('/top_pairs.json');
@@ -27,7 +33,7 @@ async function init() {
         buildCardsUI(data);
     } catch (e) { }
 
-    // Animation loop lives on the RENDERER, but we render via composer for bloom
+    // Animation loop on the renderer, render via composer for bloom
     const renderer = getRenderer();
     renderer.setAnimationLoop(animate);
 }
@@ -36,5 +42,6 @@ function animate(time) {
     const t = time * 0.001;
     updateHelix(t);
     updateCellField(t);
+    updateMarkers(t);
     getComposer().render();
 }

@@ -1,0 +1,179 @@
+[18/02/2026, 00:37:04] bloomsbury burger therapeutics plc (pre-seed, pre-revenue, pre-sanity): ‎Messages and calls are end-to-end encrypted. Only people in this chat can read, listen to, or share them.
+[18/02/2026, 00:37:04] ~ Haziq: ‎~ Haziq created this group
+[19/02/2026, 23:32:35] bloomsbury burger therapeutics plc (pre-seed, pre-revenue, pre-sanity): ‎~ Haziq added you
+[20/02/2026, 01:14:48] ‪+44 7774 611092‬: ‎‪+44 7774 611092‬ joined using a group link.
+[20/02/2026, 18:20:47] ~ Filipo: ‎~ Filipo joined using a group link.
+[24/02/2026, 16:06:20] ~ Haziq: Hey everyone
+[24/02/2026, 16:06:46] ~ Haziq: Sorry haven’t posted anything as I got busy in the lab, apologies
+[24/02/2026, 16:08:07] ~ Haziq: Tl;dr I and @⁨~Filipo⁩ (tammy) are interested in doing something like this: 
+https://www.nature.com/articles/s41586-019-1546-z
+For endometriosis
+[24/02/2026, 16:09:54] ~ Haziq: We gotta mine this dataset 
+https://www.nature.com/articles/s41588-024-01873-w
+To find any cell surface markers  that we can target and cross reference to tabula sapiens to make sure it’s not broadly expressed and then we cook
+[24/02/2026, 16:12:18] ~ Haziq: https://www.jnj.com/media-center/press-releases/johnson-johnsons-dual-targeting-car-t-cell-therapy-shows-encouraging-first-results-in-large-b-cell-lymphoma
+Dual targeting CAR is also a thing now so we can try to find combinations as well, that might improve the safety profile
+[24/02/2026, 18:08:47] ‪+972 50‑440‑6944‬: ‎‪+972 50‑440‑6944‬ joined using a group link.
+[24/02/2026, 19:56:26] ~ Victoria Mery: ‎~ Victoria Mery joined using a group link.
+[25/02/2026, 01:12:33] ~ tnkr: ‎~ Haziq added ~ tnkr
+[25/02/2026, 08:47:47] abdurrahman: CAR feels almost too straightforward for a hackathon tbh.
+
+If we’re already mining the nature genetics dataset and filtering against tabula sapiens, we basically have to implement a lesion specific synNotch to CAR circuit, or even a spatial transcriptomics informed AND/NOT logic gate that actively suppresses activation in any healthy stromal context, there’s no way around it if we want this to work.
+
+Also I can’t access the first nature paper, could you send the PDF?
+[25/02/2026, 10:13:54] abdurrahman: ‎You deleted this message.
+[25/02/2026, 10:23:23] ~ Victoria Mery: Hi there!! My name is Victoria, just finished my MRes in Exp Neuroscience in October - just wondering at what stage you guys are!! Nice to meet you all :)
+‎[25/02/2026, 10:34:32] ~ TS: s41586-019-1546-z-1.pdf • ‎18 pages ‎<attached: 00003017-s41586-019-1546-z-1.pdf>
+[25/02/2026, 13:24:08] ~ Haziq: Broooo that’s 100% true, CAR T is not bleeding edge bioengineering in 2026 but we’re also optimising for translational plausibility. SynNotch is cool and all but yet to make it to the clinic.
+Also logic gates still leaky as hell haha
+[25/02/2026, 13:25:32] ~ Haziq: Also lemme remind you that CAR T is already half a million dollars per treatment haha so you add any other apparatus and cost blows up even more, we want the minimum viable product that’s broadly accessible
+[25/02/2026, 13:26:56] ~ Haziq: And also sir this is women’s health research
+I work in a lab that looks like haunted factory with two dollar bills to rub together
+Ain’t nobody got cash for spatial freaking transcriptomics
+[25/02/2026, 13:28:36] ~ Haziq: So just make sure any proposals are “the most underfunded underserved field in biomedicine”-friendly
+[25/02/2026, 13:34:41] ~ Haziq: 🙋‍♂️ you mean career stage?
+Scientist refusing to do a PhD until EPSRC decides to fund a UKRI CDT in OB / GYN
+[25/02/2026, 13:39:23] ~ Haziq: Also experimental neuroscience??
+Surely you have some opinions about friston’s free energy principle 🤨
+[25/02/2026, 15:06:53] ~ Yi Hein: ‎~ Yi Hein joined using a group link.
+[25/02/2026, 15:17:26] ~ Haziq: @⁨~Filipo⁩ (tammy) 
+Assuming we’re doing dual targeting CAR…
+how many pairs of cell surface markers are there in total do you reckon? Wondering if we can brute force all of them if we run it for a week
+[25/02/2026, 15:18:34] ~ Haziq: Alternatively there’s genetic algorithms or this one weird trick with sparse auto encoders to efficiently search through combinatorial spaces
+‎[25/02/2026, 15:19:52] ~ Haziq: AI-Designed RNA Logic Circuits for Eliminating Transient Cell States.pdf • ‎15 pages ‎<attached: 00003027-AI-Designed RNA Logic Circuits for Eliminating Transient Cell States.pdf>
+[25/02/2026, 15:21:34] ~ Haziq: *the idea is to sort of to forget DEGs and select targets based on “backtesting”
+[25/02/2026, 15:24:41] ~ Haziq: Oops what am I saying, there’s no meaningful notion of recombination with two markers, sparse autoencoder it is
+[25/02/2026, 18:05:34] ~ Ada Ge: ‎~ Ada Ge joined using a group link.
+[25/02/2026, 18:50:26] ~ niv: ‎~ niv joined using a group link.
+[25/02/2026, 18:53:19] ~ Haziq: wow there are a lot of people here now… this is giving “we’ve grown too fast and I should probably pretend to have a vision”
+[25/02/2026, 18:54:17] ~ Haziq: anyone who hasn't already, please use this link to sign up: https://startups.igem.org/events/biohackathon
+[25/02/2026, 18:56:04] ~ Haziq: hi also to my associates from the most exclusive hack club north of Kensington and west of Russell Square station @⁨~Ada Ge⁩ @⁨~niv⁩ @⁨~Yi Hein⁩
+[25/02/2026, 18:56:41] ~ Haziq: *https://kxhacklab.com/
+[25/02/2026, 19:00:05] abdurrahman: Is it even worth having such a large team😂
+[25/02/2026, 19:00:33] ~ Haziq: yes more the merrier
+[25/02/2026, 19:00:56] abdurrahman: We can execute more tasks at once
+[25/02/2026, 19:00:57] ~ Haziq: also dont interrupt my founder speech
+[25/02/2026, 19:01:25] ~ Haziq: quick intro: it’s a synthetic biology / genetic engineering competition, very serious actually (although they did lose some credibility when they picked my team as winner last year)
+[25/02/2026, 19:02:00] ~ Haziq: this is literally how Maverick Metals started btw, they probably also had a GC like this just fooling about before winning iGEM startups and then going to YC and raising some 17 million $ seed
+[25/02/2026, 19:03:43] ~ Haziq: but FYI this is NOT a serious team, we’re doing this for fun and glory and to draw some attention to bioengineering in an OB GYN context
+so if you have biotech billionaire dreams then *sir this is a wendys*
+[25/02/2026, 19:04:18] ~ Haziq: that’s all from me
+[25/02/2026, 19:04:32] abdurrahman: Wendys is actually the third largest burger food chain
+[25/02/2026, 19:05:10] ~ Haziq: excellent, we are now the third largest synthetic biology burger chain north of Kensington
+[25/02/2026, 19:09:07] ~ Haziq: https://youtube.com/shorts/aCR9e2_5PlQ?si=TRGu2-RDd3pVvazN
+this is me rn
+[25/02/2026, 19:15:01] ~ Filipo: Hey, nice to meet you all :). I did just want to ask, what kind of prior knowledge/skills might be required for the iGem? Is there anywhere that a first year undergrad could help out? I’m pretty happy just spectating and learning how the discussions work for this, but still wanted to check
+[25/02/2026, 19:39:41] ~ TS: You could help with data mining and literature reviews if you would like, or whatever anyone else suggests.
+[25/02/2026, 19:40:14] ~ TS: There are roughly 2,800 to 3,000 validated human cell-surface proteins (Bausch-Fluck et al., 2018). 3000 choose 2 it's about 4.5m pairs approx. You can try to brute force it, on a standard HPC cluster / a GPU-accelerated  high-end workstation using NumPy / CuPy I would say 4.5m is pretty inconsequential. But you're right, sparse autoencoder is good. 
+​So instead of picking markers because they have a high fold change, we use the SAE to find the latent features which define the ectopic state. So Effectively we find the markers which don't belong in the healthy uterine context. We can use SAE to narrow down to top 50-100 markers.   Great work by the way.
+[25/02/2026, 19:13:44] ~ Haziq: ‎~ Haziq changed this group's icon
+[25/02/2026, 20:04:23] ~ Haziq: Hey filipo, great to have you here!! How are you enjoying our team so far??
+No prior knowledge needed per se, in fact iGEM is most people’s first exposure to bioengineering so you’re in the right place 🤝
+This part of iGEM startups is mostly dry lab, design, pitching
+If you want to get involved in the computation / data side then i can suggest some resources. alternatively if you want to make slide decks, help with the pitching and presentation side then that’s cool as well
+[25/02/2026, 20:09:14] ~ Ada Ge: I for one would like to know more about the computation side
+[25/02/2026, 20:09:26] ~ Haziq: Oh damn 4.5 million 😅 tysm for doing the math, im not so concerned about brute forcing on the human endometrium atlas as i am about brute forcing against tabula sapiens ☠️ but i suppose only a small subset of pairs will survive the first selection (ectopic positive, eutopic negative within endometrial stomal cells). in any case i will try to benchmark this asap on my PC.
+Also re SAE i actually have a really quirky trick in mind hehe inspired by the differentiable optimisation literature that i used for some of my work at Arc. i will try to elaborate as i get home, dont wanna type and die
+[25/02/2026, 21:33:15] ~ Haziq: Btw no way you said HPC cluster 😭🤣
+This is the sorta compute we have access to at the EGA-IfWH: https://youtube.com/shorts/p1R9mpezxh0?si=zkBlIgJV3EMGZim6
+[25/02/2026, 21:40:26] ~ Haziq: hi ada!!! 
+ok anyone interested in the computational side please come study the dark arts that is single cell transcriptomics analysis. big words but genuinely not complicated at all. if i can do it the bar is under the central line at holborn and we’re still digging
+
+try the mitx quantitative biology workshop 🔥
+[25/02/2026, 21:42:25] abdurrahman: We need to create a workflow to plan whose doing what and how everything's going to work
+[25/02/2026, 21:42:50] abdurrahman: Things feel very messy right now
+[25/02/2026, 21:50:04] ~ Haziq: no no no absolutely not. nobody be serious on my watch. entropy is part of the process. things will self organise
+[25/02/2026, 21:50:20] abdurrahman: 😭
+[25/02/2026, 21:56:02] ~ Haziq: btw @⁨~Ada Ge⁩ competition is only next month so until then please feel free to use this gc for philosophy of biology discourse and origin of life takes for old times’ sake. this is a safe space for abiogenesis
+[25/02/2026, 21:57:47] ~ Haziq: i for one reject the igem / arc institute dogma of biology as programmable. i come from the dennis noble lineage of systems biology (ray noble is with us at the IfWH actually, no kidding) and we do not subscribe to genetic determinism or central dogma maximalism. reverse causality and top down control are real. bioelectric patterning says hello.
+
+biology as physics is spiritually more correct
+[25/02/2026, 22:02:28] ~ Haziq: ok intro to our project for the new ppl *1\* so car-t cells are basically immune cells that we genetically modify to recognise specific cell surface markers and then eliminate whatever is expressing them
+[25/02/2026, 22:03:50] ~ Haziq: *2\* we’re looking at using this logic in the endometriosis context. idea being: identify a combination of cell surface markers that are consistently present in ectopic endometrial lesions but not in healthy uterine or normal tissue then engineer a dual-target CAR that only activates when both markers are expressed
+[25/02/2026, 22:08:10] ~ Ada Ge: hell yeah!
+[25/02/2026, 22:08:10] ~ Haziq: *3/* this would actually be useful in endometriosis because right now the main intervention is surgical resection (once the progestins stop responding) which is respectfully half baked and has high recurrence rates. surgeons literally cannot reliably distinguish all pathological tissue from healthy tissue just by visual inspection
+[25/02/2026, 22:13:20] ~ Haziq: https://youtu.be/hMzfGZnaPN8?si=qiwwEuEfEFv-s4yr
+i dont like huberman but that was actually a good interview. legendary gyn surgeon explaining why endometriosis surgery is so difficult. but she gets the biology all wrong (typical clinician behaviour, sorry @⁨~Yi Hein⁩ ), aint nobody thinks endometriosis is cos of reverse menstruation in 2026
+[25/02/2026, 22:14:23] ~ Haziq: ok i think that concludes the intro. welcome to the synthetic biology burger chain north of russell square
+[26/02/2026, 01:16:00] ~ Haziq: ‎~ Haziq changed the group description
+[26/02/2026, 01:18:56] ~ Haziq: ‎~ Haziq changed the group name to “bloomsbury burger therapeutics plc (pre-seed, pre-revenue, pre-sanity)”
+[26/02/2026, 00:55:52] ~ Haziq: ok here’s my “reparameterisation trick”
+the whole idea behind differentiable optimisation is to take an ugly discrete combinatorial problem and replace it with an analytical approximation so we can solve it cheaply with backprop and gradient descent
+[26/02/2026, 00:56:18] ~ Haziq: so we relax it into a continuous space with something like gumbel softmax, optimise the relaxed objective and then snap it back to a hard discrete solution at inference
+[26/02/2026, 00:58:12] ~ Haziq: give me a second i’m outsourcing the maths to ai
+‎[26/02/2026, 01:02:09] ~ Haziq: ‎<attached: 00003073-PHOTO-2026-02-26-01-02-09.jpg>
+‎[26/02/2026, 01:02:10] ~ Haziq: ‎<attached: 00003074-PHOTO-2026-02-26-01-02-10.jpg>
+‎[26/02/2026, 01:02:10] ~ Haziq: ‎<attached: 00003075-PHOTO-2026-02-26-01-02-10.jpg>
+‎[26/02/2026, 01:02:10] ~ Haziq: ‎<attached: 00003076-PHOTO-2026-02-26-01-02-10.jpg>
+‎[26/02/2026, 01:02:10] ~ Haziq: ‎<attached: 00003077-PHOTO-2026-02-26-01-02-10.jpg>
+‎[26/02/2026, 01:02:10] ~ Haziq: ‎<attached: 00003078-PHOTO-2026-02-26-01-02-10.jpg>
+‎[26/02/2026, 01:02:11] ~ Haziq: ‎<attached: 00003079-PHOTO-2026-02-26-01-02-11.jpg>
+‎[26/02/2026, 01:02:11] ~ Haziq: ‎<attached: 00003080-PHOTO-2026-02-26-01-02-11.jpg>
+‎[26/02/2026, 01:02:11] ~ Haziq: ‎<attached: 00003081-PHOTO-2026-02-26-01-02-11.jpg>
+[26/02/2026, 01:08:17] ~ Haziq: this actually worked quite well for designing optimal flow cytometry panels from scRNA-seq.
+
+ok @⁨~TS⁩ i know you’re judging me for discretising gene expression but threshold sensitive CARs (like https://www.biorxiv.org/content/10.1101/2021.01.21.427654v1.full) are very very far from the clinic so for all practical purposes CAR activation is binary
+
+yes yes i can hear the question already what about technical dropout and zero inflated negative binomial...
+
+thats why i’m thinking we denoise with scVI-VAE first and then binarise the posterior expression estimates instead of raw counts / log1p
+[26/02/2026, 01:09:47] ~ Haziq: what do y’all think. computationally i feel like we’re actually looking pretty solid??
+[26/02/2026, 01:26:51] ~ Haziq: are we cooking or is the grill not even on
+[26/02/2026, 06:26:36] ~ TS: Great idea! Melting CPU problem is avoided. So you would make a differentiable engine which will subtract the healthy human body from the endometriosis lesion to find the mathematically optimal CAR T pair if we are on same page. I’m with you on scVI-VAE. We should probably set a infinite penalty for any markers expressed in the heart or lungs within the Tabula Sapiens dataset even if they’re perfect for the lesion. If the gradient descent spits out a top 5 list, I can start looking into the bench top feasibility for those scFvs if you would like me to.
+[26/02/2026, 06:35:58] ~ Haziq: thank you!! yesssss spot on and wow bench top feasibility already… you’re fast 😅 ok now i cannot slack any longer. lemme get this in silico target discovery engine thing up and running ASAP and send over targets, tissue-specific risk profiles etc
+[26/02/2026, 06:37:36] ~ Haziq: for context… last time we did this my team was formed a day before the deadline and we had 24 hours to work on it 😭
+‎[26/02/2026, 06:40:13] ~ Haziq: ‎<attached: 00003088-GIF-2026-02-26-06-40-13.mp4>
+[26/02/2026, 06:40:30] ~ Haziq: Is… the two-time iGEM startups winner… in the room with us…? @⁨~tnkr⁩
+[26/02/2026, 06:43:18] ~ Haziq: *Tanishka
+she’s here to make sure I don’t do something stupid
+‎[26/02/2026, 06:44:05] ~ Haziq:  Femflux- Know your Flow! BioHackathon 2024 .pdf • ‎10 pages ‎<attached: 00003091- Femflux- Know your Flow! BioHackathon 2024 .pdf>
+[26/02/2026, 06:48:27] ~ Haziq: 👆 that was her winning pitch from the previous competition, take notes guys
+[26/02/2026, 07:30:12] ~ tnkr: Was reading up on endometriosis markers myself. Excited to see the process flow here. 
+
+Haziq is a talented person, but make sure everyone speaks up and challenges perspectives. Brings out the best in everyone :)
+[26/02/2026, 14:30:53] ~ Naoise Twomey: ‎~ Naoise Twomey joined using a group link.
+[26/02/2026, 14:37:15] ~ Naoise Twomey: Hi guys, my name is Naoise (pronounced Neesha - it's Irish) and I'm a 4th year Biomedical Engineering student at Imperial. I'm part of Imperials Femtech Soc and am passionate about improving women's health. I'd love to get involved with your team - Haziq sent a message into our gchat and it immediately piqued my interest!
+[26/02/2026, 15:18:30] ~ Haziq: hi Naoise!! welcome welcome 🤝
+[26/02/2026, 15:23:32] ~ Haziq: ok im just wondering how to do this cos a LOT has happened in 48 hours. i dont want new people joining and feeling like they accidentally skipped 3 seasons
+[26/02/2026, 15:23:50] abdurrahman: Make a Google docs
+[26/02/2026, 15:23:58] abdurrahman: And just put everything on there
+[26/02/2026, 15:24:07] abdurrahman: And just put it in group description
+[26/02/2026, 15:24:21] abdurrahman: Each time they join, point them to group description
+[26/02/2026, 15:25:17] ~ Haziq: that’s kind of corporate though…
+[26/02/2026, 15:25:32] ~ Haziq: next you’ll suggest weekly standups and sprint retros
+[26/02/2026, 15:25:48] ~ Haziq: we are a synthetic biology burger chain not mckinsey
+[26/02/2026, 15:26:01] abdurrahman: I remember using Google docs back in school to talk to my friends
+[26/02/2026, 15:26:06] abdurrahman: So no it's not🤣
+[26/02/2026, 15:26:37] abdurrahman: Ok let's create a burger cd
+[26/02/2026, 15:26:55] ~ Haziq: lol but fr someone should create a shared notion page
+[26/02/2026, 15:26:55] abdurrahman: We will change the photons on the surface of the burger to create a file
+[26/02/2026, 15:27:22] abdurrahman: And then create burger photon bio scanners
+[26/02/2026, 15:27:34] abdurrahman: Which will scan the burger and have all the files on there ‎<This message was edited>
+[26/02/2026, 15:28:24] ~ Haziq: why does this sound like something that would raise at a $60m valuation
+this is YC 2026
+[26/02/2026, 15:28:43] ~ Haziq: i just physically cannot be the one to set it up right now
+
+my brain is doing glycolysis only
+[26/02/2026, 15:36:27] abdurrahman: I'm nearly home
+[26/02/2026, 15:36:35] abdurrahman: I can crate it, I'll add instructions too
+[26/02/2026, 15:36:42] abdurrahman: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE213216
+[26/02/2026, 15:36:53] abdurrahman: Is this the correct dataset?
+[26/02/2026, 15:36:57] abdurrahman: Just making sure
+[26/02/2026, 15:39:39] ~ Haziq: also this one: https://www.nature.com/articles/s41588-024-01873-w
+[26/02/2026, 15:41:07] ~ Haziq: separate thought but on the topic of low signal to noise ratio in the startup ecosystem... that is literally why we’re doing this
+[26/02/2026, 15:42:50] ~ Haziq: femtech is like 80% cycle trackers and 20% rebranded thermometers. nobody is out here saying “what if we solved cancer with a slightly nicer UI”
+why did women’s health get stuck in app land? 1977 FDA mandate said “no women in early trials” and the field has been playing catch up ever since
+[26/02/2026, 15:43:24] ~ Haziq: so yes *deep tech x femtech*
+we are leaving pastel SaaS behind
+[26/02/2026, 15:57:46] ~ Haziq: also let me highlight two people working to undo that damage
+[26/02/2026, 16:00:05] ~ Haziq: *1/* GYN side, Linda Griffith
+legendary bioengineer at MIT who founded the Center for Gynepathology Research to apply advanced engineering approaches to crack endometriosis
+organ on a chip, proper mechanistic modelling, etc
+[26/02/2026, 16:02:28] ~ Haziq: *2/* OB side, Anna David (my boss)
+
+most senior OB GYN clinician scientist in the country and has made huge progress across every part of the pipeline from pre clinical research to building translational research programmes
+
+she’s the one actively bringing interdisciplinary approaches into this field. her own research is cutting edge on in-utero prenatal gene therapy
+
+and on top of that she frequently travels to the global south to train doctors and advise hospitals doing obstetrics in under resourced conditions
+i think she’s literally in Uganda right now ‎<This message was edited>

@@ -176,8 +176,8 @@ export function createHelix(scene) {
     const nodeMats = [];
 
     for (let i = 0; i <= segments; i += 14) {
-        const mA = makeNodeMat(2.5);
-        const mB = makeNodeMat(2.5);
+        const mA = makeNodeMat(3.5); // Brighter
+        const mB = makeNodeMat(3.5);
         nodeMats.push(mA, mB);
         const nA = new THREE.Mesh(nodeGeo, mA);
         const nB = new THREE.Mesh(nodeGeo, mB);
@@ -188,8 +188,8 @@ export function createHelix(scene) {
     }
 
     // Two hero "target found" nodes — larger, much brighter, will corona hard
-    const heroA = new THREE.Mesh(targetGeo, makeNodeMat(5.5));
-    const heroB = new THREE.Mesh(targetGeo, makeNodeMat(5.5));
+    const heroA = new THREE.Mesh(targetGeo, makeNodeMat(8.0));
+    const heroB = new THREE.Mesh(targetGeo, makeNodeMat(8.0));
     heroA.position.copy(pts1[Math.floor(segments * 0.32)]);
     heroB.position.copy(pts2[Math.floor(segments * 0.67)]);
     nodeMats.push(heroA.material, heroB.material);
@@ -197,16 +197,16 @@ export function createHelix(scene) {
     strandB.add(heroB);
 
     // Small point lights AT the hero nodes — actual light cast into scene
-    const lightA = new THREE.PointLight(0xff1133, 2.0, 8);
+    const lightA = new THREE.PointLight(0xff1133, 3.0, 8);
     lightA.position.copy(pts1[Math.floor(segments * 0.32)]);
-    const lightB = new THREE.PointLight(0xff1133, 2.0, 8);
+    const lightB = new THREE.PointLight(0xff1133, 3.0, 8);
     lightB.position.copy(pts2[Math.floor(segments * 0.67)]);
     helixGroup.add(lightA, lightB);
 
     helixGroup.userData.nodeMats = nodeMats;
 
     helixGroup.add(strandA, strandB);
-    helixGroup.position.set(0, 0, -4);
+    helixGroup.position.set(3, 0, -4);
 
     scene.add(helixGroup);
     return helixGroup;
@@ -223,8 +223,8 @@ export function updateHelix(time) {
     if (strandA) strandA.position.x = -currentSeparation * 0.7;
     if (strandB) strandB.position.x = currentSeparation * 0.7;
 
-    // Very slow rotation — alive but not spinning
-    helixGroup.rotation.y = time * 0.05;
+    // Continuous rotation
+    helixGroup.rotation.y = time * 0.15;
 
     // Update glass shader time (shimmer animation)
     if (helixGroup.userData.glassMats) {

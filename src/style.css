@@ -32,6 +32,8 @@ body {
     line-height: 1.7;
     font-weight: 300;
     overflow-x: hidden;
+    cursor: none;
+    /* Hide default cursor for custom one */
 }
 
 /* Film grain */
@@ -135,9 +137,11 @@ h3 {
 
 .nav-item:hover {
     color: var(--text);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 .btn-primary {
+    cursor: none;
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -156,7 +160,8 @@ h3 {
 .btn-primary:hover {
     background: var(--accent-dim);
     border-color: var(--accent);
-    box-shadow: 0 0 20px rgba(255, 51, 85, 0.15);
+    box-shadow: 0 0 20px rgba(255, 51, 85, 0.25);
+    transform: scale(1.03);
 }
 
 /* ── Main ────────────────────────────── */
@@ -283,18 +288,23 @@ h1 span {
 
 .btn-outline:hover {
     background: var(--surface2);
-    border-color: rgba(255, 51, 85, 0.4);
+    border-color: rgba(255, 51, 85, 0.6);
     color: var(--accent);
+    transform: scale(1.02);
+    box-shadow: 0 0 25px rgba(255, 51, 85, 0.15);
 }
 
 /* ── Content sections ────────────────── */
 /* Gradient panel: dark on text side, fully transparent on 3D side.
    This means the helix is VISIBLE through the right column. */
 .content-section {
-    min-height: 100vh;
+    min-height: 70vh;
+    /* Reduced from 100vh to remove dead scrolling gaps */
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
+    padding: 60px 0;
+    /* Tighter padding for continuous flow */
 }
 
 .content-section.right {
@@ -306,11 +316,13 @@ h1 span {
 }
 
 .section-text {
-    padding: 90px 72px;
+    padding: 70px 60px;
+    /* Slightly tighter internal padding */
     /* Dark glass panel with rounded corners */
     background: rgba(6, 6, 12, 0.92);
     border-radius: 16px;
-    margin: 24px;
+    margin: 16px;
+    /* Reduced margin */
     border: 1px solid rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(20px);
 }
@@ -372,6 +384,19 @@ h2 {
 
 .stat-card {
     display: inline-block;
+    transition: transform 0.3s ease, text-shadow 0.3s ease;
+    cursor: none;
+    /* Make interactive */
+}
+
+.stat-card:hover {
+    transform: translateY(-4px) scale(1.02);
+}
+
+.stat-card:hover .stat-value {
+    text-shadow:
+        0 0 40px rgba(255, 51, 85, 0.8),
+        0 0 80px rgba(255, 51, 85, 0.4);
 }
 
 .stat-value {
@@ -419,6 +444,15 @@ h2 {
     backdrop-filter: blur(12px);
     position: relative;
     overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
+    cursor: none;
+    /* Make interactive */
+}
+
+.math-block:hover {
+    transform: translateY(-2px) scale(1.01);
+    border-color: rgba(255, 51, 85, 0.4);
+    box-shadow: 0 8px 32px rgba(255, 51, 85, 0.12);
 }
 
 /* Red top accent line */
@@ -473,14 +507,16 @@ h2 {
     border-left: 3px solid transparent;
     border-radius: 3px;
     padding: 14px 18px;
-    transition: border-left-color 0.2s, background 0.2s;
+    transition: transform 0.2s, border-left-color 0.2s, background 0.2s, box-shadow 0.2s;
     backdrop-filter: blur(8px);
+    cursor: none;
 }
 
 .pair-card:hover {
     border-left-color: var(--accent);
     background: rgba(23, 23, 36, 0.9);
-    box-shadow: 0 0 20px rgba(255, 51, 85, 0.08);
+    box-shadow: 0 4px 24px rgba(255, 51, 85, 0.15);
+    transform: translateX(6px);
 }
 
 .pair-rank {

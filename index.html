@@ -47,20 +47,19 @@
       <section class="hero-section" id="hero">
         <div class="hero-content">
           <div class="hero-badge fade-up">
-            CAR-T · Endometriosis · Differentiable Discovery
+            RNA Logic Circuits · Endometriosis · AI-Designed
           </div>
           <h1 class="fade-up delay-1">
-            The Target<br><span>is Found.</span>
+            Programmable<br><span>Biology.</span>
           </h1>
           <p class="hero-stat fade-up delay-2">
-            <strong>~4.5M</strong> candidate pairs screened in silico.
-            <strong>Two</strong> survived.
+            <strong>~4.5M</strong> candidate states screened in silico.
+            <strong>One</strong> logic gate found.
           </p>
           <p class="hero-desc fade-up delay-2">
-            Dual-target CAR-T therapy for endometriosis,
-            discovered by gradient descent over single-cell genomics.
+            AI-designed RNA logic circuits for endometriosis.
             Not hormone modulation. Not symptom management.
-            Targeted cellular ablation of ectopic lesions.
+            Targeted ablation of transient cell states computed directly inside the cell.
           </p>
           <div class="hero-actions fade-up delay-3">
             <a href="#problem" class="btn-outline">Explore the Architecture ↓</a>
@@ -69,43 +68,35 @@
       </section>
 
       <!-- ═══════════════════════════════════
-                 THE PROBLEM
+                 THE PROBLEM & FORMALISM
             ════════════════════════════════════ -->
       <section class="content-section" id="problem">
         <div class="section-text">
           <div class="section-badge">The Standard of Care</div>
-          <h2>Blind Resection<br>is Not Enough</h2>
+          <h2>Beyond Blind<br>Resection</h2>
           <div class="text-block">
             <p>
-              Endometriosis affects ~10% of people with a uterus worldwide.
-              The current standard of care is surgical resection — cutting out
-              the lesions — which has a recurrence rate above 50% within five years.
+              Endometriosis affects ~10% of people with a uterus. The standard of care
+              is surgical resection—but recurrence rates exceed 50% within five years.
+              The problem is not surgical skill. Surgeons simply cannot reliably distinguish
+              microscopic pathological tissue from healthy stroma by visual inspection.
             </p>
             <p>
-              Surgeons cannot reliably distinguish all pathological microscopic
-              tissue from healthy tissue by visual inspection. The lesions hide.
-              The problem is not surgical skill. It is the structural imprecision
-              of a therapy that cannot identify what it is targeting at the
-              cellular level.
+              Instead of targeting anatomy, we target the cellular program. We use
+              <strong>Boolean logic circuits</strong> engineered from RNA to directly evaluate
+              a cell's state. The circuit reads single-cell RNA-seq (scRNA-seq) expression levels:
             </p>
-            <p>
-              A therapy that targets cells directly — not anatomy — does not have
-              this problem.
-            </p>
-          </div>
-          <div class="stat-block">
-            <div class="stat-card">
-              <div class="stat-value">50%</div>
-              <div class="stat-label">Post-Surgical Recurrence</div>
-              <div class="stat-desc">
-                Within 5 years, due to missed microscopic deposits
-                and incomplete lesion mapping.
-              </div>
+            <div class="math-block" style="margin: 20px 0;">
+              <code>Kill = (A > θ₁) ∧ (B &lt; θ₂)</code>
             </div>
+            <p>
+              If the inputs match the high/low profile of the ectopic lesion, the
+              gate triggers apoptosis. Otherwise, the cell is left unharmed.
+            </p>
           </div>
         </div>
         <div class="section-visual" id="dynamic-cards-container">
-          <!-- Gene pair cards injected by JS -->
+          <!-- Optional visual elements -->
         </div>
       </section>
 
@@ -118,26 +109,23 @@
           <h2>We Did Not Enumerate.<br>We Optimised.</h2>
           <div class="text-block">
             <p>
-              Brute-force enumeration of dual-target combinations across the
-              human transcriptome produces approximately 4.5 million candidate
-              pairs. Evaluating each against a whole-body safety atlas is
-              computationally intractable.
+              Designing a circuit to kill ectopic lesions while sparing healthy tissue
+              requires navigating millions of combinatorial marker states. We do not
+              brute-force this.
             </p>
             <p>
-              Instead, we relax the discrete combinatorial search into continuous
-              space using a <strong>Gumbel-Softmax reparameterisation</strong>.
-              We optimise with gradient descent, then snap back to a hard discrete
-              selection — combining a biomedical specificity objective with a
-              whole-body safety penalty in a jointly differentiable system.
+              We run a <strong>Constrained Optimisation</strong> over denoised scVI-VAE posterior
+              estimates. The differentiable search finds the exact logic gate inputs
+              that maximize Killing Accuracy (F1-score) while heavily penalizing off-target
+              toxicity against a whole-body safety atlas like Tabula Sapiens.
             </p>
             <p>
-              The compiler finds the pair. The atlas validates it.
-              The result is not a ranked list — it is a proof.
+              The AI finds the logic. The atlas validates it.
             </p>
           </div>
           <div class="math-block">
             <div class="math-header">Optimization Objective</div>
-            <code>min[ L_spec(θ) + λ · L_safe(θ) ]</code>
+            <code>J = F1 - λ(FP)</code>
             <div class="math-footer">Gradient descent active</div>
           </div>
 
@@ -181,55 +169,63 @@
       </section>
 
       <!-- ═══════════════════════════════════
-                 THE RESULT
+                 THE KINETICS
             ════════════════════════════════════ -->
       <section class="content-section" id="platform">
         <div class="section-text">
-          <div class="section-badge">The Platform</div>
-          <h2>Two Targets.<br>Validated Against<br>475 Cell Types.</h2>
+          <div class="section-badge">Circuit Dynamics</div>
+          <h2>Kinetics &<br>Clinical Validation.</h2>
           <div class="text-block">
             <p>
-              The result is not just a list of markers. It is a
-              <strong>safety certificate</strong> validated against the whole
-              human body via the Tabula Sapiens single-cell atlas.
+              A logic gate is only useful if it acts like a switch. The rate of change
+              of targeted metabolism in our RNA circuits follows Hill function kinetics,
+              governing how "snappy" the cell death trigger is.
             </p>
+            <div class="math-block"
+              style="margin: 20px 0; background: rgba(10, 15, 30, 0.45); border: 1px solid rgba(102, 153, 255, 0.2);">
+              <code>v = V_max[S]ⁿ / (K_mⁿ + [S]ⁿ)</code>
+            </div>
             <p>
-              If a candidate pair is expressed in critical organs — heart,
-              brain, kidney — it receives an infinite penalty and is excluded.
-              What survives is the blueprint for a truly lesion-specific
-              dual-target CAR-T.
-            </p>
-            <p>
-              The top-ranked pairs are shown here. These are real outputs
-              from the optimisation run.
+              By tuning the Hill coefficient (n), we achieve extreme ultrasensitivity.
+              The circuit does not "partially kill" a cell—it evaluates the boolean state,
+              crosses the threshold, and executes.
             </p>
           </div>
-          <div class="cards-preview" id="dynamic-cards-container-2"></div>
+
+          <div class="stat-block">
+            <div class="stat-card">
+              <div class="stat-value" style="font-size: 80px;">0.94</div>
+              <div class="stat-label">In-Silico F1 Score</div>
+              <div class="stat-desc">
+                High precision targeting of transient lesion states.
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       <!-- ═══════════════════════════════════
-                 THE VISION — VISION
+                 THE VISION
             ════════════════════════════════════ -->
       <section class="content-section right" id="vision">
         <div class="section-text">
-          <div class="section-badge">What Comes Next</div>
-          <h2>From Algorithm<br>to Therapy.</h2>
+          <div class="section-badge">Deep Tech x FemTech</div>
+          <h2>Moving Beyond<br>Pastel SaaS.</h2>
           <div class="text-block">
             <p>
-              We have a computationally validated dual-target pair, a
-              differentiable discovery pipeline that can be rerun on any
-              disease with single-cell data, and a safety framework validated
-              against the most comprehensive human cell atlas available.
+              Historically, women's health innovation has been trapped in "app land" —
+              focusing on cycle trackers and rebranded thermometers.
+              We are applying verifiable, rigorous deep tech to the most underfunded
+              field in biomedicine.
             </p>
             <p>
-              The next steps are pre-clinical validation of CAR construct
-              binding, in vitro ectopic lesion models, and IND-enabling studies.
+              Inspired by leaders like Linda Griffith (MIT Center for Gynepathology) and
+              Anna David (UCL EGA-IfWH), we are moving away from symptom management toward
+              curative biological engineering.
             </p>
             <p>
-              We are pre-seed. If you are a scientist, investor, or collaborator
-              who wants to understand the platform in depth, the Lab Console
-              has the full data.
+              We are pre-seed. If you want to understand the RNA logic platform in depth,
+              the Lab Console has the full dataset.
             </p>
           </div>
           <div class="hero-actions" style="margin-top: 32px;">

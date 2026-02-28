@@ -25,6 +25,15 @@ class SoundManager {
         }).toDestination();
         this.pingSynth.volume.value = -10;
 
+        // Ultra-short, dry click for UI hovers
+        this.tickSynth = new Tone.MembraneSynth({
+            pitchDecay: 0.001,
+            octaves: 0.1,
+            oscillator: { type: "sine" },
+            envelope: { attack: 0.001, decay: 0.05, sustain: 0, release: 0.01 }
+        }).toDestination();
+        this.tickSynth.volume.value = -18;
+
         // Add some reverb for space
         this.reverb = new Tone.Reverb(4).toDestination();
         this.ambientSynth.connect(this.reverb);
@@ -61,6 +70,11 @@ class SoundManager {
         if (!this.initialized || this.muted) return;
         this.fxSynth.triggerAttackRelease("C1", "8n");
         setTimeout(() => this.fxSynth.triggerAttackRelease("C1", "8n"), 200);
+    }
+
+    playUITick() {
+        if (!this.initialized || this.muted) return;
+        this.tickSynth.triggerAttackRelease("C5", "32n");
     }
 
     playClick() {
