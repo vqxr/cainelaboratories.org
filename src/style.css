@@ -1,0 +1,315 @@
+:root {
+    --text-primary: #1d1d1f;
+    --text-secondary: #86868b;
+    --bg-primary: #ffffff;
+    --accent-magenta: #ff4d6d;
+    --accent-blue: #74b3ff;
+    --accent-green: #52d48a;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    overscroll-behavior: none;
+}
+
+#canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+    /* Let clicks pass through to UI if needed, unless doing raycasting */
+}
+
+/* Scene Content Overlays */
+#app {
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+    /* Only enable on specific interactive UI elements */
+}
+
+.scene-section {
+    position: relative;
+    width: 100vw;
+    min-height: 150vh;
+    /* Enough scroll distance per scene */
+    padding: 10vh 5vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    position: sticky;
+    top: 30vh;
+    max-width: 600px;
+    pointer-events: auto;
+}
+
+.content.right {
+    margin-left: auto;
+    text-align: right;
+}
+
+.content.left {
+    margin-right: auto;
+}
+
+.content.center {
+    margin: 0 auto;
+    text-align: center;
+}
+
+h1 {
+    font-size: 4rem;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 2rem;
+    opacity: 0;
+    /* GSAP will animate */
+}
+
+h1 span {
+    color: var(--text-secondary);
+}
+
+h2 {
+    font-size: 2.5rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.5rem;
+}
+
+p {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+/* Scene 3 specifics */
+.highlight-blue {
+    color: var(--accent-blue);
+}
+
+.highlight-green {
+    color: var(--accent-green);
+}
+
+/* Scene 4: Machine Panel */
+.glass-panel {
+    position: fixed;
+    top: 50%;
+    left: 10%;
+    transform: translateY(-50%);
+    width: 350px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    pointer-events: auto;
+    opacity: 0;
+    /* Hidden initially */
+    z-index: 10;
+}
+
+.panel-header {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 10px;
+}
+
+.prob-dists {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.dist {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dist span {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.2rem;
+    width: 30px;
+}
+
+.bars {
+    display: flex;
+    gap: 4px;
+    height: 40px;
+    flex: 1;
+    align-items: flex-end;
+}
+
+.bar {
+    flex: 1;
+    background: var(--text-secondary);
+    border-radius: 2px 2px 0 0;
+    transition: height 0.1s ease, background 0.3s ease;
+}
+
+.loss-chart {
+    height: 80px;
+    width: 100%;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.temp-gauge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.temp-gauge span {
+    font-family: 'DM Mono', monospace;
+}
+
+.gauge-track {
+    height: 4px;
+    flex: 1;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.gauge-fill {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #ff4d6d, #74b3ff);
+    transform-origin: left;
+}
+
+.panel-footer {
+    margin-top: 20px;
+    font-size: 0.75rem;
+    color: var(--accent-magenta);
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+}
+
+/* Specific elements needing GSAP handling starting invisible */
+.fade-text {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.math-block {
+    font-family: 'DM Mono', monospace;
+    font-size: 2rem;
+    color: var(--text-primary);
+    background: rgba(0, 0, 0, 0.03);
+    padding: 2rem;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+/* Sound Button */
+.sound-toggle {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    cursor: pointer;
+    pointer-events: auto;
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+.sound-toggle:hover {
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+/* Scene 6 Cards */
+#cards-container {
+  position: absolute;
+  right: 10%;
+  top: 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 300px;
+  pointer-events: auto;
+  z-index: 10;
+}
+
+.pair-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: crosshair;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.pair-card:hover {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 15px 40px rgba(255, 77, 109, 0.15);
+}
+
+.pair-rank {
+  font-family: "DM Mono", monospace;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pair-genes {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: var(--text-primary);
+}
+
+.pair-stats {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 15px;
+}
+
+.safety-panel {
+  display: flex;
+  justify-content: space-between;
+  font-family: "DM Mono", monospace;
+  font-size: 0.75rem;
+  color: var(--accent-green);
+  background: rgba(82, 212, 138, 0.1);
+  padding: 8px 12px;
+  border-radius: 6px;
+}

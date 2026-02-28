@@ -1,280 +1,125 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<script src="lock.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bloomsbury Burger Therapeutics — Project Wiki</title>
-<link rel="stylesheet" href="style.css">
-<script>
-  window.MathJax = {
-    tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
-    options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] },
-    startup: { typeset: false }
-  };
-</script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" defer></script>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bloomsbury Burger Therapeutics — The Target is Found</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono&display=swap"
+    rel="stylesheet">
 </head>
+
 <body>
+  <!-- 3D Canvas Container -->
+  <div id="canvas-container"></div>
 
-<div class="layout">
-
-  <!-- SIDEBAR -->
-  <nav class="sidebar">
-    <div class="sidebar-logo">
-      <span class="emoji">🍔</span>
-      <div class="name">Bloomsbury Burger<br>Therapeutics plc</div>
-      <div class="sub">pre-seed · pre-revenue · pre-sanity</div>
-    </div>
-
-    <div class="nav-section">
-      <div class="nav-label">Pages</div>
-      <a href="index.html" class="nav-item active"><span class="icon">🏠</span> Overview</a>
-      <a href="pipeline.html" class="nav-item"><span class="icon">⚙️</span> Pipeline</a>
-      <a href="math.html" class="nav-item"><span class="icon">∑</span> Mathematics</a>
-      <a href="dataset.html" class="nav-item"><span class="icon">🗄️</span> Dataset</a>
-      <a href="console.html" class="nav-item"><span class="icon">🖥</span> Lab Console</a>
-      <a href="updates.html" class="nav-item"><span class="icon">📋</span> Updates</a>
-    </div>
-
-    <div class="sidebar-divider"></div>
-
-    <div class="nav-section">
-      <div class="nav-label">On this page</div>
-      <a href="#overview" class="nav-item"><span class="icon">·</span> Overview</a>
-      <a href="#why" class="nav-item"><span class="icon">·</span> Why now</a>
-      <a href="#pipeline" class="nav-item"><span class="icon">·</span> Pipeline</a>
-      <a href="#dataset" class="nav-item"><span class="icon">·</span> Dataset</a>
-      <a href="#resources" class="nav-item"><span class="icon">·</span> Resources</a>
-      <a href="#glossary" class="nav-item"><span class="icon">·</span> Glossary</a>
-    </div>
-
-    <div class="sidebar-divider"></div>
-
-    <div class="nav-section">
-      <div class="nav-label">Status</div>
-      <div class="nav-item" style="cursor:default;">
-        <span class="dot green"></span> <span style="font-size:11px;font-family:'DM Mono',monospace;">Atlas loaded</span>
+  <!-- Scroll Content (Overlay UI) -->
+  <main id="app">
+    <!-- Scene 1: The Macro View -->
+    <section class="scene-section" id="scene-1">
+      <div class="content">
+        <h1>Bloomsbury Burger<br><span>Therapeutics</span></h1>
+        <p class="fade-text sc-1-1">Endometriosis affects 10%.</p>
+        <p class="fade-text sc-1-2">The lesions are invisible to the surgeon's eye.</p>
+        <p class="fade-text sc-1-3">The standard of care is blind resection.</p>
+        <p class="fade-text sc-1-4">We need a molecular scalpel.</p>
       </div>
-      <div class="nav-item" style="cursor:default;">
-        <span class="dot blue"></span> <span style="font-size:11px;font-family:'DM Mono',monospace;">Optimising</span>
+    </section>
+
+    <!-- Scene 2: The Data Universe -->
+    <section class="scene-section" id="scene-2">
+      <div class="content right">
+        <p class="fade-text sc-2-1">54 patients.</p>
+        <p class="fade-text sc-2-2">280,000 cells.</p>
+        <p class="fade-text sc-2-3">33,000 genes.</p>
+        <h2 class="fade-text sc-2-4">The Human Endometriosis Cell Atlas</h2>
+        <p class="fade-text sc-2-5">This is our search space.</p>
       </div>
-    </div>
-  </nav>
+      <!-- Tooltips will be absolutely positioned in JS -->
+    </section>
 
-  <!-- MAIN -->
-  <main class="main">
-
-    <!-- HERO -->
-    <div class="hero" id="overview">
-      <div class="hero-badge">CAR-T · Endometriosis · In Silico Discovery</div>
-      <h1>Bloomsbury Burger<br><span>Therapeutics</span></h1>
-      <p class="hero-desc">
-        We are building a dual-target CAR-T therapy guided by single-cell genomics.
-        This is not hormone modulation. Not symptom management. This is targeted cellular
-        ablation of ectopic lesions — informed by a 54-patient transcriptomic atlas and
-        a differentiable optimisation formulation we believe is novel.
-      </p>
-    </div>
-
-    <!-- STATUS ROW -->
-    <div class="status-row">
-      <div class="status-pill"><span class="dot green"></span> Atlas loaded</div>
-      <div class="status-pill"><span class="dot green"></span> 54/54 samples processed</div>
-      <div class="status-pill"><span class="dot blue"></span> Optimisation: converged</div>
-      <div class="status-pill"><span class="dot yellow"></span> Pair stability: 0.92</div>
-    </div>
-
-    <!-- WHY -->
-    <section id="why" class="reveal">
-      <div class="section-header">
-        <div class="section-icon">❓</div>
-        <h2>Why endometriosis, why now</h2>
+    <!-- Scene 3: The Quest -->
+    <section class="scene-section" id="scene-3">
+      <div class="content left">
+        <p class="fade-text sc-3-1">A single marker isn't enough. It's too risky.</p>
+        <p class="fade-text sc-3-2">We need an AND‑gate: <span class="highlight-blue">Marker A</span>
+          <strong>AND</strong> <span class="highlight-green">Marker B</span>.</p>
+        <p class="fade-text sc-3-3">The therapy only activates where both are true.</p>
       </div>
-      <div class="callout" style="margin-bottom:12px;">
-        <p>Endometriosis affects ~10% of people with a uterus worldwide. The current standard of care is surgical resection — cutting out the lesions — which has a high recurrence rate and is imprecise. Surgeons literally cannot reliably distinguish all pathological tissue from healthy tissue by visual inspection alone.</p>
-        <p>The field is chronically underfunded. A 1977 FDA mandate excluded women from early clinical trials and the field has been playing catch-up ever since. Femtech is currently 80% cycle trackers and 20% rebranded thermometers.</p>
-        <p><strong>We think a targeted cellular therapy, informed by single-cell genomics, could be a genuinely better solution.</strong> CAR-T has already transformed blood cancer treatment. We're asking: what if we applied the same logic to solid tissue pathology?</p>
-      </div>
+    </section>
 
-      <div class="stat-grid" style="margin-top:20px;">
-        <div class="stat-card">
-          <div class="stat-value"><span data-counter="10" data-suffix="%">10%</span></div>
-          <div class="stat-label">Prevalence</div>
-          <div class="stat-desc">Global prevalence among people with a uterus. Comparable to diabetes. Receives a fraction of the research funding.</div>
+    <!-- Scene 4: The Machine -->
+    <section class="scene-section" id="scene-4">
+      <div class="glass-panel" id="machine-panel">
+        <div class="panel-header">Differentiable Compiler</div>
+        <div class="panel-body">
+          <div class="prob-dists">
+            <div class="dist">
+              <span>α¹</span>
+              <div class="bars" id="bars-a"></div>
+            </div>
+            <div class="dist">
+              <span>α²</span>
+              <div class="bars" id="bars-b"></div>
+            </div>
+          </div>
+          <div class="loss-chart" id="loss-chart-container">
+            <svg viewBox="0 0 100 50" preserveAspectRatio="none">
+              <path id="loss-line" d="M0,10 Q25,10 50,30 T100,45" fill="none" stroke="black" stroke-width="2" />
+            </svg>
+          </div>
+          <div class="temp-gauge">
+            <span>τ</span>
+            <div class="gauge-track">
+              <div class="gauge-fill" id="temp-fill"></div>
+            </div>
+          </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-value"><span data-counter="50" data-suffix="%">50%</span></div>
-          <div class="stat-label">Recurrence rate</div>
-          <div class="stat-desc">Post-surgical recurrence within 5 years. Visual resection misses microscopic pathological deposits.</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value"><span style="color:var(--accent);">0</span></div>
-          <div class="stat-label">Targeted therapies</div>
-          <div class="stat-desc">Zero molecularly-targeted therapies currently approved. The field remains stuck in hormone suppression paradigms.</div>
+        <div class="panel-footer">Gradient descent active</div>
+      </div>
+      <div class="content right" style="margin-top:20vh;">
+        <p class="fade-text sc-4-1">The search space: 500 million pairs.</p>
+        <p class="fade-text sc-4-2">So we built a differentiable compiler.</p>
+        <p class="fade-text sc-4-3">Gradient descent finds the intersection.</p>
+      </div>
+    </section>
+
+    <!-- Scene 5: The Convergence -->
+    <section class="scene-section" id="scene-5">
+      <div class="content center">
+        <h2 class="fade-text sc-5-1">Convergence.</h2>
+        <div class="math-block fade-text sc-5-2">
+          θ¹ → PTPRC<br>
+          θ² → EPCAM
         </div>
       </div>
     </section>
 
-    <!-- PIPELINE -->
-    <section id="pipeline" class="reveal">
-      <div class="section-header">
-        <div class="section-icon">⚙️</div>
-        <h2>Technical pipeline</h2>
+    <!-- Scene 6: The Result -->
+    <section class="scene-section" id="scene-6">
+      <div class="content left">
+        <p class="fade-text sc-6-1">The result is not just a list. It's a safety certificate.</p>
+        <p class="fade-text sc-6-2">Validated against the whole human body.</p>
+        <h2 class="fade-text sc-6-3">The blueprint for a cure.</h2>
       </div>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">01</div>
-          <div class="step-content">
-            <h3>Load & QC single-cell data</h3>
-            <p>Load raw Cell Ranger output (<code>raw_feature_bc_matrix.h5</code>) for each sample. Filter out empty droplets and dying cells using gene count and mitochondrial read thresholds. Save filtered cells as <code>.h5ad</code> files.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">02</div>
-          <div class="step-content">
-            <h3>Denoise with scVI-VAE</h3>
-            <p>Single-cell data is noisy — genes drop out randomly. We run scVI (a variational autoencoder) to learn a clean latent representation of each cell's true expression profile. This enables stable binarisation for downstream combinatorial optimisation.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">03</div>
-          <div class="step-content">
-            <h3>Differentiable marker optimisation</h3>
-            <p>Instead of brute-force enumeration of ~4.5 million possible marker pairs, we relax the discrete combinatorial search into continuous space using a <strong style="color:var(--accent2);">Gumbel-Softmax reparameterisation</strong>, optimise with gradient descent, then snap back to a hard discrete selection. We believe this specific formulation — combining a biomedical specificity objective with a whole-body safety penalty in a jointly differentiable system — is novel. <a href="math.html" style="color:var(--accent);text-decoration:none;font-size:12px;">→ See full mathematics</a></p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">04</div>
-          <div class="step-content">
-            <h3>Cross-reference Tabula Sapiens</h3>
-            <p>Any surviving marker pairs get checked against the full human cell atlas. Infinite penalty for expression in heart, lung, brain or other critical organs. Only pairs that are truly lesion-specific survive this filter.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">05</div>
-          <div class="step-content">
-            <h3>Output top candidate pairs</h3>
-            <p>Gradient descent outputs a ranked top-5 list of dual marker combinations. These get handed off for benchtop feasibility assessment — checking whether scFvs (the targeting domains) exist or can be designed for each candidate.</p>
-          </div>
-        </div>
-      </div>
+      <!-- Card UI built dynamically in JS -->
+      <div id="cards-container"></div>
     </section>
 
-    <!-- DATASET -->
-    <section id="dataset" class="reveal">
-      <div class="section-header">
-        <div class="section-icon">🗄️</div>
-        <h2>Dataset — GSE213216</h2>
-      </div>
-      <div class="callout" style="margin-bottom: 16px;">
-        <p>We're using the <strong>Human Endometriosis Cell Atlas</strong> published in Nature Genetics (2024). It contains single-cell RNA sequencing data from 54 patient samples across multiple tissue types: ectopic endometrial lesions (endometriomas + peritoneal lesions), eutopic endometrium, and unaffected control tissue.</p>
-        <p>Total size: ~15.7GB. Format: Cell Ranger output (10x Genomics). Each sample loads as a barcodes × genes matrix. Integration across samples is performed after QC and batch-aware modelling with scVI.</p>
-      </div>
-      <div class="tags">
-        <span class="tag pink">54 samples</span>
-        <span class="tag pink">~15.7 GB</span>
-        <span class="tag green">10x Genomics scRNA-seq</span>
-        <span class="tag green">Cell Ranger output</span>
-        <span class="tag blue">Ectopic lesions</span>
-        <span class="tag blue">Eutopic endometrium</span>
-        <span class="tag blue">Control tissue</span>
-        <span class="tag purple">Nature Genetics 2024</span>
+    <!-- CTA -->
+    <section class="scene-section" id="scene-end">
+      <div class="content center">
+        <h2>Defying biology requires a new kind of interface.</h2>
+        <p>We made the invisible visible. Now watch us target it.</p>
+        <div class="sound-toggle" id="sound-toggle">Sound: Muted</div>
       </div>
     </section>
-
-    <!-- RESOURCES -->
-    <section id="resources" class="reveal">
-      <div class="section-header">
-        <div class="section-icon">📚</div>
-        <h2>Key resources</h2>
-      </div>
-      <div class="resources">
-        <a href="https://www.nature.com/articles/s41588-024-01873-w" target="_blank" class="resource-card">
-          <div class="r-type">📄 Paper</div>
-          <div class="r-title">Human Endometriosis Cell Atlas</div>
-          <div class="r-desc">Nature Genetics 2024. The dataset we're mining. Single-cell atlas of endometriosis lesions across 54 patients.</div>
-          <div class="r-link">nature.com →</div>
-        </a>
-        <a href="https://www.nature.com/articles/s41586-019-1546-z" target="_blank" class="resource-card">
-          <div class="r-type">📄 Paper</div>
-          <div class="r-title">CAR-T cell therapy blueprint</div>
-          <div class="r-desc">Nature 2019. The conceptual framework we're adapting for endometriosis — using CAR-T to target solid tissue.</div>
-          <div class="r-link">nature.com →</div>
-        </a>
-        <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE213216" target="_blank" class="resource-card">
-          <div class="r-type">🗄️ Dataset</div>
-          <div class="r-title">GSE213216 on GEO</div>
-          <div class="r-desc">NCBI GEO page for the endometriosis atlas. Download the raw data here.</div>
-          <div class="r-link">ncbi.nlm.nih.gov →</div>
-        </a>
-        <a href="https://www.jnj.com/media-center/press-releases/johnson-johnsons-dual-targeting-car-t-cell-therapy-shows-encouraging-first-results-in-large-b-cell-lymphoma" target="_blank" class="resource-card">
-          <div class="r-type">📰 News</div>
-          <div class="r-title">Dual-targeting CAR-T — J&J results</div>
-          <div class="r-desc">Proof that dual-target CAR-T works in humans. Encouraging early results in large B-cell lymphoma.</div>
-          <div class="r-link">jnj.com →</div>
-        </a>
-        <a href="math.html" class="resource-card">
-          <div class="r-type">∑ Mathematics</div>
-          <div class="r-title">Our formulation — full derivation</div>
-          <div class="r-desc">The complete mathematical treatment of our differentiable marker optimisation. Possibly novel in the differentiable programming literature.</div>
-          <div class="r-link">math.html →</div>
-        </a>
-        <a href="https://www.sc-best-practices.org" target="_blank" class="resource-card">
-          <div class="r-type">📖 Guide</div>
-          <div class="r-title">Single-cell best practices</div>
-          <div class="r-desc">The definitive guide to scRNA-seq analysis. QC, normalisation, integration, everything.</div>
-          <div class="r-link">sc-best-practices.org →</div>
-        </a>
-      </div>
-    </section>
-
-    <!-- GLOSSARY -->
-    <section id="glossary" class="reveal">
-      <div class="section-header">
-        <div class="section-icon">📖</div>
-        <h2>Glossary — for the new people</h2>
-      </div>
-      <div class="faq">
-        <div class="faq-item">
-          <div class="faq-q" onclick="toggle(this)">What is a CAR-T cell? <span class="chevron">▼</span></div>
-          <div class="faq-a">CAR-T stands for Chimeric Antigen Receptor T-cell. It's a type of immune cell (T-cell) that we genetically engineer to express a synthetic receptor (the CAR) on its surface. This receptor recognises specific proteins on target cells and triggers the T-cell to destroy them. It's already used in blood cancers and has transformed treatment for some patients.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="toggle(this)">What is scRNA-seq? <span class="chevron">▼</span></div>
-          <div class="faq-a">Single-cell RNA sequencing. It lets us measure which genes are switched on or off in thousands of individual cells simultaneously. Traditional RNA-seq gives you an average across millions of cells — scRNA-seq gives you a snapshot of every single cell independently. This is how we can identify what makes ectopic endometrial cells different from healthy ones.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="toggle(this)">What's ectopic vs eutopic endometrium? <span class="chevron">▼</span></div>
-          <div class="faq-a">Eutopic endometrium is the normal uterine lining — where it's supposed to be. Ectopic means "out of place" — in endometriosis, endometrial-like tissue grows outside the uterus (on the ovaries, peritoneum, fallopian tubes, etc). These lesions are what we want to target with the CAR-T. Our targets need to be present in ectopic tissue but NOT in eutopic tissue or healthy organs.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="toggle(this)">What is scVI? <span class="chevron">▼</span></div>
-          <div class="faq-a">scVI is a deep learning model (variational autoencoder) designed specifically for single-cell data. Single-cell measurements are very noisy — genes randomly drop out and counts are sparse. scVI learns a cleaner latent representation of each cell's true biology by modelling the technical noise explicitly. We use it to denoise the data before doing marker discovery.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="toggle(this)">What is Tabula Sapiens? <span class="chevron">▼</span></div>
-          <div class="faq-a">A whole-human cell atlas — essentially a map of gene expression across every major cell type in the human body. We use it as a safety filter. If a candidate marker is also expressed in heart cells, lung cells, or neurons, we throw it out immediately — we don't want the CAR-T attacking those.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="toggle(this)">Why dual targeting? <span class="chevron">▼</span></div>
-          <div class="faq-a">A CAR-T that targets one marker is risky — if that marker appears anywhere else in the body, you get off-target toxicity. A dual-target CAR only activates when BOTH markers are present simultaneously (like an AND gate). This is far more specific, because the probability of two markers co-occurring in healthy tissue is much lower than either one alone. J&J recently showed this works in humans.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q" onclick="toggle(this)">What's Gumbel-Softmax and why does it matter? <span class="chevron">▼</span></div>
-          <div class="faq-a">The marker selection problem is discrete: you either include a gene or you don't. Gradient descent requires a continuous, differentiable objective. The Gumbel-Softmax trick lets us relax discrete categorical choices into soft continuous probability vectors, run gradient descent, then anneal the temperature back to recover a hard discrete selection. This makes searching the ~4.5M pair space tractable. <a href="math.html" style="color:var(--accent);">Full math here →</a></div>
-        </div>
-      </div>
-    </section>
-
-    <div class="footer">
-      <span>bloomsbury burger therapeutics plc © 2026</span>
-      <span>pre-seed · pre-revenue · pre-sanity</span>
-    </div>
 
   </main>
-</div>
-
-<script src="script.js"></script>
+  <script type="module" src="/src/main.js"></script>
 </body>
+
 </html>
