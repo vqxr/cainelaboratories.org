@@ -23,7 +23,7 @@ const HELIX_X = {
 
 // Camera positions — subtle cinematic movement (zoom, height)
 const CAM = {
-    hero: { x: 0, y: 2, z: 13 },
+    hero: { x: 0, y: 2, z: 10 },
     clinical: { x: 0, y: 3, z: 11 },
     cart: { x: 0, y: 3.5, z: 10 },
     data: { x: 0, y: 3, z: 11 },
