@@ -21,7 +21,6 @@
     "postprocessing": "^6.38.3",
     "raw-loader": "^4.0.2",
     "three": "^0.183.2",
-    "tone": "^15.1.22",
-    "troika-three-text": "^0.52.4"
+    "tone": "^15.1.22"
   }
 }

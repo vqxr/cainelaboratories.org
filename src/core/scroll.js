@@ -1,4 +1,4 @@
-// scroll.js — 5-chapter scroll narrative.
+// scroll.js — 7-chapter scroll narrative.
 // Camera does subtle cinematic movement, helix X-position drives left/right framing.
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -11,20 +11,26 @@ gsap.registerPlugin(ScrollTrigger);
 
 // Helix X positions — controls which side of the screen the helix appears on
 const HELIX_X = {
-    hero: 3,    // right
-    problem: 4,    // right
-    approach: -5,    // far left
-    platform: 5,    // far right
-    vision: -5,    // far left
+    hero: -3,       // left — text is right, helix peeks left
+    clinical: 5,   // far right — text is left
+    cart: -4,      // left — text is right
+    data: 5,       // far right — text is left
+    engine: -4,    // left — text is right
+    results: 5,    // far right — text is left
+    safety: -4,    // left — text is right
+    vision: 5,     // far right — text is left
 };
 
 // Camera positions — subtle cinematic movement (zoom, height)
 const CAM = {
     hero: { x: 0, y: 2, z: 13 },
-    problem: { x: 0, y: 3, z: 11 },
-    approach: { x: 0, y: 3.5, z: 9 },
-    platform: { x: 0, y: 4, z: 13 },
-    vision: { x: 0, y: 3, z: 11 },
+    clinical: { x: 0, y: 3, z: 11 },
+    cart: { x: 0, y: 3.5, z: 10 },
+    data: { x: 0, y: 3, z: 11 },
+    engine: { x: 0, y: 4, z: 9 },
+    results: { x: 0, y: 3.5, z: 12 },
+    safety: { x: 0, y: 3, z: 10 },
+    vision: { x: 0, y: 2.5, z: 11 },
 };
 
 export function initScroll(camera) {
@@ -59,36 +65,63 @@ function setupCameraTimeline(camera) {
     });
 
     // Chapter 0: Hero Hold
-    tl.to({}, { duration: 0.5 });
+    tl.to({}, { duration: 0.3 });
 
-    // Hero → Problem
+    // Hero → Clinical
     tl.to(camera.position,
-        { ...CAM.problem, duration: 1, ease: 'power2.inOut' }
+        { ...CAM.clinical, duration: 1, ease: 'power2.inOut' }
     );
     tl.to(helix.position,
-        { x: HELIX_X.problem, duration: 1, ease: 'power2.inOut' },
+        { x: HELIX_X.clinical, duration: 1, ease: 'power2.inOut' },
         '<'
     );
 
-    // Problem → Approach
+    // Clinical → CAR-T
     tl.to(camera.position,
-        { ...CAM.approach, duration: 1, ease: 'power2.inOut' }
+        { ...CAM.cart, duration: 1, ease: 'power2.inOut' }
     );
     tl.to(helix.position,
-        { x: HELIX_X.approach, duration: 1, ease: 'power2.inOut' },
+        { x: HELIX_X.cart, duration: 1, ease: 'power2.inOut' },
         '<'
     );
 
-    // Approach → Platform
+    // CAR-T → Data
     tl.to(camera.position,
-        { ...CAM.platform, duration: 1, ease: 'power2.inOut' }
+        { ...CAM.data, duration: 1, ease: 'power2.inOut' }
     );
     tl.to(helix.position,
-        { x: HELIX_X.platform, duration: 1, ease: 'power2.inOut' },
+        { x: HELIX_X.data, duration: 1, ease: 'power2.inOut' },
         '<'
     );
 
-    // Platform → Vision
+    // Data → Engine
+    tl.to(camera.position,
+        { ...CAM.engine, duration: 1, ease: 'power2.inOut' }
+    );
+    tl.to(helix.position,
+        { x: HELIX_X.engine, duration: 1, ease: 'power2.inOut' },
+        '<'
+    );
+
+    // Engine → Results
+    tl.to(camera.position,
+        { ...CAM.results, duration: 1, ease: 'power2.inOut' }
+    );
+    tl.to(helix.position,
+        { x: HELIX_X.results, duration: 1, ease: 'power2.inOut' },
+        '<'
+    );
+
+    // Results → Safety
+    tl.to(camera.position,
+        { ...CAM.safety, duration: 1, ease: 'power2.inOut' }
+    );
+    tl.to(helix.position,
+        { x: HELIX_X.safety, duration: 1, ease: 'power2.inOut' },
+        '<'
+    );
+
+    // Safety → Vision
     tl.to(camera.position,
         { ...CAM.vision, duration: 1, ease: 'power2.inOut' }
     );
@@ -97,9 +130,9 @@ function setupCameraTimeline(camera) {
         '<'
     );
 
-    // Helix strand separation — triggers on approach section
+    // Helix strand separation — triggers on engine section
     ScrollTrigger.create({
-        trigger: '#approach',
+        trigger: '#engine',
         start: 'top 50%',
         end: 'bottom 50%',
         onEnter: () => setHelixSeparation(1),
@@ -107,8 +140,7 @@ function setupCameraTimeline(camera) {
         onLeave: () => setHelixSeparation(0),
     });
 
-    // Math & Biological Markers Showcase
-    // Section 1: Hero -> No markers
+    // Marker dataset triggers
     ScrollTrigger.create({
         trigger: '#hero',
         start: 'top 50%',
@@ -116,60 +148,80 @@ function setupCameraTimeline(camera) {
         onEnterBack: () => hideMarkers(),
     });
 
-    // Section 2: Problem -> Gene labels
     ScrollTrigger.create({
-        trigger: '#problem',
+        trigger: '#clinical',
+        start: 'top 50%',
+        onEnter: () => { switchMarkerDataset('clinical'); showMarkers(); },
+        onEnterBack: () => { switchMarkerDataset('clinical'); showMarkers(); },
+    });
+
+    ScrollTrigger.create({
+        trigger: '#cart',
         start: 'top 50%',
         onEnter: () => { switchMarkerDataset('genes'); showMarkers(); },
         onEnterBack: () => { switchMarkerDataset('genes'); showMarkers(); },
     });
 
-    // Section 3: Approach -> Optimization Math
     ScrollTrigger.create({
-        trigger: '#approach',
+        trigger: '#data',
+        start: 'top 50%',
+        onEnter: () => { switchMarkerDataset('data'); showMarkers(); },
+        onEnterBack: () => { switchMarkerDataset('data'); showMarkers(); },
+    });
+
+    ScrollTrigger.create({
+        trigger: '#engine',
         start: 'top 50%',
         onEnter: () => { switchMarkerDataset('math'); showMarkers(); },
         onEnterBack: () => { switchMarkerDataset('math'); showMarkers(); },
     });
 
-    // Section 4: Platform -> Kinetics Math
     ScrollTrigger.create({
-        trigger: '#platform',
+        trigger: '#results',
         start: 'top 50%',
-        onEnter: () => { switchMarkerDataset('kinetics'); showMarkers(); },
-        onEnterBack: () => { switchMarkerDataset('kinetics'); showMarkers(); },
+        onEnter: () => { switchMarkerDataset('results'); showMarkers(); },
+        onEnterBack: () => { switchMarkerDataset('results'); showMarkers(); },
     });
 
-    // Section 5: Vision -> Clinical Safety
     ScrollTrigger.create({
-        trigger: '#vision',
+        trigger: '#safety',
         start: 'top 50%',
         onEnter: () => { switchMarkerDataset('safety'); showMarkers(); },
         onEnterBack: () => { switchMarkerDataset('safety'); showMarkers(); },
     });
 
+    ScrollTrigger.create({
+        trigger: '#vision',
+        start: 'top 50%',
+        onEnter: () => { switchMarkerDataset('vision'); showMarkers(); },
+        onEnterBack: () => { switchMarkerDataset('vision'); showMarkers(); },
+    });
+
     // Sound triggers
     ScrollTrigger.create({
-        trigger: '#problem',
+        trigger: '#clinical',
         start: 'top 60%',
         onEnter: () => { if (soundManager?.initialized) soundManager.playPing(); },
     });
     ScrollTrigger.create({
-        trigger: '#approach',
+        trigger: '#engine',
         start: 'top 60%',
         onEnter: () => { if (soundManager?.initialized) soundManager.playTensionBuild(); },
         onLeaveBack: () => { soundManager?.stopTension(); },
     });
     ScrollTrigger.create({
-        trigger: '#platform',
+        trigger: '#results',
         start: 'top 60%',
         onEnter: () => { if (soundManager?.initialized) soundManager.playResolvedAmbient(); },
     });
 }
 
 function setupSectionReveals() {
-    gsap.utils.toArray('.content-section').forEach(section => {
-        gsap.fromTo(section,
+    gsap.utils.toArray('.float-section').forEach(section => {
+        const textEl = section.querySelector('.float-text');
+        if (!textEl) return;
+
+        gsap.fromTo(textEl,
             { opacity: 0, y: 40 },
             {
                 opacity: 1,

@@ -1,5 +1,6 @@
-// markers.js — Floating 3D mathematical markers that orbit the helix.
+// markers.js — Floating 3D markers orbiting the helix.
 // Dynamically switch text based on the scroll section.
+// Content derived from the BBT technical brief.
 import * as THREE from 'three';
 import { getHelixGroup } from './helix.js';
 
@@ -8,15 +9,18 @@ const markerGroup = new THREE.Group();
 let targetOpacity = 0;
 let currentDataset = 'genes';
 
-// Mathematical & biological markers for different sections
+// Real content from the technical brief, per section
 const MARKER_DATASETS = {
-    genes: ['EPCAM', 'MUC1', 'MSLN', 'FOLR1', 'CD44', 'WT1', 'PAX8', 'CA125'],
-    math: ['Output = A ∧ B', 'Kill = (A > θ₁) ∧ (B < θ₂)', 'J = F1 - λ(FP)', 'LogFC > 2.0', 'Threshold: θ', 'Boolean = True', 'State = 1', 'Gate = AND'],
-    kinetics: ['v = V_max[S]ⁿ', '[M] / dt', 'Hill coeff: n', 'K_m = 0.5', 'Ultrasensitive', 'F1-Score: 0.94', 'Precision', 'Recall'],
-    safety: ['Heart: Safe', 'Liver: Safe', 'Brain: Clear', 'Lungs: Clear', 'Kidney: Safe', 'Off-target: Low', 'Toxicity: 0', 'Specificity'],
+    clinical: ['190M affected', '10% prevalence', '20–40% recurrence', 'Diagnostic delay', 'No molecular guide', 'Visual inspection', '1977 FDA gap', 'Excision limits'],
+    genes: ['PTPRC', 'EPCAM', 'MUC16', 'FOLR1', 'CDH1', 'VTCN1', 'TACSTD2', 'MSLN'],
+    data: ['scVI-VAE', 'ZINB model', 'GSE213216', 'Tabula Sapiens', 'AnnData .h5ad', 'Posterior μ(z)', 'Dropout recovery', '3000 surface proteins'],
+    math: ['m_j = σ((α+g)/τ)', 'log a_i = Σ log(1−m_j)', 'L = −y log a + (1−y)a', 'K = 2 constraint', 'Gumbel-Softmax', 'τ → 0 annealing', 'α_j ∈ ℝ (logits)', 'Adam optimiser'],
+    results: ['#1 PTPRC+EPCAM', '#2 MUC16+FOLR1', '#3 CDH1+VTCN1', '#4 TACSTD2+MSLN', 'Score: 0.981', 'Specificity: 0.97', 'Prevalence: 0.91', 'Healthy: 0.02'],
+    safety: ['Heart: Clear', 'Liver: Clear', 'Brain: Clear', 'Lungs: Clear', 'Kidney: Clear', 'Gut: Clear', '∞ penalty', 'Fratricide check'],
+    vision: ['iGEM 2026', 'Pre-seed', 'Deep Tech', 'FemTech', 'Translational', 'scFv screening', 'CAR construct', 'Wet lab next'],
 };
 
-// Positions in HELIX LOCAL SPACE (helix axis is at local origin)
+// Positions in HELIX LOCAL SPACE
 const MARKER_POSITIONS = [
     { x: 3.2, y: 4.0, z: 2.0 },
     { x: -3.0, y: 2.8, z: -1.8 },
@@ -30,7 +34,6 @@ const MARKER_POSITIONS = [
 
 function createTextTexture(text) {
     const canvas = document.createElement('canvas');
-    // Using a wider canvas for long equations
     canvas.width = 384;
     canvas.height = 64;
     const ctx = canvas.getContext('2d');
@@ -41,7 +44,6 @@ function createTextTexture(text) {
     ctx.fillStyle = 'rgba(10, 15, 40, 0.6)';
     ctx.font = '600 24px monospace';
     const metrics = ctx.measureText(text);
-    // Dynamic pill width based on text
     const pillW = Math.min(metrics.width + 40, 360);
     const pillH = 40;
     const pillX = (canvas.width - pillW) / 2;
@@ -53,7 +55,7 @@ function createTextTexture(text) {
     ctx.strokeStyle = 'rgba(102, 153, 255, 0.3)';
     ctx.stroke();
 
-    ctx.fillStyle = '#88bbff'; // Lighter blue for better contrast
+    ctx.fillStyle = '#88bbff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(text, canvas.width / 2, canvas.height / 2);
@@ -83,12 +85,11 @@ export function createMarkers(scene) {
             depthWrite: false,
         });
         const label = new THREE.Sprite(labelMat);
-        // Scale adjusted for the wider 384px canvas (384/64 = 6:1 ratio)
         label.scale.set(3.0, 0.5, 1);
         label.position.set(pos.x, pos.y + 0.4, pos.z);
 
-        // Thin connecting line toward helix axis (local origin)
-        const endX = pos.x * 0.3;  // Lines go 70% of the way to the center
+        // Thin connecting line toward helix axis
+        const endX = pos.x * 0.3;
         const endZ = pos.z * 0.3;
 
         const lineGeo = new THREE.BufferGeometry().setFromPoints([
@@ -125,10 +126,9 @@ export function switchMarkerDataset(datasetName) {
     currentDataset = datasetName;
     const texts = MARKER_DATASETS[datasetName];
 
-    // Create new textures
     markers.forEach(m => {
         const newTexture = createTextTexture(texts[m.index]);
-        if (m.labelMat.map) m.labelMat.map.dispose(); // clean up old texture
+        if (m.labelMat.map) m.labelMat.map.dispose();
         m.labelMat.map = newTexture;
     });
 }
@@ -148,7 +148,7 @@ export function updateMarkers(time) {
         const next = cur + (targetOpacity - cur) * 0.06;
 
         m.dotMat.opacity = next;
-        m.labelMat.opacity = Math.min(next * 1.2, 1.0); // Labels slightly more opaque
+        m.labelMat.opacity = Math.min(next * 1.2, 1.0);
         m.lineMat.opacity = next * 0.3;
 
         // Gentle 3D bob/float

@@ -5,7 +5,9 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bloomsbury Burger Therapeutics — The Target is Found</title>
+  <title>Bloomsbury Burger Therapeutics — In Silico Target Discovery for Dual-Targeting CAR-T in Endometriosis</title>
+  <meta name="description"
+    content="Differentiable combinatorial search over single-cell transcriptomics to identify dual-targeting CAR-T surface markers for endometriosis tissue ablation." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -14,6 +16,18 @@
 </head>
 
 <body>
+  <!-- Loading Screen -->
+  <div id="loader">
+    <div class="loader-content">
+      <div class="loader-logo">BBT<span>.</span></div>
+      <div class="loader-status" id="loader-status">Initializing RNA Logic...</div>
+      <div class="loader-bar-container">
+        <div class="loader-bar" id="loader-progress"></div>
+      </div>
+      <div class="loader-sub">Sequencing in progress · Differentiable search active</div>
+    </div>
+  </div>
+
   <!-- Persistent 3D Background -->
   <div id="canvas-container"></div>
 
@@ -28,9 +42,10 @@
         </div>
       </div>
       <div class="nav-links">
-        <a href="#problem" class="nav-item">The Problem</a>
-        <a href="#approach" class="nav-item">The Method</a>
-        <a href="#platform" class="nav-item">The Result</a>
+        <a href="#clinical" class="nav-item">Clinical</a>
+        <a href="#data" class="nav-item">Data</a>
+        <a href="#engine" class="nav-item">Engine</a>
+        <a href="#results" class="nav-item">Results</a>
       </div>
       <div class="nav-actions">
         <a href="/dashboard/index.html" class="btn-primary">
@@ -41,196 +56,255 @@
 
     <main class="main-content">
 
-      <!-- ═══════════════════════════════════
-                 HERO
-            ════════════════════════════════════ -->
-      <section class="hero-section" id="hero">
-        <div class="hero-content">
-          <div class="hero-badge fade-up">
-            RNA Logic Circuits · Endometriosis · AI-Designed
-          </div>
-          <h1 class="fade-up delay-1">
-            Programmable<br><span>Biology.</span>
+      <!-- ═══ HERO ═══ -->
+      <section class="float-section" id="hero">
+        <div class="float-text right fade-up">
+          <div class="section-tag">iGEM Startups 2026 · Pre-Seed</div>
+          <h1>
+            In Silico Target<br>Discovery for<br>CAR-T in<br><span>Endometriosis.</span>
           </h1>
-          <p class="hero-stat fade-up delay-2">
-            <strong>~4.5M</strong> candidate states screened in silico.
-            <strong>One</strong> logic gate found.
+          <p class="hero-sub">
+            Differentiable combinatorial search over single-cell transcriptomics
+            to identify dual-targeting CAR-T surface markers for selective
+            ectopic tissue ablation.
           </p>
-          <p class="hero-desc fade-up delay-2">
-            AI-designed RNA logic circuits for endometriosis.
-            Not hormone modulation. Not symptom management.
-            Targeted ablation of transient cell states computed directly inside the cell.
+          <div class="hero-stat fade-up delay-1">
+            <strong>~4.5M</strong> candidate pairs evaluated.
+            <strong>K = 2</strong> markers selected by gradient descent.
+          </div>
+          <div class="hero-actions fade-up delay-2">
+            <a href="#clinical" class="btn-outline">Read the Science ↓</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ 1. CLINICAL RATIONALE ═══ -->
+      <section class="float-section" id="clinical">
+        <div class="float-text left fade-up">
+          <div class="section-tag">§1 · Clinical Rationale</div>
+          <h2>The Target<br>Identification Failure</h2>
+          <p>
+            Endometriosis affects approximately 190 million individuals globally — roughly
+            10% of reproductive-age women — yet remains one of the most chronically
+            underfunded conditions in biomedicine. A direct consequence of the 1977 FDA
+            mandate excluding women from early-phase trials.
           </p>
-          <div class="hero-actions fade-up delay-3">
-            <a href="#problem" class="btn-outline">Explore the Architecture ↓</a>
-          </div>
+          <p>
+            The gold standard treatment requires a surgeon to visually distinguish ectopic
+            endometrial tissue from healthy stroma <em>intraoperatively</em>, without any
+            molecular guidance. Recurrence rates post-excision exceed 20–40% at five years.
+          </p>
+          <p>
+            This is not a surgical failure. It is a
+            <strong>target identification failure</strong>. The tissue lacks a molecularly
+            addressable, selectively expressed surface marker that would allow either
+            fluorescent guidance or a systemically administered cell therapy to distinguish
+            ectopic from eutopic tissue.
+          </p>
         </div>
       </section>
 
-      <!-- ═══════════════════════════════════
-                 THE PROBLEM & FORMALISM
-            ════════════════════════════════════ -->
-      <section class="content-section" id="problem">
-        <div class="section-text">
-          <div class="section-badge">The Standard of Care</div>
-          <h2>Beyond Blind<br>Resection</h2>
-          <div class="text-block">
-            <p>
-              Endometriosis affects ~10% of people with a uterus. The standard of care
-              is surgical resection—but recurrence rates exceed 50% within five years.
-              The problem is not surgical skill. Surgeons simply cannot reliably distinguish
-              microscopic pathological tissue from healthy stroma by visual inspection.
-            </p>
-            <p>
-              Instead of targeting anatomy, we target the cellular program. We use
-              <strong>Boolean logic circuits</strong> engineered from RNA to directly evaluate
-              a cell's state. The circuit reads single-cell RNA-seq (scRNA-seq) expression levels:
-            </p>
-            <div class="math-block" style="margin: 20px 0;">
-              <code>Kill = (A > θ₁) ∧ (B &lt; θ₂)</code>
-            </div>
-            <p>
-              If the inputs match the high/low profile of the ectopic lesion, the
-              gate triggers apoptosis. Otherwise, the cell is left unharmed.
-            </p>
-          </div>
-        </div>
-        <div class="section-visual" id="dynamic-cards-container">
-          <!-- Optional visual elements -->
+      <!-- ═══ 2. WHY CAR-T ═══ -->
+      <section class="float-section" id="cart">
+        <div class="float-text right fade-up">
+          <div class="section-tag">§1.3 · Therapeutic Modality</div>
+          <h2>CAR-T for a<br>Non-Oncological<br>Indication</h2>
+          <p>
+            CAR-T was developed in oncology (Sadelain, Brentjens, June; FDA-approved
+            against CD19 and BCMA), but the mechanistic logic transfers directly to
+            non-malignant tissue-ablative indications where:
+          </p>
+          <ol class="criteria-list">
+            <li>The target cell population is molecularly distinguishable from healthy tissue</li>
+            <li>Off-target toxicity can be designed against via combinatorial logic gating</li>
+            <li>Disease burden is localised enough for finite T-cell surveillance</li>
+          </ol>
+          <p>
+            Precedent: Aghajanian et al., <em>Nature</em> 2019 — FAP-targeting CAR-T cells
+            selectively ablated pathological cardiac fibroblasts in murine models.
+            <strong>Antigen expression specificity, not tissue type, is the determinant
+              of CAR-T applicability.</strong>
+          </p>
         </div>
       </section>
 
-      <!-- ═══════════════════════════════════
-                 THE METHOD
-            ════════════════════════════════════ -->
-      <section class="content-section right" id="approach">
-        <div class="section-text">
-          <div class="section-badge">Technical Pipeline</div>
-          <h2>We Did Not Enumerate.<br>We Optimised.</h2>
-          <div class="text-block">
-            <p>
-              Designing a circuit to kill ectopic lesions while sparing healthy tissue
-              requires navigating millions of combinatorial marker states. We do not
-              brute-force this.
-            </p>
-            <p>
-              We run a <strong>Constrained Optimisation</strong> over denoised scVI-VAE posterior
-              estimates. The differentiable search finds the exact logic gate inputs
-              that maximize Killing Accuracy (F1-score) while heavily penalizing off-target
-              toxicity against a whole-body safety atlas like Tabula Sapiens.
-            </p>
-            <p>
-              The AI finds the logic. The atlas validates it.
-            </p>
-          </div>
-          <div class="math-block">
-            <div class="math-header">Optimization Objective</div>
-            <code>J = F1 - λ(FP)</code>
-            <div class="math-footer">Gradient descent active</div>
-          </div>
-
-          <!-- DIFFERENTIABLE COMPILER — inline, not fixed -->
-          <div class="compiler-panel" id="machine-panel">
-            <div class="compiler-titlebar">
-              <div class="compiler-dots">
-                <span class="dot-red"></span>
-                <span class="dot-yellow"></span>
-                <span class="dot-green"></span>
-              </div>
-              <div class="compiler-title">DIFFERENTIABLE COMPILER v0.1</div>
-            </div>
-            <div class="compiler-body">
-              <div class="prob-dists">
-                <div class="dist">
-                  <span>α¹ — Target A</span>
-                  <div class="bars" id="bars-a"></div>
-                </div>
-                <div class="dist">
-                  <span>α² — Target B</span>
-                  <div class="bars" id="bars-b"></div>
-                </div>
-              </div>
-              <div class="loss-chart" id="loss-chart-container">
-                <svg viewBox="0 0 100 44" preserveAspectRatio="none">
-                  <path id="loss-line" d="M0,10 Q25,10 50,28 T100,42" fill="none" stroke="#ff4d6d" stroke-width="1.5" />
-                </svg>
-              </div>
-              <div class="temp-gauge">
-                <span class="tau">τ</span>
-                <div class="gauge-track">
-                  <div class="gauge-fill" id="temp-fill"></div>
-                </div>
-                <span>annealing</span>
-              </div>
-            </div>
-            <div class="compiler-footer">Gradient descent active · Tabula Sapiens validation enabled</div>
-          </div>
+      <!-- ═══ 3. DATA ARCHITECTURE ═══ -->
+      <section class="float-section" id="data">
+        <div class="float-text left fade-up">
+          <div class="section-tag">§2 · Dataset Architecture</div>
+          <h2>Single-Cell Atlas<br>+ Safety Reference</h2>
+          <p>
+            <strong>Primary:</strong> Tan et al., <em>Nature Genetics</em> 2024
+            (GSE213216) — the most comprehensive scRNA-seq atlas of the human
+            endometrium. Matched ectopic/eutopic/healthy triplicates enabling
+            within-donor differential analysis.
+          </p>
+          <p>
+            <strong>Safety:</strong> Tabula Sapiens — pan-tissue healthy human cell atlas
+            across 24 tissues. Expression in cardiomyocytes, alveolar cells, hepatocytes,
+            neurons, or enterocytes receives an <strong>infinite penalty</strong> in the
+            optimisation objective.
+          </p>
+          <p>
+            Denoising via <strong>scVI-VAE</strong> (Lopez et al., <em>Nature Methods</em>
+            2018). Raw counts are zero-inflated and overdispersed. scVI models observed
+            counts as ZINB conditioned on a learned latent:
+          </p>
+          <code class="equation">p(x | z) ~ ZINB(μ(z), θ(z), π(z))</code>
+          <p>
+            Binarisation operates on posterior mean expression estimates — not raw counts.
+            This recovers technical dropout and yields a biologically faithful input matrix.
+          </p>
         </div>
       </section>
 
-      <!-- ═══════════════════════════════════
-                 THE KINETICS
-            ════════════════════════════════════ -->
-      <section class="content-section" id="platform">
-        <div class="section-text">
-          <div class="section-badge">Circuit Dynamics</div>
-          <h2>Kinetics &<br>Clinical Validation.</h2>
-          <div class="text-block">
-            <p>
-              A logic gate is only useful if it acts like a switch. The rate of change
-              of targeted metabolism in our RNA circuits follows Hill function kinetics,
-              governing how "snappy" the cell death trigger is.
-            </p>
-            <div class="math-block"
-              style="margin: 20px 0; background: rgba(10, 15, 30, 0.45); border: 1px solid rgba(102, 153, 255, 0.2);">
-              <code>v = V_max[S]ⁿ / (K_mⁿ + [S]ⁿ)</code>
-            </div>
-            <p>
-              By tuning the Hill coefficient (n), we achieve extreme ultrasensitivity.
-              The circuit does not "partially kill" a cell—it evaluates the boolean state,
-              crosses the threshold, and executes.
-            </p>
-          </div>
-
-          <div class="stat-block">
-            <div class="stat-card">
-              <div class="stat-value" style="font-size: 80px;">0.94</div>
-              <div class="stat-label">In-Silico F1 Score</div>
-              <div class="stat-desc">
-                High precision targeting of transient lesion states.
-              </div>
-            </div>
-          </div>
+      <!-- ═══ 4. THE ENGINE ═══ -->
+      <section class="float-section" id="engine">
+        <div class="float-text right fade-up">
+          <div class="section-tag">§4 · Differentiable Target Discovery</div>
+          <h2>Gumbel-Softmax<br>Over Boolean<br>Gene Selection</h2>
+          <p>
+            The engine introduces learnable selection logits
+            <code class="eq-inline">α_j ∈ ℝ</code> for each of ~3,000 validated surface
+            proteins. A Gumbel-Softmax continuous relaxation produces a differentiable
+            soft mask:
+          </p>
+          <code class="equation">m_j = σ((α_j + g_j) / τ)</code>
+          <p>
+            The differentiable AND gate computes cell-level activation in log-space
+            for numerical stability:
+          </p>
+          <code class="equation">log a_i = Σ_j (1 − X_ij) · log(1 − m_j)</code>
+          <p>
+            Activation accumulates penalties only from selected genes that are
+            <em>absent</em> in the cell. Temperature τ is annealed from high (exploration)
+            to low (binary decisions) during training.
+          </p>
+          <p>
+            Combined loss with cardinality constraint enforcing K = 2:
+          </p>
+          <code class="equation">L_total = L_activation + λ(Σ m_j − K)²</code>
+          <p>
+            At inference, top-2 logits are extracted:
+            <code class="eq-inline">S* = argmax_{|S|=2} Σ_{j∈S} α_j</code>.
+            No brute-force enumeration required.
+          </p>
         </div>
       </section>
 
-      <!-- ═══════════════════════════════════
-                 THE VISION
-            ════════════════════════════════════ -->
-      <section class="content-section right" id="vision">
-        <div class="section-text">
-          <div class="section-badge">Deep Tech x FemTech</div>
-          <h2>Moving Beyond<br>Pastel SaaS.</h2>
-          <div class="text-block">
-            <p>
-              Historically, women's health innovation has been trapped in "app land" —
-              focusing on cycle trackers and rebranded thermometers.
-              We are applying verifiable, rigorous deep tech to the most underfunded
-              field in biomedicine.
-            </p>
-            <p>
-              Inspired by leaders like Linda Griffith (MIT Center for Gynepathology) and
-              Anna David (UCL EGA-IfWH), we are moving away from symptom management toward
-              curative biological engineering.
-            </p>
-            <p>
-              We are pre-seed. If you want to understand the RNA logic platform in depth,
-              the Lab Console has the full dataset.
-            </p>
-          </div>
+      <!-- ═══ 5. RESULTS ═══ -->
+      <section class="float-section" id="results">
+        <div class="float-text left fade-up">
+          <div class="section-tag">§6 · Output: Top Candidate Marker Pairs</div>
+          <h2>Ranked by<br>Combined Score</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Marker A</th>
+                <th>Marker B</th>
+                <th>Specificity</th>
+                <th>Safety</th>
+                <th>Combined</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td class="gene">PTPRC</td>
+                <td class="gene">EPCAM</td>
+                <td>0.97</td>
+                <td>0.99</td>
+                <td><strong>0.981</strong></td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td class="gene">MUC16</td>
+                <td class="gene">FOLR1</td>
+                <td>0.94</td>
+                <td>0.97</td>
+                <td><strong>0.951</strong></td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td class="gene">CDH1</td>
+                <td class="gene">VTCN1</td>
+                <td>0.91</td>
+                <td>0.96</td>
+                <td><strong>0.923</strong></td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td class="gene">TACSTD2</td>
+                <td class="gene">MSLN</td>
+                <td>0.89</td>
+                <td>0.94</td>
+                <td><strong>0.901</strong></td>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            Lesion prevalence for Rank 1: 0.91 — healthy prevalence: 0.02.
+            Both markers clear Tabula Sapiens vital organ screen. scFv fragments
+            available for both targets.
+          </p>
+        </div>
+      </section>
+
+      <!-- ═══ 6. SAFETY & DESIGN ═══ -->
+      <section class="float-section" id="safety">
+        <div class="float-text right fade-up">
+          <div class="section-tag">§4.11 · Tissue Safety Integration</div>
+          <h2>Safety-Critical<br>by Construction</h2>
+          <p>
+            Tabula Sapiens vital organ cells — cardiomyocytes, alveolar cells,
+            hepatocytes, neurons, enterocytes — are included in the healthy cell set
+            <code class="eq-inline">y_i = 0</code> with amplified loss weighting.
+          </p>
+          <p>
+            The gradient landscape penalises selection of markers with off-target
+            vital organ expression <em>at training time</em>, not as a post-hoc filter.
+            Any candidate pair where either marker is expressed in critical tissue
+            receives an effectively infinite penalty in the optimisation objective.
+          </p>
+          <p>
+            The dual-targeting CAR architecture requires simultaneous engagement of
+            two distinct surface antigens — a combinatorial AND gate that
+            multiplicatively reduces the probability of off-target activation
+            compared to single-marker designs.
+          </p>
+          <p>
+            Expression in haematopoietic compartments requires additional consideration:
+            CAR-T cells are themselves haematopoietic, and targeting a marker expressed
+            on T or B cells would trigger fratricide. This is explicitly modelled in
+            the safety constraint.
+          </p>
+        </div>
+      </section>
+
+      <!-- ═══ 7. VISION ═══ -->
+      <section class="float-section" id="vision">
+        <div class="float-text left fade-up">
+          <div class="section-tag">§8 · Translational Context</div>
+          <h2>Deep Tech<br>FemTech</h2>
+          <p>
+            The dominant femtech landscape in 2026 remains cycle-tracking applications
+            and rebranded thermometry — a market failure rooted in the systematic
+            exclusion of female subjects from early clinical trials (1977 FDA, partially
+            reversed 1993).
+          </p>
+          <p>
+            This project applies state-of-the-art single-cell transcriptomics,
+            differentiable programming, and CAR-T synthetic biology to a disease
+            chronically underfunded relative to its clinical burden.
+          </p>
+          <p>
+            Conceived for the iGEM Startups Biohackathon 2026. The computational pipeline
+            outputs ranked marker pairs with tissue risk profiles, feeding directly
+            into scFv and CAR construct feasibility assessment.
+          </p>
           <div class="hero-actions" style="margin-top: 32px;">
-            <a href="/dashboard/index.html" class="btn-primary"
-              style="font-size:14px; padding:12px 24px; border-radius:6px;">
+            <a href="/dashboard/index.html" class="btn-outline">
               Open Lab Console →
             </a>
           </div>
@@ -247,7 +321,7 @@
     </main>
   </div>
 
-  <!-- Sound toggle — icon only -->
+  <!-- Sound toggle -->
   <div class="sound-toggle" id="sound-toggle" title="Toggle sound">
     <svg id="sound-icon-on" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
