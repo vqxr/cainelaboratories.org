@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 // Helix X positions — controls which side of the screen the helix appears on
 const HELIX_X = {
-    hero: -3,       // left — text is right, helix peeks left
+    hero: -5,       // left — text is right, helix peeks left
     clinical: 5,   // far right — text is left
     cart: -4,      // left — text is right
     data: 5,       // far right — text is left
