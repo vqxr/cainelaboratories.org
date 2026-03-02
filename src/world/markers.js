@@ -34,30 +34,39 @@ const MARKER_POSITIONS = [
 
 function createTextTexture(text) {
     const canvas = document.createElement('canvas');
-    canvas.width = 384;
-    canvas.height = 64;
+    canvas.width = 440; // Increased width for larger box
+    canvas.height = 80; // Increased height for larger box
     const ctx = canvas.getContext('2d');
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Subtle background pill
-    ctx.fillStyle = 'rgba(10, 15, 40, 0.6)';
-    ctx.font = '600 24px monospace';
+    // Modern glass pill with gradient - LARGER BOX
+    ctx.font = '600 24px "DM Mono", monospace';
     const metrics = ctx.measureText(text);
-    const pillW = Math.min(metrics.width + 40, 360);
-    const pillH = 40;
+    const pillW = Math.min(metrics.width + 60, 420);
+    const pillH = 54;
     const pillX = (canvas.width - pillW) / 2;
     const pillY = (canvas.height - pillH) / 2;
 
+    const grad = ctx.createLinearGradient(pillX, pillY, pillX, pillY + pillH);
+    grad.addColorStop(0, 'rgba(15, 25, 60, 0.9)');
+    grad.addColorStop(1, 'rgba(5, 10, 30, 0.98)');
+
+    ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.roundRect(pillX, pillY, pillW, pillH, 8);
     ctx.fill();
-    ctx.strokeStyle = 'rgba(102, 153, 255, 0.3)';
+
+    // Sharp outer silver/blue border
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(120, 180, 255, 0.8)';
     ctx.stroke();
 
-    ctx.fillStyle = '#88bbff';
+    // Sharp, legible white text (No excessive glow for readability)
+    ctx.fillStyle = '#ffffff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
+    ctx.letterSpacing = '0.5px';
     ctx.fillText(text, canvas.width / 2, canvas.height / 2);
 
     return new THREE.CanvasTexture(canvas);
@@ -65,15 +74,42 @@ function createTextTexture(text) {
 
 export function createMarkers(scene) {
     MARKER_POSITIONS.forEach((pos, i) => {
-        // Small glowing dot
-        const dotGeo = new THREE.SphereGeometry(0.08, 12, 12);
-        const dotMat = new THREE.MeshBasicMaterial({
+        // Detailed tech node: Icosahedron + Glow core
+        const dotGroup = new THREE.Group();
+
+        const geom = new THREE.IcosahedronGeometry(0.12, 1);
+        const mat = new THREE.MeshPhongMaterial({
             color: 0x88bbff,
+            emissive: 0x4477ff,
+            emissiveIntensity: 2,
             transparent: true,
             opacity: 0,
+            flatShading: true
         });
-        const dot = new THREE.Mesh(dotGeo, dotMat);
-        dot.position.set(pos.x, pos.y, pos.z);
+        const dot = new THREE.Mesh(geom, mat);
+        dotGroup.add(dot);
+
+        // Core glow
+        const coreGeom = new THREE.SphereGeometry(0.05, 8, 8);
+        const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 });
+        const core = new THREE.Mesh(coreGeom, coreMat);
+        dotGroup.add(core);
+
+        // EXTRA GLOW SPRITE (for the "pop")
+        const glowTex = new THREE.TextureLoader().load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/lensflare/lensflare0.png');
+        const glowMat = new THREE.SpriteMaterial({
+            map: glowTex,
+            color: 0x4477ff,
+            transparent: true,
+            opacity: 0,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+        const glow = new THREE.Sprite(glowMat);
+        glow.scale.set(0.6, 0.6, 1);
+        dotGroup.add(glow);
+
+        dotGroup.position.set(pos.x, pos.y, pos.z);
 
         // Text label sprite
         const initialText = MARKER_DATASETS.genes[i];
@@ -85,12 +121,12 @@ export function createMarkers(scene) {
             depthWrite: false,
         });
         const label = new THREE.Sprite(labelMat);
-        label.scale.set(3.0, 0.5, 1);
-        label.position.set(pos.x, pos.y + 0.4, pos.z);
+        label.scale.set(3.4, 0.62, 1);
+        label.position.set(pos.x, pos.y + 0.5, pos.z);
 
-        // Thin connecting line toward helix axis
-        const endX = pos.x * 0.3;
-        const endZ = pos.z * 0.3;
+        // Tech line: Dashed look via shader or simple line with opacity
+        const endX = pos.x * 0.25;
+        const endZ = pos.z * 0.25;
 
         const lineGeo = new THREE.BufferGeometry().setFromPoints([
             new THREE.Vector3(pos.x, pos.y, pos.z),
@@ -103,11 +139,11 @@ export function createMarkers(scene) {
         });
         const line = new THREE.Line(lineGeo, lineMat);
 
-        markerGroup.add(dot, label, line);
+        markerGroup.add(dotGroup, label, line);
 
         markers.push({
-            dot, label, line,
-            dotMat, labelMat, lineMat,
+            dotGroup, dot, core, label, line,
+            dotMat: mat, coreMat, glowMat, labelMat, lineMat,
             basePos: { ...pos },
             phase: i * 0.8,
             index: i
@@ -115,8 +151,19 @@ export function createMarkers(scene) {
     });
 
     const helix = getHelixGroup();
-    if (helix) helix.add(markerGroup);
-    else scene.add(markerGroup);
+    if (helix) {
+        helix.add(markerGroup);
+    } else {
+        // Fallback or retry logic if helix isn't ready
+        scene.add(markerGroup);
+        const checkHelix = setInterval(() => {
+            const h = getHelixGroup();
+            if (h) {
+                h.add(markerGroup);
+                clearInterval(checkHelix);
+            }
+        }, 100);
+    }
 }
 
 // Fade all out, swap the textures, fade them back in
@@ -145,28 +192,32 @@ export function updateMarkers(time) {
     markers.forEach(m => {
         // Smooth opacity lerp
         const cur = m.dotMat.opacity;
-        const next = cur + (targetOpacity - cur) * 0.06;
+        const next = cur + (targetOpacity - cur) * 0.05;
 
         m.dotMat.opacity = next;
-        m.labelMat.opacity = Math.min(next * 1.2, 1.0);
-        m.lineMat.opacity = next * 0.3;
+        m.coreMat.opacity = next;
+        if (m.glowMat) m.glowMat.opacity = next * 0.8;
+        m.labelMat.opacity = Math.min(next * 1.5, 1.0);
+        m.lineMat.opacity = next * 0.4;
 
-        // Gentle 3D bob/float
+        // Gentle rotate + bob
         if (next > 0.01) {
-            const bobY = Math.sin(time * 0.35 + m.phase) * 0.15;
-            const floatX = Math.cos(time * 0.2 + m.phase) * 0.05;
+            const bobY = Math.sin(time * 0.4 + m.phase) * 0.12;
+            const floatX = Math.cos(time * 0.25 + m.phase) * 0.06;
 
-            m.dot.position.y = m.basePos.y + bobY;
-            m.dot.position.x = m.basePos.x + floatX;
+            m.dotGroup.position.y = m.basePos.y + bobY;
+            m.dotGroup.position.x = m.basePos.x + floatX;
+            m.dotGroup.rotation.y = time * 0.5;
+            m.dotGroup.rotation.z = time * 0.3;
 
-            m.label.position.y = m.basePos.y + bobY + 0.4;
+            m.label.position.y = m.basePos.y + bobY + 0.45;
             m.label.position.x = m.basePos.x + floatX;
 
-            // Re-update the line geometry to connect dot to center
+            // Re-update the line geometry
             const pts = m.line.geometry.attributes.position.array;
-            pts[0] = m.dot.position.x;
-            pts[1] = m.dot.position.y;
-            pts[2] = m.dot.position.z;
+            pts[0] = m.dotGroup.position.x;
+            pts[1] = m.dotGroup.position.y;
+            pts[2] = m.dotGroup.position.z;
             m.line.geometry.attributes.position.needsUpdate = true;
         }
     });

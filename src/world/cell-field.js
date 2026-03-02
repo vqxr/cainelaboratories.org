@@ -2,6 +2,7 @@
 // Now interactive: repel gently from the mouse cursor.
 import * as THREE from 'three';
 import { getCamera } from '../core/engine.js';
+import { getHelixGroup } from './helix.js';
 
 const cells = [];
 let mouseX = window.innerWidth / 2;
@@ -96,6 +97,8 @@ const targetVec = new THREE.Vector3();
 
 export function updateCellField(time) {
     const camera = getCamera();
+    const helixGroup = getHelixGroup();
+    const helixX = helixGroup ? helixGroup.position.x : 0;
 
     // Find where mouse ray intersects the background plane
     raycaster.setFromCamera(mouse, camera);
@@ -108,34 +111,30 @@ export function updateCellField(time) {
         const bob = Math.sin(time * 0.4 + data.phase) * 0.4;
 
         // --- 2. Mouse Interaction (Repel) ---
-        // Calculate distance from mouse target position in 3D space to the cell's base
         const dx = data.basePos.x - targetVec.x;
         const dy = data.basePos.y - targetVec.y;
-        const distSq = dx * dx + dy * dy; // Ignore Z for repel
+        const distSq = dx * dx + dy * dy;
 
         if (distSq < REPEL_RADIUS * REPEL_RADIUS) {
             const dist = Math.sqrt(distSq);
-            // Repel force inversely proportional to distance
             const force = (REPEL_RADIUS - dist) / REPEL_RADIUS * REPEL_FORCE;
             data.velocity.x += (dx / dist) * force;
             data.velocity.y += (dy / dist) * force;
         }
 
         // --- 3. Physics Step ---
-        // Apply spring force pulling back to base (0 offset)
         data.velocity.x += -data.offset.x * SPRING_STRENGTH;
         data.velocity.y += -data.offset.y * SPRING_STRENGTH;
-
-        // Apply damping (friction)
         data.velocity.multiplyScalar(DAMPING);
-
-        // Update offset
         data.offset.add(data.velocity);
 
-        // --- 4. Final Position ---
-        cell.position.x = data.basePos.x + data.offset.x;
+        // --- 4. Final Position (SYNC WITH HELIX X) ---
+        // Parallax effect: background moves slower than foreground helix
+        // We sync the background X with the helix X.
+        const parallax = helixX * 0.4;
+        cell.position.x = data.basePos.x + data.offset.x + parallax;
         cell.position.y = data.basePos.y + bob + data.offset.y;
-        cell.position.z = data.basePos.z; // Z doesn't change
+        cell.position.z = data.basePos.z;
 
         // Update shader time
         cell.material.uniforms.uTime.value = time;

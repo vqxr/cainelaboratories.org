@@ -146,16 +146,21 @@ export function createHelix(scene) {
     // Store materials for animation
     helixGroup.userData.glassMats = [matA, matB];
 
-    // Rungs — subtle blue structure lines
-    const rungMat = new THREE.ShaderMaterial({
-        vertexShader: `void main() { gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
-        fragmentShader: `void main() { gl_FragColor = vec4(0.3, 0.5, 1.0, 0.18); }`,
+    // Rungs — 3D cylinders for visibility (white/light-blue)
+    const rungMat = new THREE.MeshPhongMaterial({
+        color: 0xffffff,
+        emissive: 0x88bbff,
+        emissiveIntensity: 1.5,
         transparent: true,
+        opacity: 0.7,
         depthWrite: false,
     });
-    for (let i = 0; i <= segments; i += 10) {
-        const geo = new THREE.BufferGeometry().setFromPoints([pts1[i], pts2[i]]);
-        helixGroup.add(new THREE.Line(geo, rungMat));
+
+    for (let i = 0; i <= segments; i += 12) {
+        const curve = new THREE.CatmullRomCurve3([pts1[i], pts2[i]]);
+        const tubeGeo = new THREE.TubeGeometry(curve, 1, 0.025, 6, false);
+        const rung = new THREE.Mesh(tubeGeo, rungMat);
+        helixGroup.add(rung);
     }
 
     // Regular nodes — small red emissive
@@ -206,7 +211,7 @@ export function createHelix(scene) {
     helixGroup.userData.nodeMats = nodeMats;
 
     helixGroup.add(strandA, strandB);
-    helixGroup.position.set(3, 0, -4);
+    helixGroup.position.set(-4.5, 0, -4);
 
     scene.add(helixGroup);
     return helixGroup;
