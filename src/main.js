@@ -4,8 +4,8 @@ import './style.css';
 import { initEngine, getScene, getCamera, getRenderer, getComposer } from './core/engine.js';
 import { initScroll } from './core/scroll.js';
 import { createHelix, updateHelix } from './world/helix.js';
-import { createCellField, updateCellField } from './world/cell-field.js';
 import { createMarkers, updateMarkers } from './world/markers.js';
+import { createTopoTerrain, updateTopoTerrain } from './world/topo-terrain.js';
 import { buildCardsUI } from './ui/cards.js';
 import { initSoundToggle } from './ui/sound-toggle.js';
 import { initCursor } from './ui/cursor.js';
@@ -28,8 +28,8 @@ async function init() {
 
     updateLoader(30, 'Building biological structures...');
     createHelix(scene);
-    createCellField(scene);
     createMarkers(scene);
+    createTopoTerrain(scene);
 
     updateLoader(50, 'Calibrating scroll-driven logic...');
     initScroll(camera);
@@ -62,7 +62,7 @@ async function init() {
 function animate(time) {
     const t = time * 0.001;
     updateHelix(t);
-    updateCellField(t);
     updateMarkers(t);
+    updateTopoTerrain(t);
     getComposer().render();
 }

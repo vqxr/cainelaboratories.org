@@ -182,10 +182,13 @@ export function switchMarkerDataset(datasetName) {
 
 export function showMarkers() {
     targetOpacity = 1;
+    markerGroup.visible = true;
 }
 
 export function hideMarkers() {
     targetOpacity = 0;
+    // We don't set visible=false immediately to allow fade out, 
+    // but the user wants them GONE in hero mode.
 }
 
 export function updateMarkers(time) {
@@ -199,6 +202,13 @@ export function updateMarkers(time) {
         if (m.glowMat) m.glowMat.opacity = next * 0.8;
         m.labelMat.opacity = Math.min(next * 1.5, 1.0);
         m.lineMat.opacity = next * 0.4;
+
+        // Hide entire group if fully faded to prevent black flicker/interference
+        if (next < 0.001) {
+            markerGroup.visible = false;
+        } else {
+            markerGroup.visible = true;
+        }
 
         // Gentle rotate + bob
         if (next > 0.01) {

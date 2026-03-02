@@ -23,14 +23,14 @@ const HELIX_X = {
 
 // Camera positions — subtle cinematic movement (zoom, height)
 const CAM = {
-    hero: { x: 0, y: 2, z: 13 },
-    clinical: { x: 0, y: 3, z: 11 },
-    cart: { x: 0, y: 3.5, z: 10 },
-    data: { x: 0, y: 3, z: 11 },
-    engine: { x: 0, y: 4, z: 9 },
-    results: { x: 0, y: 3.5, z: 12 },
-    safety: { x: 0, y: 3, z: 10 },
-    vision: { x: 0, y: 2.5, z: 11 },
+    hero: { x: 0, y: 2.2, z: 16 },
+    clinical: { x: 0, y: 3.2, z: 14.5 },
+    cart: { x: 0, y: 3.5, z: 13.5 },
+    data: { x: 0, y: 3.2, z: 14.5 },
+    engine: { x: 0, y: 4.2, z: 14.5 },
+    results: { x: 0, y: 3.5, z: 15.0 },
+    safety: { x: 0, y: 3.2, z: 13.5 },
+    vision: { x: 0, y: 2.5, z: 14.5 },
 };
 
 export function initScroll(camera) {
@@ -130,15 +130,7 @@ function setupCameraTimeline(camera) {
         '<'
     );
 
-    // Helix strand separation — triggers on engine section
-    ScrollTrigger.create({
-        trigger: '#engine',
-        start: 'top 50%',
-        end: 'bottom 50%',
-        onEnter: () => setHelixSeparation(1),
-        onLeaveBack: () => setHelixSeparation(0),
-        onLeave: () => setHelixSeparation(0),
-    });
+    // Helix strand separation — REMOVED as per user request for consistency
 
     // Marker dataset triggers
     ScrollTrigger.create({
