@@ -1,0 +1,66 @@
+.section-nav-container {
+    position: fixed;
+    right: 32px;
+    bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1000;
+}
+
+.section-nav-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0;
+    outline: none;
+}
+
+.section-nav-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+    transition: transform 0.3s ease;
+}
+
+.section-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.section-nav-btn:active {
+    transform: translateY(0) scale(0.95);
+}
+
+.section-nav-btn.up:hover svg {
+    transform: translateY(-2px);
+}
+
+.section-nav-btn.down:hover svg {
+    transform: translateY(2px);
+}
+
+@media (max-width: 768px) {
+    .section-nav-container {
+        right: 20px;
+        bottom: 20px;
+        gap: 8px;
+    }
+
+    .section-nav-btn {
+        width: 40px;
+        height: 40px;
+    }
+}

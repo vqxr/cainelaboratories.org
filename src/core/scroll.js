@@ -33,6 +33,8 @@ const CAM = {
     vision: { x: 0, y: 2.5, z: 14.5 },
 };
 
+let lenis;
+
 export function initScroll(camera) {
     setupLenis();
     setupCameraTimeline(camera);
@@ -41,8 +43,21 @@ export function initScroll(camera) {
     setupNavbarAutoHide();
 }
 
+export function getLenis() {
+    return lenis;
+}
+
+export function scrollToSection(sectionId) {
+    if (lenis) {
+        lenis.scrollTo(sectionId, {
+            duration: 1.5,
+            easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+        });
+    }
+}
+
 function setupLenis() {
-    const lenis = new Lenis({
+    lenis = new Lenis({
         duration: 1.4,
         easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });

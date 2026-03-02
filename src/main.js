@@ -10,6 +10,7 @@ import { buildCardsUI } from './ui/cards.js';
 import { initSoundToggle } from './ui/sound-toggle.js';
 import { initCursor } from './ui/cursor.js';
 import { initHoverSounds } from './ui/hover-sounds.js';
+import { initSectionNav } from './ui/section-nav.js';
 
 init();
 
@@ -36,6 +37,7 @@ async function init() {
     initSoundToggle();
     initCursor();
     initHoverSounds();
+    initSectionNav();
 
     try {
         updateLoader(70, 'Fetching neural atlas data...');
@@ -57,6 +59,28 @@ async function init() {
             if (loader) loader.classList.add('fade-out');
         }, 400);
     }, 600);
+
+    // Dynamic Sound Initialization on first interaction
+    const initAudioOnFirstInteraction = () => {
+        import('./sound.js').then(({ soundManager }) => {
+            soundManager.init();
+
+            // Update UI if sound-toggle exists
+            const iconOn = document.getElementById('sound-icon-on');
+            const iconOff = document.getElementById('sound-icon-off');
+            if (iconOn && iconOff) {
+                iconOn.style.display = 'block';
+                iconOff.style.display = 'none';
+            }
+        });
+        window.removeEventListener('click', initAudioOnFirstInteraction);
+        window.removeEventListener('touchstart', initAudioOnFirstInteraction);
+        window.removeEventListener('keydown', initAudioOnFirstInteraction);
+    };
+
+    window.addEventListener('click', initAudioOnFirstInteraction);
+    window.addEventListener('touchstart', initAudioOnFirstInteraction);
+    window.addEventListener('keydown', initAudioOnFirstInteraction);
 }
 
 function animate(time) {
