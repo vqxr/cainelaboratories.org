@@ -1,7 +1,7 @@
 import { scrollToSection, getLenis } from '../core/scroll.js';
 
 export function initSectionNav() {
-    const sections = ['hero', 'clinical', 'cart', 'data', 'engine', 'results', 'safety', 'vision'];
+    const sections = ['hero', 'clinical', 'cart', 'data', 'engine', 'results', 'safety', 'validation'];
 
     // Create UI container
     const nav = document.createElement('div');

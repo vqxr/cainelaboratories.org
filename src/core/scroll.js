@@ -18,7 +18,7 @@ const HELIX_X = {
     engine: -4,    // left — text is right
     results: 5,    // far right — text is left
     safety: -4,    // left — text is right
-    vision: 5,     // far right — text is left
+    validation: 5,     // far right — text is left
 };
 
 // Camera positions — subtle cinematic movement (zoom, height)
@@ -30,7 +30,7 @@ const CAM = {
     engine: { x: 0, y: 4.2, z: 14.5 },
     results: { x: 0, y: 3.5, z: 15.0 },
     safety: { x: 0, y: 3.2, z: 13.5 },
-    vision: { x: 0, y: 2.5, z: 14.5 },
+    validation: { x: 0, y: 2.5, z: 14.5 },
 };
 
 let lenis;
@@ -136,12 +136,12 @@ function setupCameraTimeline(camera) {
         '<'
     );
 
-    // Safety → Vision
+    // Safety → Validation
     tl.to(camera.position,
-        { ...CAM.vision, duration: 1, ease: 'power2.inOut' }
+        { ...CAM.validation, duration: 1, ease: 'power2.inOut' }
     );
     tl.to(helix.position,
-        { x: HELIX_X.vision, duration: 1, ease: 'power2.inOut' },
+        { x: HELIX_X.validation, duration: 1, ease: 'power2.inOut' },
         '<'
     );
 
@@ -198,7 +198,7 @@ function setupCameraTimeline(camera) {
     });
 
     ScrollTrigger.create({
-        trigger: '#vision',
+        trigger: '#validation',
         start: 'top 50%',
         onEnter: () => { switchMarkerDataset('vision'); showMarkers(); },
         onEnterBack: () => { switchMarkerDataset('vision'); showMarkers(); },
