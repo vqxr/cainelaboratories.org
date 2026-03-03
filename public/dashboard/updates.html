@@ -7,66 +7,472 @@
   <title>BBT — Updates</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Extra polish for updates page */
+    /* ===== ENHANCED DESIGN SYSTEM ===== */
+    
+    /* Refined animations */
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.3); }
+      50% { box-shadow: 0 0 0 8px rgba(255, 193, 7, 0); }
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: -1000px 0; }
+      100% { background-position: 1000px 0; }
+    }
+
+    /* Search & filter bar improvements */
+    .controls-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 240px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-family: 'DM Mono', monospace;
+      color: var(--text);
+      transition: all 0.2s;
+    }
+
+    .search-box::placeholder {
+      color: var(--muted);
+    }
+
+    .search-box:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.1);
+    }
+
+    .filter-badge {
+      background: var(--accent);
+      color: #000;
+      padding: 4px 10px;
+      border-radius: 16px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* Tag filter redesign */
     .tag-filter {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       margin-bottom: 24px;
+      animation: slideInUp 0.4s ease-out;
     }
+
     .tag-filter-btn {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 6px 14px;
+      padding: 7px 15px;
       font-size: 12px;
       font-family: 'DM Mono', monospace;
       color: var(--muted);
       cursor: pointer;
-      transition: all 0.15s;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
     }
+
+    .tag-filter-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    .tag-filter-btn:hover::before {
+      left: 100%;
+    }
+
     .tag-filter-btn.active {
       background: var(--accent);
       border-color: var(--accent);
       color: #000;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+      transform: translateY(-1px);
     }
+
+    /* Log entry improvements */
     .log-entry {
-      transition: opacity 0.2s, transform 0.2s;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: slideInUp 0.4s ease-out backwards;
+      position: relative;
+      overflow: hidden;
     }
+
+    .log-entry::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .log-entry:hover {
+      border-color: var(--accent);
+      transform: translateX(2px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .log-entry:hover::before {
+      opacity: 1;
+    }
+
     .log-entry.filtered-out {
       display: none;
     }
-    .copy-btn {
-      opacity: 0;
-      transition: opacity 0.1s;
-      background: none;
-      border: none;
+
+    .log-entry.no-results {
+      text-align: center;
+      padding: 40px 24px;
       color: var(--muted);
-      cursor: pointer;
-      font-size: 14px;
-      margin-left: 6px;
-      padding: 2px 6px;
+      border: 1px dashed var(--border);
+      background: transparent;
+    }
+
+    /* Enhanced header layout */
+    .log-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .log-version {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+    }
+
+    .log-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      background: rgba(255, 193, 7, 0.05);
       border-radius: 4px;
     }
-    .log-file-link:hover .copy-btn,
-    .model-btn:hover .copy-btn {
-      opacity: 0.7;
+
+    .log-tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      padding: 5px 10px;
+      background: rgba(199, 125, 255, 0.1);
+      border: 1px solid rgba(199, 125, 255, 0.2);
+      border-radius: 6px;
+      color: var(--purple);
+      font-weight: 500;
+      transition: all 0.2s;
     }
-    .copy-btn:hover {
-      opacity: 1 !important;
-      background: rgba(255,255,255,0.05);
+
+    .log-tag:hover {
+      background: rgba(199, 125, 255, 0.2);
+      border-color: rgba(199, 125, 255, 0.4);
+      cursor: pointer;
     }
+
+    /* Description with better typography */
+    .log-description {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 16px;
+      font-weight: 400;
+    }
+
+    /* Enhanced files group */
     .files-group {
-      margin-top: 12px;
+      margin-top: 16px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 10px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
     }
+
     .file-row {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* File link styling */
+    .log-file-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: rgba(255, 193, 7, 0.05);
+      border: 1px solid rgba(255, 193, 7, 0.2);
+      border-radius: 8px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 13px;
+      font-family: 'DM Mono', monospace;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .log-file-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 193, 7, 0.1);
+      transition: left 0.3s;
+      z-index: 0;
+    }
+
+    .log-file-link:hover::before {
+      left: 100%;
+    }
+
+    .log-file-link:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);
+      transform: translateY(-1px);
+    }
+
+    .log-file-link > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Model button styling */
+    .model-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 8px;
+      color: var(--green);
+      text-decoration: none;
+      font-size: 13px;
+      font-family: 'DM Mono', monospace;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .model-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(34, 197, 94, 0.15);
+      transition: left 0.3s;
+      z-index: 0;
+    }
+
+    .model-btn:hover::before {
+      left: 100%;
+    }
+
+    .model-btn:hover {
+      border-color: var(--green);
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .model-btn > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .model-btn.pending {
+      color: var(--muted);
+      border-color: var(--border);
+      background: transparent;
+      cursor: default;
+    }
+
+    .model-btn.pending:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: var(--border);
+    }
+
+    /* Copy button */
+    .copy-btn {
+      opacity: 0;
+      transition: opacity 0.15s, background 0.15s;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+      margin-left: 4px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .file-row:hover .copy-btn {
+      opacity: 1;
+    }
+
+    .copy-btn:hover {
+      opacity: 1 !important;
+      background: rgba(255, 193, 7, 0.15);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .copy-btn.copied {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    /* Log file span (no link) */
+    .log-file {
+      font-size: 13px;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--muted);
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-state-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+    }
+
+    /* Stagger animation for logs */
+    .log-entry {
+      animation-delay: calc(var(--index) * 0.06s);
+    }
+
+    /* Section header enhancement */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      animation: slideInUp 0.5s ease-out;
+    }
+
+    .section-icon {
+      font-size: 28px;
+    }
+
+    .section-header h2 {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0;
+      letter-spacing: -0.5px;
+    }
+
+    /* Task board enhancements */
+    .task-grid {
+      animation: fadeIn 0.5s ease-out 0.1s both;
+    }
+
+    .task-column {
+      animation: slideInUp 0.5s ease-out backwards;
+    }
+
+    .task-column:nth-child(1) { animation-delay: 0.1s; }
+    .task-column:nth-child(2) { animation-delay: 0.15s; }
+    .task-column:nth-child(3) { animation-delay: 0.2s; }
+
+    .task-card {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .task-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Reveal animation timing */
+    .reveal {
+      animation: slideInUp 0.6s ease-out backwards;
+    }
+
+    /* Results counter */
+    .results-info {
+      display: flex;
+      align-items: center;
       gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      margin-bottom: 16px;
+      padding: 8px 12px;
+      background: rgba(255, 193, 7, 0.05);
+      border-radius: 6px;
+      width: fit-content;
+    }
+
+    .results-count {
+      color: var(--accent);
+      font-weight: 600;
     }
   </style>
 </head>
@@ -166,12 +572,23 @@
         <div class="section-icon">📋</div>
         <h2>Changelog</h2>
       </div>
-      <div class="callout" style="margin-bottom:16px;">
-        <p>Version history of all datasets and pipeline artifacts. New entries added as we refine the data.</p>
+      <div class="callout" style="margin-bottom:20px;">
+        <p>Version history of all datasets and pipeline artifacts. New entries added as we refine the data. Use search and tags to filter results.</p>
+      </div>
+
+      <!-- Enhanced controls -->
+      <div class="controls-bar">
+        <input type="text" id="search-input" class="search-box" placeholder="Search versions, descriptions...">
+        <div id="filter-badge-container"></div>
       </div>
 
       <!-- Tag filter bar -->
       <div class="tag-filter" id="tag-filter"></div>
+
+      <!-- Results info -->
+      <div id="results-info" style="display:none;" class="results-info">
+        <span>Showing <span class="results-count" id="results-count">0</span> of <span id="total-count">0</span> entries</span>
+      </div>
 
       <div class="logs-container" id="logs-container">
         <div style="text-align:center;padding:30px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;">Loading...</div>
@@ -280,11 +697,12 @@
     } catch { /* keep placeholder */ }
   }
 
-  // ----- CHANGELOG WITH MULTI‑FILE SUPPORT & TAG FILTERING -----
+  // ===== ENHANCED CHANGELOG WITH SEARCH + TAG FILTERING =====
   let allLogs = [];
 
   function renderFileLink(fileName, link, isModel = false) {
-    const copyBtn = `<button class="copy-btn" onclick="navigator.clipboard.writeText('${link}');event.preventDefault();" title="Copy link">📋</button>`;
+    const copyBtn = `<button class="copy-btn" onclick="copyToClipboard(event, '${link}');" title="Copy link">📋</button>`;
+    
     if (isModel) {
       if (link) {
         return `<div class="file-row">
@@ -310,8 +728,30 @@
     }
   }
 
-  function renderLogs(logs) {
-    return logs.map(log => {
+  function renderLogs(logs, searchQuery = '', selectedTag = 'all') {
+    let filtered = logs;
+
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(log => 
+        log.version.toLowerCase().includes(query) ||
+        log.description.toLowerCase().includes(query) ||
+        (log.tags || []).some(tag => tag.toLowerCase().includes(query))
+      );
+    }
+
+    if (selectedTag !== 'all') {
+      filtered = filtered.filter(log => (log.tags || []).includes(selectedTag));
+    }
+
+    if (filtered.length === 0) {
+      return `<div class="log-entry no-results">
+        <div class="empty-state-icon">📭</div>
+        <div class="empty-state-text">No versions match your search. Try different keywords or tags.</div>
+      </div>`;
+    }
+
+    return filtered.map((log, idx) => {
       let filesHtml = '';
       if (log.files) {
         const fileEntries = Object.entries(log.files);
@@ -324,7 +764,7 @@
         filesHtml = `<div class="files-group">${renderFileLink(log.file, log.link, isModel)}</div>`;
       }
 
-      return `<div class="log-entry" data-tags="${(log.tags || []).join(',')}">
+      return `<div class="log-entry" data-tags="${(log.tags || []).join(',')}" style="--index: ${idx};">
         <div class="log-header">
           <span class="log-version">${log.version}</span>
           <span class="log-date">${log.date}</span>
@@ -339,22 +779,74 @@
   function setupTagFilter(logs) {
     const allTags = [...new Set(logs.flatMap(log => log.tags || []))];
     const filterDiv = document.getElementById('tag-filter');
-    filterDiv.innerHTML = '<button class="tag-filter-btn active" data-tag="all">All</button>' +
+    
+    filterDiv.innerHTML = '<button class="tag-filter-btn active" data-tag="all">All tags</button>' +
       allTags.map(tag => `<button class="tag-filter-btn" data-tag="${tag}">${tag}</button>`).join('');
 
     filterDiv.querySelectorAll('.tag-filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         filterDiv.querySelectorAll('.tag-filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const tag = btn.dataset.tag;
-        document.querySelectorAll('.log-entry').forEach(el => {
-          if (tag === 'all') el.classList.remove('filtered-out');
-          else {
-            const tags = el.dataset.tags.split(',').filter(Boolean);
-            el.classList.toggle('filtered-out', !tags.includes(tag));
-          }
-        });
+        applyFilters();
       });
+    });
+  }
+
+  function applyFilters() {
+    const searchInput = document.getElementById('search-input');
+    const selectedTag = document.querySelector('.tag-filter-btn.active')?.dataset.tag || 'all';
+    const searchQuery = searchInput.value;
+
+    const container = document.getElementById('logs-container');
+    container.innerHTML = renderLogs(allLogs, searchQuery, selectedTag);
+    updateResultsInfo(allLogs, searchQuery, selectedTag);
+
+    // Re-attach tag click handlers
+    container.querySelectorAll('.log-tag').forEach(tag => {
+      tag.addEventListener('click', (e) => {
+        const tagName = tag.dataset.tag;
+        document.querySelectorAll('.tag-filter-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.tag-filter-btn[data-tag="${tagName}"]`)?.classList.add('active');
+        applyFilters();
+      });
+    });
+  }
+
+  function updateResultsInfo(logs, searchQuery, selectedTag) {
+    let filtered = logs;
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(log => 
+        log.version.toLowerCase().includes(query) ||
+        log.description.toLowerCase().includes(query) ||
+        (log.tags || []).some(tag => tag.toLowerCase().includes(query))
+      );
+    }
+    if (selectedTag !== 'all') {
+      filtered = filtered.filter(log => (log.tags || []).includes(selectedTag));
+    }
+
+    const resultsInfo = document.getElementById('results-info');
+    const resultsCount = document.getElementById('results-count');
+    const totalCount = document.getElementById('total-count');
+    
+    totalCount.textContent = logs.length;
+    resultsCount.textContent = filtered.length;
+    resultsInfo.style.display = filtered.length < logs.length || searchQuery.trim() ? 'flex' : 'none';
+  }
+
+  function copyToClipboard(event, text) {
+    event.preventDefault();
+    event.stopPropagation();
+    const btn = event.target.closest('.copy-btn');
+    navigator.clipboard.writeText(text).then(() => {
+      const original = btn.textContent;
+      btn.textContent = '✓ Copied';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove('copied');
+      }, 2000);
     });
   }
 
@@ -363,10 +855,23 @@
     try {
       const res = await fetch('logs.json');
       if (!res.ok) throw new Error();
-      const logs = await res.json();
-      allLogs = logs;
-      container.innerHTML = renderLogs(logs);
-      setupTagFilter(logs);
+      allLogs = await res.json();
+      container.innerHTML = renderLogs(allLogs);
+      setupTagFilter(allLogs);
+      updateResultsInfo(allLogs, '', 'all');
+
+      // Search input listener
+      document.getElementById('search-input').addEventListener('input', applyFilters);
+
+      // Tag click handlers for initial render
+      container.querySelectorAll('.log-tag').forEach(tag => {
+        tag.addEventListener('click', (e) => {
+          const tagName = tag.dataset.tag;
+          document.querySelectorAll('.tag-filter-btn').forEach(b => b.classList.remove('active'));
+          document.querySelector(`.tag-filter-btn[data-tag="${tagName}"]`)?.classList.add('active');
+          applyFilters();
+        });
+      });
     } catch (e) {
       container.innerHTML = '<p style="color:var(--accent);font-family:DM Mono,monospace;font-size:12px;padding:16px;">Failed to load logs.json</p>';
     }
