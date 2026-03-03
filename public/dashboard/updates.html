@@ -1,11 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script src="lock.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BBT — Updates</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <script src="lock.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BBT — Updates</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Extra polish for updates page */
+    .tag-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .tag-filter-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tag-filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+    }
+    .log-entry {
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .log-entry.filtered-out {
+      display: none;
+    }
+    .copy-btn {
+      opacity: 0;
+      transition: opacity 0.1s;
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+      margin-left: 6px;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .log-file-link:hover .copy-btn,
+    .model-btn:hover .copy-btn {
+      opacity: 0.7;
+    }
+    .copy-btn:hover {
+      opacity: 1 !important;
+      background: rgba(255,255,255,0.05);
+    }
+    .files-group {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .file-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+  </style>
 </head>
 <body>
 
@@ -106,6 +169,10 @@
       <div class="callout" style="margin-bottom:16px;">
         <p>Version history of all datasets and pipeline artifacts. New entries added as we refine the data.</p>
       </div>
+
+      <!-- Tag filter bar -->
+      <div class="tag-filter" id="tag-filter"></div>
+
       <div class="logs-container" id="logs-container">
         <div style="text-align:center;padding:30px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;">Loading...</div>
       </div>
@@ -117,7 +184,6 @@
     </div>
   </main>
 </div>
-
 
 <script src="script.js"></script>
 <script>
@@ -214,42 +280,94 @@
     } catch { /* keep placeholder */ }
   }
 
+  // ----- CHANGELOG WITH MULTI‑FILE SUPPORT & TAG FILTERING -----
+  let allLogs = [];
+
+  function renderFileLink(fileName, link, isModel = false) {
+    const copyBtn = `<button class="copy-btn" onclick="navigator.clipboard.writeText('${link}');event.preventDefault();" title="Copy link">📋</button>`;
+    if (isModel) {
+      if (link) {
+        return `<div class="file-row">
+          <a href="${link}" target="_blank" class="model-btn">🧠 Download scVI model</a>
+          <span class="log-file">📁 ${fileName}</span>
+          ${copyBtn}
+        </div>`;
+      } else {
+        return `<div class="file-row">
+          <span class="model-btn pending">🧠 scVI model — upload link pending</span>
+          <span class="log-file">📁 ${fileName}</span>
+        </div>`;
+      }
+    } else {
+      if (link) {
+        return `<div class="file-row">
+          <a href="${link}" target="_blank" class="log-file-link">📁 ${fileName}</a>
+          ${copyBtn}
+        </div>`;
+      } else {
+        return `<div class="file-row"><span class="log-file">📁 ${fileName}</span></div>`;
+      }
+    }
+  }
+
+  function renderLogs(logs) {
+    return logs.map(log => {
+      let filesHtml = '';
+      if (log.files) {
+        const fileEntries = Object.entries(log.files);
+        filesHtml = `<div class="files-group">` + fileEntries.map(([key, link]) => {
+          const isModel = log.type === 'model' && (key.includes('model') || key.includes('scvi_model'));
+          return renderFileLink(key, link, isModel);
+        }).join('') + `</div>`;
+      } else if (log.file) {
+        const isModel = log.type === 'model';
+        filesHtml = `<div class="files-group">${renderFileLink(log.file, log.link, isModel)}</div>`;
+      }
+
+      return `<div class="log-entry" data-tags="${(log.tags || []).join(',')}">
+        <div class="log-header">
+          <span class="log-version">${log.version}</span>
+          <span class="log-date">${log.date}</span>
+          ${log.tags ? log.tags.map(t => `<span class="log-tag" data-tag="${t}">${t}</span>`).join('') : ''}
+        </div>
+        <div class="log-description">${log.description}</div>
+        ${filesHtml}
+      </div>`;
+    }).join('');
+  }
+
+  function setupTagFilter(logs) {
+    const allTags = [...new Set(logs.flatMap(log => log.tags || []))];
+    const filterDiv = document.getElementById('tag-filter');
+    filterDiv.innerHTML = '<button class="tag-filter-btn active" data-tag="all">All</button>' +
+      allTags.map(tag => `<button class="tag-filter-btn" data-tag="${tag}">${tag}</button>`).join('');
+
+    filterDiv.querySelectorAll('.tag-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterDiv.querySelectorAll('.tag-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const tag = btn.dataset.tag;
+        document.querySelectorAll('.log-entry').forEach(el => {
+          if (tag === 'all') el.classList.remove('filtered-out');
+          else {
+            const tags = el.dataset.tags.split(',').filter(Boolean);
+            el.classList.toggle('filtered-out', !tags.includes(tag));
+          }
+        });
+      });
+    });
+  }
+
   async function loadLogs() {
     const container = document.getElementById('logs-container');
     try {
       const res = await fetch('logs.json');
       if (!res.ok) throw new Error();
       const logs = await res.json();
-      container.innerHTML = logs.map(log => {
-        let fileHtml = '';
-        if (log.file) {
-          if (log.type === 'model') {
-            if (log.link) {
-              fileHtml = `<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-                <a href="${log.link}" target="_blank" class="model-btn">🧠 Download scVI model</a>
-                <span class="log-file">📁 ${log.file}</span></div>`;
-            } else {
-              fileHtml = `<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-                <span class="model-btn pending">🧠 scVI model — upload link pending</span>
-                <span class="log-file">📁 ${log.file}</span></div>`;
-            }
-          } else if (log.link) {
-            fileHtml = `<div style="margin-top:8px;"><a href="${log.link}" target="_blank" class="log-file-link">📁 ${log.file}</a></div>`;
-          } else {
-            fileHtml = `<div style="margin-top:8px;"><span class="log-file">📁 ${log.file}</span></div>`;
-          }
-        }
-        return `<div class="log-entry">
-          <div class="log-header">
-            <span class="log-version">${log.version}</span>
-            <span class="log-date">${log.date}</span>
-            ${log.tags ? log.tags.map(t => `<span class="log-tag">${t}</span>`).join('') : ''}
-          </div>
-          <div class="log-description">${log.description}</div>
-          ${fileHtml}
-        </div>`;
-      }).join('');
-    } catch {
+      allLogs = logs;
+      container.innerHTML = renderLogs(logs);
+      setupTagFilter(logs);
+    } catch (e) {
       container.innerHTML = '<p style="color:var(--accent);font-family:DM Mono,monospace;font-size:12px;padding:16px;">Failed to load logs.json</p>';
     }
   }
